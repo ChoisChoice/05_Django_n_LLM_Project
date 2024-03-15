@@ -34,6 +34,7 @@ THIRD_PARTY_APPS = [
 ]
 
 CUSTOM_APPS = [
+    "users.apps.UsersConfig",
 ]  # startapp 실행 전, 미리 입력하면 에러가 발생함
 
 SYSTEM_APPS = [
@@ -130,6 +131,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# 모델 커스텀 설정
+AUTH_USER_MODEL = 'users.User'
 
 # REST Framework 설정
 REST_FRAMEWORK = {
