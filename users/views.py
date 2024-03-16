@@ -59,9 +59,9 @@ class SignOut(APIView):
 
 class ShowProfile(APIView):
 
-    """ 사용자 프로파일을 보여주는 클래스 """
+    """ 사용자 프로필을 보여주는 클래스 """
 
-    def get(self, request, username):  # '@username'로 사용자 프로파일에 접속하기에 username을 매개변수로 받음
+    def get(self, request, username):  # '@username'로 사용자 프로필에 접속하기에 username을 매개변수로 받음
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
