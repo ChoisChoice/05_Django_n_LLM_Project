@@ -3,7 +3,7 @@ from .models import User
 
 class PublicUserSerializer(ModelSerializer):
 
-    """ 보안에 민감한 데이터를 '제외한' user 데이터를 직렬화하는 serializer """
+    """ 보안에 민감한 데이터를 '제외한' user 데이터를 직렬화하는 클래스 """
     
     class Meta:
         model = User
@@ -12,9 +12,9 @@ class PublicUserSerializer(ModelSerializer):
             "name",
         )
 
-class UpdateUserSerializer(ModelSerializer):
+class PrivateUserSerializer(ModelSerializer):
 
-    """ user 데이터를 변경할 때 직렬화하는 serializer """
+    """ 보안에 민감한 데이터를 '포함한' user 데이터를 직렬화하는 클래스 """
 
     class Meta:
         model = User
