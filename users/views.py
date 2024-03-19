@@ -118,7 +118,10 @@ class UpdateProfile(APIView):
             serializer = serializers.PrivateUserSerializer(user)
             return Response(serializer.data)
         else:
-            return Response(serializer.errors)
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+                )
 
 class UpdatePassword(APIView):
 
@@ -130,14 +133,12 @@ class UpdatePassword(APIView):
         user = request.user
         old_password = request.data.get("old_password")
         new_password = request.data.get("new_password")
-        if not old_password or not new_password:
+        if not old_password or not new_password:  # 비밀번호 입력 받지 못할 경우..
             raise ParseError
-        if user.check_password(old_password):
+        if user.check_password(old_password):  # 옛날 비밀번호가 맞다면..
             user.set_password(new_password)
             user.save()
             return Response(status=status.HTTP_200_OK)
         else:
-            raise ParseError
-
-
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
