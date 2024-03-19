@@ -45,9 +45,9 @@ class SignIn(APIView):
         )  # 입력받은 사용자 id / password로 인증 시도
         if user:  # 사용자가 맞다면...
             login(request, user)  # 로그인 처리
-            return Response({"successed":"Login has been successful."})
+            return Response(status=status.HTTP_200_OK, headers={"successed":"Login has been successful."})
         else:
-            return Response({"failed":"Login failed."})
+            return Response(status=status.HTTP_400_BAD_REQUEST, headers={"failed":"Login failed."})
 
 class SignOut(APIView):
 

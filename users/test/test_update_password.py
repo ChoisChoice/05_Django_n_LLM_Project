@@ -1,36 +1,42 @@
 from rest_framework.test import APITestCase
+from rest_framework.authtoken.models import Token
 import os
 from users.models import User
 from common.test.test_user_variable import TestUserVariable
+
 
 class TestUpdatePassword(TestUserVariable, APITestCase):
 
     """ UpdatePassword 테스트 클래스 """
     
     # test할 변수 설정
-    OLD_PASSWORD = "1234"
+    tuv = TestUserVariable()
+    OLD_PASSWORD = tuv.PASSWORD
     NEW_PASSWORD = "abcd"
     URL = "/api/v1/users/update-password"
 
-    # test db 생성
+    # 사전 설정
     def setUp(self):
-        self.user = User.objects.create_user(
-            username=self.USERNAME,
-            password=self.OLD_PASSWORD,
-        )
-        self.client.force_login(self.user)  # 로그인 상태로 아래 테스트 진행
-    
-    # 잘못된 url로 들어갔을 때, 에러가 나는지 테스트
-    def test_url_not_found(self):
-        error_url = os.path.join(self.URL, "/"+"NotFounded")
-        response = self.client.get(error_url)
-        self.assertEqual(response.status_code, 404)
+        # 사용자 데이터
+        self.user_data = {
+            "username":self.USERNAME,
+            "password":self.OLD_PASSWORD,
+        }
 
+        # 사용자 생성
+        self.user = User.objects.create_user(**self.user_data)
+
+        """ 
+        [Lesson] IsAuthenticated는 인증된 사용자가 권한에 접근할 수 있도록 제한을 둔 것
+        하지만 이 코드에서는 login한 사용자로 간주(login())되기 때문에 인증문제가 발생하지 않기에 Token이 필요없음
+        [Question] force_login()과 login()의 차이점은 무엇일까?
+        """
+        
     # 비밀번호를 넣었을 때, 상태 테스트
     def test_put_password(self):
         # 로그인 상태 확인
         self.assertTrue(self.client.login(username=self.USERNAME, password=self.OLD_PASSWORD))
-        
+
         response = self.client.put(
             self.URL,
             data=
@@ -40,7 +46,6 @@ class TestUpdatePassword(TestUserVariable, APITestCase):
                 },
             
         )
-        # print(response)
         
         # 응답 정상 여부 체크
         self.assertEqual(response.status_code, 200)

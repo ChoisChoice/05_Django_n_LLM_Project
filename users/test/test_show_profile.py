@@ -11,7 +11,7 @@ class TestShowProfile(TestUserVariable, APITestCase):
     # test할 변수 설정
     URL = "/api/v1/users/"
 
-    # test db 생성
+    # 사전 설정
     def setUp(self):
         User.objects.create(
             username=self.USERNAME,
