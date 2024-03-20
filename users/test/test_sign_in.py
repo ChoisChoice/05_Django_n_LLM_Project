@@ -5,9 +5,9 @@ from common.test.test_user_variable import TestUserVariable
 
 class TestSignIn(TestUserVariable, APITestCase):
 
-    """ SignIn 테스크 클래스 """
+    """ SignIn 테스트 클래스 """
 
-    # test할 변수 생성
+    # test 변수 생성
     tuv = TestUserVariable()
     RIGHT_USERNAME = tuv.USERNAME
     WRONG_USERNAME = "WrongUsername"
@@ -17,7 +17,7 @@ class TestSignIn(TestUserVariable, APITestCase):
     ANONYMOUS_PASSWORD = "zxcvasdf"
     URL = "/api/v1/users/sign-in"
 
-    # test db에 설정
+    # 사전 설정
     def setUp(self):
         # 사용자 데이터
         self.user_data = {

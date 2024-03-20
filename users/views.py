@@ -25,9 +25,9 @@ class SignUp(APIView):
             user.set_password(password)  # 사용자 비밀번호 설정
             user.save()  # 설정한 비밀번호와 함께 사용자 정보 저장
             serializer = serializers.PrivateUserSerializer(user)
-            return Response(serializer.data)
+            return Response(data=serializer.data, status=status.HTTP_200_OK, headers={"successed":"Sign-up has been successful."})
         else:
-            return Response(serializer.errors)
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST, headers={"failed":"Sign-up failed."})
         
 class SignIn(APIView):
 
@@ -45,9 +45,9 @@ class SignIn(APIView):
         )  # 입력받은 사용자 id / password로 인증 시도
         if user:  # 사용자가 맞다면...
             login(request, user)  # 로그인 처리
-            return Response(status=status.HTTP_200_OK, headers={"successed":"Login has been successful."})
+            return Response(status=status.HTTP_200_OK, headers={"successed":"Log-in has been successful."})
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST, headers={"failed":"Login failed."})
+            return Response(status=status.HTTP_400_BAD_REQUEST, headers={"failed":"Log-in failed."})
 
 class SignOut(APIView):
 
@@ -57,7 +57,7 @@ class SignOut(APIView):
 
     def post(self, request):
         logout(request)  # 로그아웃
-        return Response({"successed":"Logout has been successful."})
+        return Response(status=status.HTTP_200_OK, headers={"successed":"Log-out has been successful."})
 
 class JWTSignIn(APIView):
 
