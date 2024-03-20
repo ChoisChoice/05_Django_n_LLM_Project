@@ -43,6 +43,7 @@ THIRD_PARTY_APPS = [
 
 CUSTOM_APPS = [
     "users.apps.UsersConfig",
+    "boards.apps.BoardsConfig",
 ]  # startapp 실행 전, 미리 입력하면 에러가 발생함
 
 SYSTEM_APPS = [
