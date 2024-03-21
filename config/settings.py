@@ -44,6 +44,7 @@ THIRD_PARTY_APPS = [
 CUSTOM_APPS = [
     "users.apps.UsersConfig",
     "boards.apps.BoardsConfig",
+    "common.apps.CommonConfig",
 ]  # startapp 실행 전, 미리 입력하면 에러가 발생함
 
 SYSTEM_APPS = [
@@ -143,6 +144,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Auth 설정
 AUTH_USER_MODEL = "users.User"
+
+MEDIA_ROOT = "uploads"  # 실제 파일이 존재하는 곳
+MEDIA_URL = "user-uploads/"  # 브라우저가 파일에 가는 방법(url)
 
 # REST Framework 설정
 REST_FRAMEWORK = {

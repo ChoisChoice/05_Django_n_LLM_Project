@@ -34,41 +34,48 @@ class User(AbstractUser):
     name = models.CharField(
         max_length=150,
         default="",
+        verbose_name = "Name",
     )
 
     # 이메일
     email = models.EmailField(
         blank=True,
+        verbose_name = "Email",
     )
 
     # 주소
     address = models.CharField(
         max_length=200,
         blank=True,
+        verbose_name = "Address",
     )
 
     # 휴대폰 번호
     phone_number = models.CharField(
         max_length=20,
         blank=True,
+        verbose_name = "Phone Number",
     )
 
     # 성별
     gender = models.CharField(
         max_length=10,
         choices=GenderChoices.choices,
+        verbose_name = "Gender",
     )
 
     # 내·외국인
     nationality = models.CharField(
         max_length=10,
         choices=NationalityChoices.choices,
+        verbose_name = "Nationality",
     )
 
     # 언어 선택
     language = models.CharField(
         max_length=10,
         choices=LanguageChoices.choices,
+        verbose_name = "Language",
     )
 
     # 가입 날짜: AbstractUser에 date_joined를 사용해도 됨
@@ -77,11 +84,9 @@ class User(AbstractUser):
         null=True,
         auto_now_add=True,
         editable=False,
+        verbose_name = "Created Date",
     )
 
-    def __str__(self) -> str:
-        return f"{self.name} Information"
-    
     class Meta:
         verbose_name = "User Information"
         verbose_name_plural = "Users"
