@@ -1,6 +1,6 @@
 class TestUserVariable:
 
-    """ test db에 저장될 변수 클래스 """
+    """ test db에 사용될 변수 클래스 """
 
     USERNAME = "UsernameTest"
     PASSWORD = "1234"

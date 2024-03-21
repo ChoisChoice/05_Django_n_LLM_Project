@@ -1,8 +1,6 @@
 from rest_framework.test import APITestCase
-from rest_framework.authtoken.models import Token
-import os
 from users.models import User
-from common.test.test_user_variable import TestUserVariable
+from common.tests import TestUserVariable
 
 
 class TestUpdatePassword(TestUserVariable, APITestCase):

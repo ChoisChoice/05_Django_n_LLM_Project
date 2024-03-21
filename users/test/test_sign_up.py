@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
 from users.models import User
-from common.test.test_user_variable import TestUserVariable
+from common.tests import TestUserVariable
 
 
 class TestSignUP(TestUserVariable, APITestCase):

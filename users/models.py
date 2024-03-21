@@ -71,7 +71,7 @@ class User(AbstractUser):
         choices=LanguageChoices.choices,
     )
 
-    # 가입 날짜
+    # 가입 날짜: AbstractUser에 date_joined를 사용해도 됨
     created_at = models.DateField(
         blank=True, 
         null=True,
