@@ -12,14 +12,7 @@ class Posting(CommonModel):
         ERROR = ("error", "Related Issue: Some Error")                        # 에러
         IMPROVEMENTS = ("improvements", "Related Issue: Improvements")        # 개선할점
     
-    # 게시글 번호
-    posting_number = models.AutoField(
-        primary_key=True, 
-        unique=True, 
-        blank=False,
-        null=False,
-        verbose_name = "Posting Number",
-    )
+    # 게시글 번호 - pk 사용
 
     # 게시글 유형
     posting_category = models.CharField(
@@ -34,7 +27,7 @@ class Posting(CommonModel):
         blank=False,
         null=False,
         on_delete=models.CASCADE,
-        related_name="boards",
+        related_name="postings",
         verbose_name = "Writer",
     )
 
@@ -66,10 +59,7 @@ class Posting(CommonModel):
     """
 
     # 첨부파일
-    attachment = models.URLField(
-        blank=True,
-        verbose_name = "Attachment",
-    )
+    attachment = models.URLField()
 
     # 조회수
     hits = models.PositiveIntegerField(
@@ -95,13 +85,7 @@ class Comment(CommonModel):
 
     """ 게시물 댓글 관련 데이터를 정의하는 클래스 """
 
-    # 댓글 번호
-    comment_number = models.AutoField(
-        primary_key=True, 
-        blank=False,
-        null=False,
-        verbose_name = "Comment Number",
-        )
+    # 댓글 번호 - pk 사용
 
     # 게시글
     posting = models.ForeignKey(

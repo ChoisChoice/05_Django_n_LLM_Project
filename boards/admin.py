@@ -5,7 +5,7 @@ from .models import Posting, Comment
 class BoardAdmin(admin.ModelAdmin):
     fieldsets = (
         (
-            "Board", 
+            "Posting", 
             {
                 "fields": (
                     "posting_category",
@@ -23,7 +23,7 @@ class BoardAdmin(admin.ModelAdmin):
     )
         
     list_display = (
-        "posting_number",
+        "pk",
         "posting_category",
         "writer",
         "title",
