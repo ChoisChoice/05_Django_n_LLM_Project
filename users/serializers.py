@@ -9,6 +9,7 @@ class PublicUserSerializer(ModelSerializer):
         model = User
         fields = (
             "username",
+            "name",
         )
 
 class PrivateUserSerializer(ModelSerializer):

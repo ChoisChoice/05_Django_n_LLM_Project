@@ -70,14 +70,6 @@ class Posting(CommonModel):
         verbose_name = "Hits",
     )
 
-    # 추천
-    thumb_up_status = models.PositiveIntegerField(
-        default=0,
-        blank=False,
-        null=False,
-        verbose_name = "Thumb-Up Status",
-    )
-
     def __str__(self) -> str:
         return self.title
 
@@ -108,4 +100,12 @@ class Comment(CommonModel):
         blank=False,
         null=False,
         verbose_name = "Comment",
+    )
+
+    # 추천
+    thumb_up_status = models.PositiveIntegerField(
+        default=0,
+        blank=False,
+        null=False,
+        verbose_name = "Thumb-Up Status",
     )

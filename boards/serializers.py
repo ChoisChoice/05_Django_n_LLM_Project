@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from .models import Posting, Comment
 from users.serializers import PublicUserSerializer
 
+
 class BoardListSerializer(ModelSerializer):
 
     """ 게시판(게시글 리스트)을 보여주기 위한 직렬화 클래스 """
@@ -22,10 +23,6 @@ class BoardListSerializer(ModelSerializer):
     # 조회수 개수
     def get_hits_count(self):
         pass
-
-    # 추천 개수
-    def get_thumb_up_status_count(self):
-        pass
     
     # 댓글 개수
     def get_comment_count(self):
@@ -40,11 +37,12 @@ class BoardDetailSerializer(ModelSerializer):
 
     class Meta:
         model = Posting
-        fields = fields = "__all__"
+        fields = "__all__"
 
     def create(self, validated_data):
         # print(validated_data)
         return Posting.objects.create(**validated_data)  # owner를 포함한 모든 validated_data를 가지고 방을 생성해준다.
+
 
 class CommentSerializer(ModelSerializer):
 

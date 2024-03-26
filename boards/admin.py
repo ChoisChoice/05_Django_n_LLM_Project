@@ -29,7 +29,6 @@ class BoardAdmin(admin.ModelAdmin):
         "title",
         "disclosure_status",
         "hits",
-        "thumb_up_status",
         "created_at",
     )
 
@@ -37,7 +36,6 @@ class BoardAdmin(admin.ModelAdmin):
         "posting_category",
         "disclosure_status",
         "hits",
-        "thumb_up_status",
     )
 
     search_fields = (
@@ -52,6 +50,7 @@ class CommmetAdmin(admin.ModelAdmin):
         "posting",
         "writer",
         "comment",
+        "thumb_up_status",
         "created_at",
         "updated_at",
     )
@@ -59,6 +58,7 @@ class CommmetAdmin(admin.ModelAdmin):
     list_filter = (
         "posting",
         "writer",
+        "thumb_up_status",
     )
 
     search_fields = (
