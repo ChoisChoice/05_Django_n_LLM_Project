@@ -109,3 +109,6 @@ class Comment(CommonModel):
         null=False,
         verbose_name = "Thumb-Up Status",
     )
+
+    def __str__(self) -> str:
+        return self.comment

@@ -6,12 +6,12 @@ from rest_framework.exceptions import NotFound, NotAuthenticated, PermissionDeni
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Posting, Comment
-from .serializers import BoardListSerializer, BoardDetailSerializer
+from .serializers import BoardsSerializer, BoardsDetailSerializer, CommentsSerializer
 
 
-class Board(APIView):
+class Boards(APIView):
 
-    """ 게시판을 보여주는 화면 """
+    """ 게시판을 보여주고 게시글을 생성하는 클래스 """
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -20,7 +20,7 @@ class Board(APIView):
         # 데이터 가져오기
         all_postings = Posting.objects.all()
         # 가져온 데이터 직렬화
-        serializer = BoardListSerializer(
+        serializer = BoardsSerializer(
             all_postings,
             many=True,  # 여러개의 데이터 직렬화
         )
@@ -35,14 +35,14 @@ class Board(APIView):
         # 로그인 여부
         if request.user.is_authenticated:  # 로그인 True일 경우
             # 직렬화
-            serializer = BoardDetailSerializer(data=request.data)  
+            serializer = BoardsDetailSerializer(data=request.data)  
             # 직렬화 데이터 유효성 검증
             if serializer.is_valid():  
                 board = serializer.save(writer=request.user)  # 유효하다면, 데이터 저장
-                serializer = BoardDetailSerializer(board)
+                serializer = BoardsDetailSerializer(board)
                 return Response(
                     data=serializer.data,
-                    status=status.HTTP_200_OK, 
+                    status=status.HTTP_201_CREATED, 
                     headers={"successed":"Board creation is successed."},
                 )
             else:
@@ -62,9 +62,9 @@ class Board(APIView):
     """
 
 
-class BoardDetail(APIView):
+class BoardsDetail(APIView):
 
-    """ 게시판의 특정 게시물을 보여주는 화면 """
+    """ 게시판의 특정 게시물을 수정 및 삭제하는 클래스 """
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
@@ -79,7 +79,7 @@ class BoardDetail(APIView):
         # 데이터 가져오기
         board = self.get_object(pk=pk)
         # 가져온 데이터 직렬화
-        serializer = BoardDetailSerializer(board)
+        serializer = BoardsDetailSerializer(board)
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK,
@@ -97,7 +97,7 @@ class BoardDetail(APIView):
         if board.writer != request.user:
             raise PermissionDenied
         # 가져온 데이터 직렬화
-        serializer = BoardDetailSerializer(
+        serializer = BoardsDetailSerializer(
             board,
             data=request.data,
             partial=True,  # 부분 업데이터 허용
@@ -105,10 +105,10 @@ class BoardDetail(APIView):
         # 직렬화 데이터 유효성 검증
         if serializer.is_valid():
             board=serializer.save(writer=request.user)  # 업데이트 저장
-            serializer = BoardDetailSerializer(board)
+            serializer = BoardsDetailSerializer(board)
             return Response(
                 data=serializer.data,
-                status=status.HTTP_200_OK,
+                status=status.HTTP_205_RESET_CONTENT,
                 headers={"successed": "Board is updated successfully."},
             )
         else:
@@ -133,4 +133,124 @@ class BoardDetail(APIView):
         return Response(
             status=status.HTTP_204_NO_CONTENT,
             headers={"successed": "Board is deleted successfully."}
+        )
+    
+
+class Comments(APIView):
+
+    """ 모든 댓글 리스트를 보여주고 댓글을 생성하는 클래스 """
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    # 댓글 가져오기
+    def get(self, request):
+        # 데이터 가져오기
+        all_comment = Comment.objects.all()
+        # 가져온 데이터 직렬화
+        serializer = CommentsSerializer(
+            all_comment,
+            many=True,  # 여러개의 데이터 직렬화
+        )
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+            headers={"successed": "Comment is imported successfully."}
+        )
+
+    # 댓글 생성하기
+    def post(self, request):
+        # 로그인 여부 확인
+        if not request.user.is_authenticated:
+            raise NotAuthenticated
+        else:
+            # 로그인된 유저라면 받은 데이터 직렬화
+            serializer = CommentsSerializer(data=request.data)
+            # 가져온 데이터 타당성 검증
+            if serializer.is_valid():
+                comment = serializer.save(writer=request.user)  # writer는 받은 데이터의 user로 해서 댓글 생성
+                serializer = CommentsSerializer(comment)
+                return Response(
+                    data=serializer.data,
+                    status=status.HTTP_201_CREATED,
+                    headers={"successed": "Comment is created successfully."},
+                )
+            else:
+                return Response(
+                    data=serializer.data,
+                    status=status.HTTP_400_BAD_REQUEST,
+                    headers={"failed": "Comment creation is failed."}
+                )
+
+
+class CommentsDetail(APIView):
+
+    """ 특정 게시글의 댓글들을 수정하고 삭제하는 클래스 """
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            return Comment.objects.get(pk=pk)
+        except Comment.DoesNotExist:
+            raise NotFound
+
+    # 댓글 가져오기
+    def get(self, request, pk):
+        # 데이터 가져오기
+        comment = self.get_object(pk=pk)
+        # 가져온 데이터 직렬화
+        serializer = CommentsSerializer(comment)
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+            headers={"successed": "Comment detail is imported successfully."}
+        )
+
+    # 댓글 수정하기
+    def put(self, request, pk):
+        # 데이터 가져오기
+        comment = self.get_object(pk=pk)
+        # 사용자 로그인 여부 확인
+        if not request.user.is_authenticated:
+            raise NotAuthenticated
+        # 댓글의 저자와 받은 데이터의 사용자가 같은지 확인
+        if comment.writer != request.user:
+            raise PermissionDenied
+        # 데이터 직렬화
+        serializer = CommentsSerializer(
+            comment,
+            data=request.data,
+            partial=True,  # 부분 업데이터 허용
+        )
+        # 직렬화 데이터 타당성 검증
+        if serializer.is_valid():
+            comment = serializer.save(writer=request.user)  # 받은 데이터의 유저를 writer로 하여 댓글 수정
+            serializer = CommentsSerializer(comment)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_205_RESET_CONTENT,
+                headers={"successed": "Comment is updated successfully."},
+            )
+        else:
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_400_BAD_REQUEST,
+                headers={"failed": "Comment update is failed."}
+            )
+
+    # 댓글 삭제하기
+    def delete(self, request, pk):
+        # 데이터 가져오기
+        comment = self.get_object(pk=pk)
+        # 로그인 여부 확인
+        if not request.user.is_authenticated:  
+            raise NotAuthenticated
+        # 댓글의 저자와 받은 데이터의 유저가 같은지 확인
+        if comment.writer != request.user:  
+            raise PermissionDenied
+        # 삭제
+        comment.delete()  
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
+            headers={"successed": "Comment is deleted successfully."}
         )
