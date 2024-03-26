@@ -24,8 +24,6 @@ class Posting(CommonModel):
     # 작성자
     writer = models.ForeignKey(
         "users.User",
-        blank=False,
-        null=False,
         on_delete=models.CASCADE,
         related_name="postings",
         verbose_name = "Writer",
@@ -59,7 +57,10 @@ class Posting(CommonModel):
     """
 
     # 첨부파일
-    attachment = models.URLField()
+    attachment = models.URLField(
+        blank=True,
+        verbose_name = "Attachment",
+    )
 
     # 조회수
     hits = models.PositiveIntegerField(
@@ -97,8 +98,6 @@ class Comment(CommonModel):
     # 작성자
     writer = models.ForeignKey(
         "users.User",
-        blank=False,
-        null=False,
         on_delete=models.CASCADE,
         verbose_name = "Writer",
     )

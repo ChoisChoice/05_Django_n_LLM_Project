@@ -16,6 +16,7 @@ class BoardListSerializer(ModelSerializer):
             "writer",
             "title",
             "created_at",
+            "updated_at",
         )
 
     # 조회수 개수
@@ -35,16 +36,15 @@ class BoardDetailSerializer(ModelSerializer):
 
     """ 게시판에서 특정 게시글을 위한 직렬화 클래스 """
 
-    writer = PublicUserSerializer(read_only=True)  # read_only=True: 게시글을 생성할 때, serializer는 writer에 대한 정보를 요구하지 않음
+    writer = PublicUserSerializer(read_only=True)  # read_only=True면 owner에 대한 정보를 요구하지 않는다.
 
     class Meta:
         model = Posting
-        exclude = (
-            "created_at",
-            "updated_at",
-            "hits",
-            "thumb_up_status",
-        )
+        fields = fields = "__all__"
+
+    def create(self, validated_data):
+        # print(validated_data)
+        return Posting.objects.create(**validated_data)  # owner를 포함한 모든 validated_data를 가지고 방을 생성해준다.
 
 class CommentSerializer(ModelSerializer):
 
