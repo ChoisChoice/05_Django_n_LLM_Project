@@ -27,7 +27,7 @@ class Boards(APIView):
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK,
-            headers={"successed": "Board is imported successfully."}
+            headers={"successed": "Board has been imported successfully."}
         )
 
     # 게시물 생성하기
@@ -43,13 +43,13 @@ class Boards(APIView):
                 return Response(
                     data=serializer.data,
                     status=status.HTTP_201_CREATED, 
-                    headers={"successed":"Board creation is successed."},
+                    headers={"successed":"Board creation has been successed."},
                 )
             else:
                 return Response(
                     data=serializer.errors,
                     status=status.HTTP_400_BAD_REQUEST, 
-                    headers={"failed":"Board creation is failed."},
+                    headers={"failed":"Board creation has been failed."},
                 )
         else:  # 로그인 False일 경우
             raise NotAuthenticated
@@ -68,16 +68,16 @@ class BoardsDetail(APIView):
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_object(self, pk):
+    def get_object(self, board_pk):
         try:
-            return Posting.objects.get(pk=pk)
+            return Posting.objects.get(pk=board_pk)
         except Posting.DoesNotExist:
             raise NotFound
 
     # 게시판 가져오기
-    def get(self, request, pk):
+    def get(self, request, board_pk):
         # 데이터 가져오기
-        board = self.get_object(pk=pk)
+        board = self.get_object(board_pk)
         # 가져온 데이터 직렬화
         serializer = BoardsDetailSerializer(board)
         return Response(
@@ -87,9 +87,9 @@ class BoardsDetail(APIView):
         )
 
     # 게시물 수정하기
-    def put(self, request, pk):
+    def put(self, request, board_pk):
         # 데이터 가져오기
-        board=self.get_object(pk=pk)
+        board=self.get_object(board_pk)
         # 가져온 데이터에 유저가 로그인하지 않았다면..
         if not request.user.is_authenticated:
             raise NotAuthenticated
@@ -108,20 +108,20 @@ class BoardsDetail(APIView):
             serializer = BoardsDetailSerializer(board)
             return Response(
                 data=serializer.data,
-                status=status.HTTP_205_RESET_CONTENT,
-                headers={"successed": "Board is updated successfully."},
+                status=status.HTTP_200_OK,
+                headers={"successed": "Board has been updated successfully."},
             )
         else:
             return Response(
                 data=serializer.data,
                 status=status.HTTP_400_BAD_REQUEST,
-                headers={"failed": "Board update is failed."},
+                headers={"failed": "Board update has been failed."},
             )
     
     # 게시물 삭제하기
-    def delete(self, request, pk):
+    def delete(self, request, board_pk):
         # 데이터 가져오기
-        board = self.get_object(pk=pk)
+        board = self.get_object(board_pk)
         # 가져온 데이터에서 유저가 로그인한 경우가 아니라면..
         if not request.user.is_authenticated:  
             raise NotAuthenticated
@@ -138,7 +138,7 @@ class BoardsDetail(APIView):
 
 class Comments(APIView):
 
-    """ 모든 댓글 리스트를 보여주고 댓글을 생성하는 클래스 """
+    """ 댓글 보여주고 생성하는 클래스 """
 
     permission_classes = [IsAuthenticatedOrReadOnly]
     
@@ -154,32 +154,8 @@ class Comments(APIView):
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK,
-            headers={"successed": "Comment is imported successfully."}
+            headers={"successed": "Comment has been imported successfully."}
         )
-
-    # 댓글 생성하기
-    def post(self, request):
-        # 로그인 여부 확인
-        if not request.user.is_authenticated:
-            raise NotAuthenticated
-        else:
-            # 로그인된 유저라면 받은 데이터 직렬화
-            serializer = CommentsSerializer(data=request.data)
-            # 가져온 데이터 타당성 검증
-            if serializer.is_valid():
-                comment = serializer.save(writer=request.user)  # writer는 받은 데이터의 user로 해서 댓글 생성
-                serializer = CommentsSerializer(comment)
-                return Response(
-                    data=serializer.data,
-                    status=status.HTTP_201_CREATED,
-                    headers={"successed": "Comment is created successfully."},
-                )
-            else:
-                return Response(
-                    data=serializer.data,
-                    status=status.HTTP_400_BAD_REQUEST,
-                    headers={"failed": "Comment creation is failed."}
-                )
 
 
 class CommentsDetail(APIView):
@@ -188,28 +164,28 @@ class CommentsDetail(APIView):
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_object(self, pk):
+    def get_object(self, comment_pk):
         try:
-            return Comment.objects.get(pk=pk)
+            return Comment.objects.get(pk=comment_pk)
         except Comment.DoesNotExist:
             raise NotFound
 
     # 댓글 가져오기
-    def get(self, request, pk):
+    def get(self, request, board_pk, comment_pk):
         # 데이터 가져오기
-        comment = self.get_object(pk=pk)
+        comment = self.get_object(comment_pk)
         # 가져온 데이터 직렬화
         serializer = CommentsSerializer(comment)
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK,
-            headers={"successed": "Comment detail is imported successfully."}
+            headers={"successed": "Comment detail has been imported successfully."}
         )
 
     # 댓글 수정하기
-    def put(self, request, pk):
+    def put(self, request, board_pk, comment_pk):
         # 데이터 가져오기
-        comment = self.get_object(pk=pk)
+        comment = self.get_object(comment_pk)
         # 사용자 로그인 여부 확인
         if not request.user.is_authenticated:
             raise NotAuthenticated
@@ -228,20 +204,20 @@ class CommentsDetail(APIView):
             serializer = CommentsSerializer(comment)
             return Response(
                 data=serializer.data,
-                status=status.HTTP_205_RESET_CONTENT,
-                headers={"successed": "Comment is updated successfully."},
+                status=status.HTTP_200_OK,
+                headers={"successed": "Comment has been updated successfully."},
             )
         else:
             return Response(
                 data=serializer.data,
                 status=status.HTTP_400_BAD_REQUEST,
-                headers={"failed": "Comment update is failed."}
+                headers={"failed": "Comment update has been failed."}
             )
 
     # 댓글 삭제하기
-    def delete(self, request, pk):
+    def delete(self, request, board_pk, comment_pk):
         # 데이터 가져오기
-        comment = self.get_object(pk=pk)
+        comment = self.get_object(comment_pk)
         # 로그인 여부 확인
         if not request.user.is_authenticated:  
             raise NotAuthenticated
@@ -252,5 +228,69 @@ class CommentsDetail(APIView):
         comment.delete()  
         return Response(
             status=status.HTTP_204_NO_CONTENT,
-            headers={"successed": "Comment is deleted successfully."}
+            headers={"successed": "Comment has been deleted successfully."}
+        )
+
+
+class CommentsCreation(APIView):
+
+    """ 게시글에 댓글을 작성하는 클래스 """
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, board_pk):
+        try:
+            return Posting.objects.get(pk=board_pk)
+        except Posting.DoesNotExist:
+            return None
+
+    # 게시판 가져오기
+    def get(self, request, board_pk):
+        posting = self.get_object(board_pk)
+        # print(posting)
+        # 게시글 존재 여부 확인
+        if posting is None:
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+                headers={"failed": "Posting does not exist."},
+            )
+        # 게시글에 존재하는 모든 댓글 가져오기
+        all_comment = Comment.objects.filter(posting=posting)  # comments = posting.comment_set.all() 
+        # print(all_comment)
+        # 가져온 댓글 직렬화
+        serializer = CommentsSerializer(all_comment, many=True)
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+            headers={"successed": "Posting-Comment has been imported successfully."},
+            )
+
+    # 댓글 작성하기
+    def post(self, request, board_pk):
+        # 사용자 로그인 여부 확인
+        if not request.user.is_authenticated:
+            raise NotAuthenticated
+        # 게시글 존재 여부 확인
+        posting = self.get_object(board_pk)
+        if posting is None:
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+                headers={"failed": "Posting does not exist."},
+            )
+        # 가져온 데이터 직렬화
+        serializer = CommentsSerializer(data=request.data)
+        # 데이터 유효성 검증
+        if serializer.is_valid():
+            comment = serializer.save(posting=posting, writer=request.user)  # 댓글을 저장 + 게시글 연결 + 댓글 작성자 연결
+            # print(comment)
+            serializer = CommentsSerializer(comment)
+            return Response(
+                data=serializer.data, 
+                status=status.HTTP_201_CREATED,
+                headers={"successed": "Comment creation has been successfully."},
+            )
+        return Response(
+            data=serializer.errors, 
+            status=status.HTTP_400_BAD_REQUEST,
+            headers={"failed": "Comment creation has been failed."}
         )

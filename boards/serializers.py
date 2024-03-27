@@ -4,16 +4,6 @@ from .models import Posting, Comment
 from users.serializers import PublicUserSerializer
 
 
-class CommentsSerializer(ModelSerializer):
-
-    """ 댓글을 위한 직렬화 클래스 """
-
-    class Meta:
-        model = Comment
-        fields = "__all__"
-        read_only_fields = ("Posting",)  # 읽기 전용(반드시 tuple로 해야 에러 발생 안함)
-
-
 class BoardsSerializer(ModelSerializer):
 
     """ 게시판(게시글 리스트)을 보여주기 위한 직렬화 클래스 """
@@ -51,3 +41,18 @@ class BoardsDetailSerializer(ModelSerializer):
     def create(self, validated_data):
         # print(validated_data)
         return Posting.objects.create(**validated_data)  # writer를 포함한 모든 validated_data를 가지고 방을 생성해준다.
+
+
+class CommentsSerializer(ModelSerializer):
+
+    """ 댓글을 위한 직렬화 클래스 """
+    writer = PublicUserSerializer(read_only=True)
+    posting = BoardsSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = "__all__"
+        read_only_fields = ("Posting",)  # 읽기 전용(반드시 tuple로 해야 에러 발생 안함)
+
+    def create(self, validated_data):
+        return Comment.objects.create(**validated_data)
