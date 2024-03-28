@@ -1,7 +1,7 @@
 from django.db import models
 from common.models import CommonModel
 
-# Create your models here.
+
 class Posting(CommonModel):
 
     """ 게시물에 사용할 데이터를 정의하는 클래스 """
@@ -18,15 +18,15 @@ class Posting(CommonModel):
     posting_category = models.CharField(
         max_length=20,
         choices=PostingCategoryChoices.choices,
-        verbose_name = "Posting Category",
+        verbose_name="Posting Category",
     )
 
     # 작성자
     writer = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
-        related_name="postings",
-        verbose_name = "Writer",
+        related_name="posting_writer",
+        verbose_name="Writer",
     )
 
     # 제목
@@ -34,13 +34,13 @@ class Posting(CommonModel):
         max_length=100,
         blank=False,
         null=False,
-        verbose_name = "Title",
+        verbose_name="Title",
     )
 
     # 비공개여부
     disclosure_status = models.BooleanField(
         default=True, 
-        verbose_name = "Disclosure Status",
+        verbose_name="Disclosure Status",
     )
 
     # 내용
@@ -48,7 +48,7 @@ class Posting(CommonModel):
         max_length=500,
         blank=False,
         null=False,
-        verbose_name = "Content",
+        verbose_name="Content",
     )
 
     """ 
@@ -59,7 +59,7 @@ class Posting(CommonModel):
     # 첨부파일
     attachment = models.URLField(
         blank=True,
-        verbose_name = "Attachment",
+        verbose_name="Attachment",
     )
 
     # 조회수
@@ -67,7 +67,7 @@ class Posting(CommonModel):
         default=0,
         blank=False,
         null=False,
-        verbose_name = "Hits",
+        verbose_name="Hits",
     )
 
     def __str__(self) -> str:
@@ -84,14 +84,16 @@ class Comment(CommonModel):
     posting = models.ForeignKey(
         "boards.Posting",
         on_delete=models.CASCADE,
-        verbose_name = "Posting",
+        related_name="comment_posting",
+        verbose_name="Posting",
     )
 
     # 작성자
     writer = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
-        verbose_name = "Writer",
+        related_name="comment_writer",
+        verbose_name="Writer",
     )
 
     # 댓글
@@ -99,16 +101,17 @@ class Comment(CommonModel):
         max_length=200,
         blank=False,
         null=False,
-        verbose_name = "Comment",
+        verbose_name="Comment",
     )
 
     # 추천
-    thumb_up_status = models.PositiveIntegerField(
-        default=0,
-        blank=False,
-        null=False,
-        verbose_name = "Thumb-Up Status",
+    thumb_up = models.ManyToManyField(
+        "users.User",
+        blank=True,
+        related_name="comment_thumb_up",
+        verbose_name="Thumb-Up",
     )
 
     def __str__(self) -> str:
         return self.comment
+    

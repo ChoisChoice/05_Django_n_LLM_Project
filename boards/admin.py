@@ -50,7 +50,6 @@ class CommmetAdmin(admin.ModelAdmin):
         "posting",
         "writer",
         "comment",
-        "thumb_up_status",
         "created_at",
         "updated_at",
     )
@@ -58,7 +57,6 @@ class CommmetAdmin(admin.ModelAdmin):
     list_filter = (
         "posting",
         "writer",
-        "thumb_up_status",
     )
 
     search_fields = (

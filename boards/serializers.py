@@ -8,6 +8,8 @@ class BoardsSerializer(ModelSerializer):
 
     """ 게시판(게시글 리스트)을 보여주기 위한 직렬화 클래스 """
 
+    comment_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Posting
         fields = (
@@ -15,17 +17,18 @@ class BoardsSerializer(ModelSerializer):
             "posting_category",
             "writer",
             "title",
+            "disclosure_status",
             "created_at",
-            "updated_at",
+            "comment_count",
         )
 
     # 조회수 개수
-    def get_hits_count(self):
+    def get_hits(self):
         pass
     
     # 댓글 개수
-    def get_comment_count(self):
-        pass
+    def get_comment_count(self, posting):
+        return posting.comment_posting.count()
     
 
 class BoardsDetailSerializer(ModelSerializer):
@@ -46,6 +49,7 @@ class BoardsDetailSerializer(ModelSerializer):
 class CommentsSerializer(ModelSerializer):
 
     """ 댓글을 위한 직렬화 클래스 """
+
     writer = PublicUserSerializer(read_only=True)
     posting = BoardsSerializer(read_only=True)
 
@@ -56,3 +60,5 @@ class CommentsSerializer(ModelSerializer):
 
     def create(self, validated_data):
         return Comment.objects.create(**validated_data)
+    
+

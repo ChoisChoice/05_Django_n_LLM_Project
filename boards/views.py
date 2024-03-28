@@ -255,7 +255,7 @@ class CommentsCreation(APIView):
                 headers={"failed": "Posting does not exist."},
             )
         # 게시글에 존재하는 모든 댓글 가져오기
-        all_comment = Comment.objects.filter(posting=posting)  # comments = posting.comment_set.all() 
+        all_comment = Comment.objects.filter(posting=posting)
         # print(all_comment)
         # 가져온 댓글 직렬화
         serializer = CommentsSerializer(all_comment, many=True)
@@ -294,3 +294,9 @@ class CommentsCreation(APIView):
             status=status.HTTP_400_BAD_REQUEST,
             headers={"failed": "Comment creation has been failed."}
         )
+
+class ThumbUp(APIView):
+
+    """ 댓글 추천 기능 클래스 """
+    
+    pass
