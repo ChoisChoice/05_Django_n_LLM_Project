@@ -62,3 +62,17 @@ class CommentsSerializer(ModelSerializer):
         return Comment.objects.create(**validated_data)
     
 
+class CommentsThumbUpSerializer(ModelSerializer):
+
+    """ 댓글을 추천하기 위한 직렬화 클래스 """
+
+    thumb_up_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Comment
+        fields = ("thumb_up", "thumb_up_count",)
+        read_only_fields = ("thumb_up", "thumb_up_count",)  # 읽기 전용
+
+    def get_thumb_up_count(self, comment):
+        # print(comment)
+        return comment.thumb_up.count()

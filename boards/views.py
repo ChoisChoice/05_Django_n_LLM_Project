@@ -6,7 +6,7 @@ from rest_framework.exceptions import NotFound, NotAuthenticated, PermissionDeni
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Posting, Comment
-from .serializers import BoardsSerializer, BoardsDetailSerializer, CommentsSerializer
+from .serializers import BoardsSerializer, BoardsDetailSerializer, CommentsSerializer, CommentsThumbUpSerializer
 
 
 class Boards(APIView):
@@ -242,18 +242,12 @@ class CommentsCreation(APIView):
         try:
             return Posting.objects.get(pk=board_pk)
         except Posting.DoesNotExist:
-            return None
+            raise NotFound
 
     # 게시판 가져오기
     def get(self, request, board_pk):
         posting = self.get_object(board_pk)
         # print(posting)
-        # 게시글 존재 여부 확인
-        if posting is None:
-            return Response(
-                status=status.HTTP_404_NOT_FOUND,
-                headers={"failed": "Posting does not exist."},
-            )
         # 게시글에 존재하는 모든 댓글 가져오기
         all_comment = Comment.objects.filter(posting=posting)
         # print(all_comment)
@@ -272,11 +266,6 @@ class CommentsCreation(APIView):
             raise NotAuthenticated
         # 게시글 존재 여부 확인
         posting = self.get_object(board_pk)
-        if posting is None:
-            return Response(
-                status=status.HTTP_404_NOT_FOUND,
-                headers={"failed": "Posting does not exist."},
-            )
         # 가져온 데이터 직렬화
         serializer = CommentsSerializer(data=request.data)
         # 데이터 유효성 검증
@@ -298,5 +287,44 @@ class CommentsCreation(APIView):
 class ThumbUp(APIView):
 
     """ 댓글 추천 기능 클래스 """
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, comment_pk):
+        try:
+            return Comment.objects.get(pk=comment_pk)
+        except Comment.DoesNotExist:
+            raise NotFound
+        
+    # 댓글 가져오기
+    def get(self, request, board_pk, comment_pk):
+        comment = self.get_object(comment_pk)
+        serializer = CommentsThumbUpSerializer(comment)
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+            headers={"successed": "Comment has been imported successfully."},
+        )
     
-    pass
+    # 추천하기
+    def post(self, request, board_pk, comment_pk):
+        # 해당 댓글 가져오기
+        comment = self.get_object(comment_pk)
+        # 사용자가 이미 추천한 댓글인지 확인 - 중복 방지
+        user = request.user
+        if user in comment.thumb_up.all():
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                headers={"failed": "You have already thumbed up this comment."}
+            )
+        # 댓글 추천 - 사용자를 추가함
+        comment.thumb_up.add(user)
+        # 댓글 저장
+        comment.save()
+        # Serializer를 사용하여 응답 생성
+        serializer = CommentsThumbUpSerializer(comment)
+        return Response(
+            data=serializer.data, 
+            status=status.HTTP_200_OK,
+            headers={"successed": "Thumb-up has been applied successfully."},
+        )
