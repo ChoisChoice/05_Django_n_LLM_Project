@@ -57,8 +57,7 @@ class Posting(CommonModel):
     """
 
     # 첨부파일
-    attachment = models.URLField(
-        blank=True,
+    attachment = models.FileField(
         verbose_name="Attachment",
     )
 

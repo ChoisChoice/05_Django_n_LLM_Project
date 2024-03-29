@@ -136,6 +136,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -145,6 +146,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Auth 설정
 AUTH_USER_MODEL = "users.User"
 PAGE_SIZE = 3
+# MEDIA_URL = "uploads/"
+# MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
 
 # REST Framework 설정
 REST_FRAMEWORK = {
@@ -154,3 +157,17 @@ REST_FRAMEWORK = {
         "config.authentication.JWTAuthentication",
     ],
 }
+
+# AWS
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_REGION = "ap-northeast-2"
+
+# S3 Storage
+AWS_STORAGE_BUCKET_NAME = "django-llm-project-bucket"
+AWS_S3_CUSTOM_DOMAIN = "%s.s3.%s.amazonaws.com" % (AWS_STORAGE_BUCKET_NAME, AWS_REGION)
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",
+}
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
