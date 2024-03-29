@@ -23,6 +23,7 @@ class Boards(APIView):
         serializer = BoardsSerializer(
             all_postings,
             many=True,  # 여러개의 데이터 직렬화
+            context={"request": request},
         )
         return Response(
             data=serializer.data,
@@ -70,7 +71,7 @@ class BoardsDetail(APIView):
 
     def get_object(self, board_pk):
         try:
-            return Posting.objects.get(pk=board_pk)
+            return Posting.objects.get(pk=board_pk) 
         except Posting.DoesNotExist:
             raise NotFound
 
@@ -78,13 +79,23 @@ class BoardsDetail(APIView):
     def get(self, request, board_pk):
         # 데이터 가져오기
         board = self.get_object(board_pk)
-        # 가져온 데이터 직렬화
-        serializer = BoardsDetailSerializer(board)
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_200_OK,
-            headers={"successed": "Board detail is imported successfully."},
-        )
+        # 비로그인 상태일 경우 확인
+        if not request.user.is_authenticated:
+            raise NotAuthenticated
+        # 비공개 상태 + 요청한 사용자가 게시글의 저자가 아닌 경우 확인
+        if (board.disclosure_status) & (request.user != board.writer):
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                headers={"failed": "This Posting has been set to private!"}
+            )
+        else:
+            # 가져온 데이터 직렬화
+            serializer = BoardsDetailSerializer(board)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK,
+                headers={"successed": "Board detail is imported successfully."},
+            )
 
     # 게시물 수정하기
     def put(self, request, board_pk):
