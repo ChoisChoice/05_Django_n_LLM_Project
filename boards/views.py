@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,6 +8,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Posting, Comment
 from .serializers import BoardsSerializer, BoardsDetailSerializer, CommentsSerializer, CommentsThumbUpSerializer
+from common.views import pagination
 
 
 class Boards(APIView):
@@ -17,11 +19,13 @@ class Boards(APIView):
 
     # 게시판 가져오기
     def get(self, request):
+        # 페이지네이션 구현
+        start, end = pagination(request)
         # 데이터 가져오기
         all_postings = Posting.objects.all()
         # 가져온 데이터 직렬화
         serializer = BoardsSerializer(
-            all_postings,
+            all_postings[start:end],  # 페이지네이션 적용
             many=True,  # 여러개의 데이터 직렬화
             context={"request": request},
         )
@@ -257,13 +261,19 @@ class CommentsCreation(APIView):
 
     # 게시판 가져오기
     def get(self, request, board_pk):
+        # 페이지네이션 구현
+        start, end = pagination(request)
+        # 데이터 가져오기
         posting = self.get_object(board_pk)
         # print(posting)
         # 게시글에 존재하는 모든 댓글 가져오기
         all_comment = Comment.objects.filter(posting=posting)
         # print(all_comment)
         # 가져온 댓글 직렬화
-        serializer = CommentsSerializer(all_comment, many=True)
+        serializer = CommentsSerializer(
+            all_comment[start:end],  # 페이지네이션 적용
+            many=True,
+        )
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK,
@@ -294,6 +304,7 @@ class CommentsCreation(APIView):
             status=status.HTTP_400_BAD_REQUEST,
             headers={"failed": "Comment creation has been failed."}
         )
+
 
 class ThumbUp(APIView):
 

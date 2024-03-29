@@ -144,6 +144,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Auth 설정
 AUTH_USER_MODEL = "users.User"
+PAGE_SIZE = 3
 
 # REST Framework 설정
 REST_FRAMEWORK = {
@@ -152,6 +153,4 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
         "config.authentication.JWTAuthentication",
     ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 5,
 }
