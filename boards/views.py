@@ -86,8 +86,8 @@ class BoardsDetail(APIView):
         # 비로그인 상태일 경우 확인
         if not request.user.is_authenticated:
             raise NotAuthenticated
-        # 비공개 상태 + 요청한 사용자가 게시글의 저자가 아닌 경우 확인
-        if (board.disclosure_status) & (request.user != board.writer):
+        # 비공개 상태 + 게시글의 저자 본인 여부 + 관라자 여부 확인
+        if (board.disclosure_status) & (request.user != board.writer) & (request.user.is_staff == False):
             return Response(
                 status=status.HTTP_401_UNAUTHORIZED,
                 headers={"failed": "This Posting has been set to private!"}
@@ -95,6 +95,9 @@ class BoardsDetail(APIView):
         else:
             # 가져온 데이터 직렬화
             serializer = BoardsDetailSerializer(board)
+            # 조회수
+            board.hits += 1
+            board.save()
             return Response(
                 data=serializer.data,
                 status=status.HTTP_200_OK,

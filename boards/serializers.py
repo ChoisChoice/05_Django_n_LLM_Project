@@ -20,15 +20,13 @@ class BoardsSerializer(ModelSerializer):
             "disclosure_status",
             "created_at",
             "comment_count",
+            "hits"
         )
 
-    # 조회수 개수
-    def get_hits(self):
-        pass
     
     # 댓글 개수
-    def get_comment_count(self, posting):
-        return posting.comment_posting.count()
+    def get_comment_count(self, obj):
+        return obj.comment_posting.count()
     
 
 class BoardsDetailSerializer(ModelSerializer):
@@ -73,6 +71,6 @@ class CommentsThumbUpSerializer(ModelSerializer):
         fields = ("thumb_up", "thumb_up_count",)
         read_only_fields = ("thumb_up", "thumb_up_count",)  # 읽기 전용
 
-    def get_thumb_up_count(self, comment):
-        # print(comment)
-        return comment.thumb_up.count()
+    def get_thumb_up_count(self, obj):
+        # print(obj)
+        return obj.thumb_up.count()

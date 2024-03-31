@@ -38,7 +38,8 @@ ALLOWED_HOSTS = []
 # Application definition
 THIRD_PARTY_APPS = [
     "rest_framework",
-    'rest_framework.authtoken',
+    "rest_framework.authtoken",
+    "hitcount",
 ]
 
 CUSTOM_APPS = [
@@ -170,4 +171,3 @@ AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
 }
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
