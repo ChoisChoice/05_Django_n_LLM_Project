@@ -1,10 +1,10 @@
-import jwt
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import authenticate, login, logout
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from django.contrib.auth import authenticate
 from django.conf import settings
 from . import serializers
 from users.models import User
@@ -25,11 +25,20 @@ class SignUp(APIView):
             user.set_password(password)  # 사용자 비밀번호 설정
             user.save()  # 설정한 비밀번호와 함께 사용자 정보 저장
             serializer = serializers.PrivateUserSerializer(user)
-            return Response(
+            # 토큰 발급
+            token = TokenObtainPairSerializer.get_token(user)
+            access_token = str(token.access_token)
+            refresh_token = str(token)
+            # print(access_token, refresh_token)
+            response = Response(
                 data=serializer.data, 
                 status=status.HTTP_200_OK, 
-                headers={"successed":"Sign-up has been successful."},
+                headers={"successed": "Sign-up has been successful"},
             )
+            # 토큰 쿠키에 저장
+            response.set_cookie("access", access_token, httponly=True)
+            response.set_cookie("refresh", refresh_token, httponly=True)
+            return response
         else:
             return Response(
                 data=serializer.errors, 
@@ -51,12 +60,20 @@ class SignIn(APIView):
             username=username,
             password=password,
         )  # 입력받은 사용자 id / password로 인증 시도
-        if user:  # 사용자가 맞다면...
-            login(request, user)  # 로그인 처리
-            return Response(
+        if user:  # 사용자 확인
+            # 토큰 발급
+            token = TokenObtainPairSerializer.get_token(user)
+            access_token = str(token.access_token)
+            refresh_token = str(token)
+            # print(access_token, refresh_token)
+            response = Response(
                 status=status.HTTP_200_OK, 
                 headers={"successed":"Log-in has been successful."},
             )
+            # 토큰 쿠키에 저장
+            response.set_cookie("access", access_token, httponly=True)
+            response.set_cookie("refresh", refresh_token, httponly=True)
+            return response
         else:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST, 
@@ -67,44 +84,15 @@ class SignOut(APIView):
 
     """ 로그아웃하는 클래스 """
 
-    permission_classes = [IsAuthenticated]  # 인증된 사용자(로그인한 사용자)만 로그아웃할 수 있도록 권한을 설정
-
     def post(self, request):
-        logout(request)  # 로그아웃
-        return Response(
+        response = Response(
             status=status.HTTP_200_OK, 
             headers={"successed":"Log-out has been successful."},
         )
-
-class JWTSignIn(APIView):
-
-    """ 로그인할 때, JWT 암호화하는 클래스 """
-
-    def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
-        if not username or not password:
-            raise ParseError
-        user = authenticate(
-            request, 
-            username=username,
-            password=password,
-        )
-        if user:  # 토큰에 서명(토큰에 정보를 담는다)
-            token = jwt.encode(
-                {"pk": user.pk},  # 민감한 정보를 넣으면 안됨 
-                settings.SECRET_KEY,
-                algorithm="HS256",
-                )  
-            return Response(
-                status=status.HTTP_200_OK, 
-                headers={"token": token},
-                )
-        else:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST, 
-                headers={"failed":"Log-in has been failed."},
-                )
+        # 토큰(쿠키) 삭제
+        response.delete_cookie("access")
+        response.delete_cookie("refresh")
+        return response
 
 class ShowProfile(APIView):
 
