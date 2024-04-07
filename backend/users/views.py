@@ -3,13 +3,21 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import ParseError, NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny 
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.conf import settings
 from . import serializers
 from users.models import User
 from common.views import validate_password
 
+
+class MyObtainTokenPairView(TokenObtainPairView):
+
+    """ 토큰을 얻는 클래스 """
+    permission_classes = (AllowAny,)
+    serializer_class = serializers.MyTokenObtainPairSerializer
 
 class SignUp(APIView):
 
@@ -45,7 +53,7 @@ class SignUp(APIView):
             return Response(
                 data=serializer.errors, 
                 status=status.HTTP_400_BAD_REQUEST, 
-                headers={"failed":"Sign-up failed."},
+                headers={"failed": "Sign-up failed."},
             )
         
 class SignIn(APIView):
@@ -69,10 +77,15 @@ class SignIn(APIView):
             token = TokenObtainPairSerializer.get_token(user)
             access_token = str(token.access_token)
             refresh_token = str(token)
-            # print(access_token, refresh_token)
             response = Response(
+                {
+                    "token": {
+                        "access": access_token,
+                        "refresh": refresh_token,
+                    },
+                },
                 status=status.HTTP_200_OK, 
-                headers={"successed":"Log-in has been successful."},
+                headers={"successed": "Log-in has been successful."},
             )
             # 토큰 쿠키에 저장
             response.set_cookie("access", access_token, httponly=True)
@@ -81,7 +94,7 @@ class SignIn(APIView):
         else:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST, 
-                headers={"failed":"Log-in failed."},
+                headers={"failed": "Log-in failed."},
             )
 
 class SignOut(APIView):
@@ -91,14 +104,23 @@ class SignOut(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        response = Response(
-            status=status.HTTP_200_OK, 
-            headers={"successed":"Log-out has been successful."},
-        )
-        # 토큰(쿠키) 삭제
-        response.delete_cookie("access")
-        response.delete_cookie("refresh")
-        return response
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            response = Response(
+                status=status.HTTP_200_OK, 
+                headers={"successed": "Log-out has been successful."},
+            )
+            # 토큰(쿠키) 삭제
+            response.delete_cookie("access")
+            response.delete_cookie("refresh")
+            return response
+        except Exception as e:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST, 
+                headers={"successed": "Log-out has been trouble."},
+            )
 
 class ShowProfile(APIView):
 
@@ -167,6 +189,15 @@ class UpdatePassword(APIView):
         new_password = request.data.get("new_password")
         if not old_password or not new_password:  # 비밀번호 입력 받지 못할 경우..
             raise ParseError
+        # 비밀번호 유효성 검사
+        try:
+            validate_password(new_password)
+        except ValidationError as e:
+            return Response(
+                data={"password": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+                headers={"failed": "Sign-up failed."},
+            )
         if user.check_password(old_password):  # 옛날 비밀번호가 맞다면..
             user.set_password(new_password)
             user.save()
