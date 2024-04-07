@@ -1,44 +1,46 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.exceptions import ParseError, NotFound
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ParseError, NotFound, ValidationError
+from rest_framework.permissions import IsAuthenticated, AllowAny 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from django.contrib.auth import authenticate
 from django.conf import settings
 from . import serializers
 from users.models import User
+from common.views import validate_password
 
 
 class SignUp(APIView):
 
     """ 회원가입하는 클래스 """
 
+    permission_classes = [AllowAny]
+
     def post(self, request):
         password = request.data.get("password")  # 사용자로부터 비밀번호를 입력받음
         if not password:
             raise ParseError
-        """ 비밀번호 길이 및 요구사항을 validate하는 코드 삽입 """
+        # 비밀번호 유효성 검증
+        try:
+            validate_password(password)
+        except ValidationError as e:
+            return Response(
+                data={"password": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+                headers={"failed": "Sign-up failed."},
+            )
         serializer = serializers.PrivateUserSerializer(data=request.data)  # 사용자로부터 입력받은 정보 기반 직렬화
         if serializer.is_valid():
             user = serializer.save()  # 사용자 정보 저장
             user.set_password(password)  # 사용자 비밀번호 설정
             user.save()  # 설정한 비밀번호와 함께 사용자 정보 저장
             serializer = serializers.PrivateUserSerializer(user)
-            # 토큰 발급
-            token = TokenObtainPairSerializer.get_token(user)
-            access_token = str(token.access_token)
-            refresh_token = str(token)
-            # print(access_token, refresh_token)
-            response = Response(
+            return Response(
                 data=serializer.data, 
                 status=status.HTTP_200_OK, 
                 headers={"successed": "Sign-up has been successful"},
             )
-            # 토큰 쿠키에 저장
-            response.set_cookie("access", access_token, httponly=True)
-            response.set_cookie("refresh", refresh_token, httponly=True)
-            return response
         else:
             return Response(
                 data=serializer.errors, 
@@ -49,6 +51,8 @@ class SignUp(APIView):
 class SignIn(APIView):
 
     """ 로그인하는 클래스 """
+
+    permission_classes = [AllowAny]
     
     def post(self, request):
         username = request.data.get("username")  # 사용자 id
@@ -84,6 +88,8 @@ class SignOut(APIView):
 
     """ 로그아웃하는 클래스 """
 
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         response = Response(
             status=status.HTTP_200_OK, 
@@ -97,6 +103,8 @@ class SignOut(APIView):
 class ShowProfile(APIView):
 
     """ 사용자 프로필을 보여주는 클래스 """
+
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, username):  # '@username'로 사용자 프로필에 접속하기에 username을 매개변수로 받음
         try:

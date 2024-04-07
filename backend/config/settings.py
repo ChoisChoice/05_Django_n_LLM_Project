@@ -157,10 +157,10 @@ REST_FRAMEWORK = {
 
 # Simple JWT
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # access token
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # refresh token
+    "ROTATE_REFRESH_TOKENS": True,  # 새로운 access/refresh token 갱신 여부
+    "BLACKLIST_AFTER_ROTATION": True,  # 기존 refresh token의 블랙리스트 여부
     "UPDATE_LAST_LOGIN": False,
 
     "ALGORITHM": "HS256",
@@ -172,7 +172,7 @@ SIMPLE_JWT = {
     "JWK_URL": None,
     "LEEWAY": 0,
 
-    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_TYPES": ("JWT",),  # default: ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
