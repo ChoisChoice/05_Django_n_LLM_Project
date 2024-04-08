@@ -4,7 +4,7 @@ from users.models import User
 from common.tests import TestUserVariable
 
 
-class TestSignIn(TestUserVariable, APITestCase):
+class TestSignIn(APITestCase):
 
     """ SignIn 테스트 클래스 """
 
@@ -20,23 +20,23 @@ class TestSignIn(TestUserVariable, APITestCase):
     def setUp(self):
         # 올바른 유저 정보
         self.right_user_data = {
-            "username":self.RIGHT_USERNAME,
-            "password":self.RIGHT_PASSWORD,
+            "username": self.RIGHT_USERNAME,
+            "password": self.RIGHT_PASSWORD,
         }
         # 잘못된 username 데이터
         self.wrong_username_data = {
-            "username":self.WRONG_USERNAME,
-            "password":self.RIGHT_PASSWORD,
+            "username": self.WRONG_USERNAME,
+            "password": self.RIGHT_PASSWORD,
         }
         # 잘못된 password 데이터
         self.wrong_password_data = {
-            "username":self.RIGHT_USERNAME,
-            "password":self.WRONG_PASSWORD,
+            "username": self.RIGHT_USERNAME,
+            "password": self.WRONG_PASSWORD,
         }
         # 존재하지 않은 유저 데이터
         self.anonymous_data = {
-            "username":self.WRONG_USERNAME,
-            "password":self.WRONG_PASSWORD,
+            "username": self.WRONG_USERNAME,
+            "password": self.WRONG_PASSWORD,
         }
         # 사용자 생성
         User.objects.create_user(**self.right_user_data)  
@@ -48,10 +48,10 @@ class TestSignIn(TestUserVariable, APITestCase):
             data=self.right_user_data,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue('access' in response.data['token'])  # 토큰 여부
-        self.assertTrue('refresh' in response.data['token'])
-        self.assertIn('access', response.cookies)  # 쿠키값 확인
-        self.assertIn('refresh', response.cookies)
+        self.assertTrue("access" in response.data["token"])  # 토큰 여부
+        self.assertTrue("refresh" in response.data["token"])
+        self.assertIn("access", response.cookies)  # 쿠키값 확인
+        self.assertIn("refresh", response.cookies)
 
     # id / password 중 잘못된 정보로 로그인 할 경우 테스트
     def test_incorrect_sign_in(self):

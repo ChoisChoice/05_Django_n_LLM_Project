@@ -3,14 +3,12 @@ from rest_framework.test import APITestCase
 from users.models import User
 from common.tests import TestUserVariable
 
+
 class TestSignOut(TestUserVariable, APITestCase):
 
     """ SignOut 테스트 클래스 """
     
     # 변수 설정
-    tuv = TestUserVariable()
-    USERNAME=tuv.USERNAME
-    PASSWORD=tuv.PASSWORD
     SIGN_IN_URL = reverse("sign-in")
     SIGN_OUT_URL = reverse("sign-out")
 
@@ -18,8 +16,8 @@ class TestSignOut(TestUserVariable, APITestCase):
     def setUp(self):
         # 사용자 데이터
         self.user_data = {
-            "username":self.USERNAME,
-            "password":self.PASSWORD,
+            "username": self.USERNAME,
+            "password": self.PASSWORD,
         }
         # 사용자 생성
         User.objects.create_user(**self.user_data)
@@ -34,7 +32,7 @@ class TestSignOut(TestUserVariable, APITestCase):
             format="json",
         )
         self.assertEqual(response.status_code, 200)
-        return response.data['token']
+        return response.data["token"]
 
     # 로그아웃 성공한 경우 테스트
     def test_successful_sign_out(self):
@@ -72,8 +70,8 @@ class TestSignOut(TestUserVariable, APITestCase):
         # print(response.cookies)
         # print(type(response.cookies))
         cookies = response.cookies
-        self.assertEqual(cookies['access'].value, "")
-        self.assertEqual(cookies['refresh'].value, "")
+        self.assertEqual(cookies["access"].value, "")  # 쿠키가 삭제되었음 = 빈문자열("")
+        self.assertEqual(cookies["refresh"].value, "")
 
     @classmethod
     def tearDownClass(cls):

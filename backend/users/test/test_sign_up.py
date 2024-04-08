@@ -1,5 +1,5 @@
-from rest_framework.test import APITestCase
 from django.urls import reverse
+from rest_framework.test import APITestCase
 from users.models import User
 from common.tests import TestUserVariable
 
@@ -7,68 +7,67 @@ from common.tests import TestUserVariable
 class TestSignUP(TestUserVariable, APITestCase):
 
     """ SignUp 테스트 클래스 """
-    
-    # test 변수 생성
-    URL = "/api/v1/users/sign-up"
 
     # 사전 설정
     def setUp(self):
         # 올바른 사용자 데이터
         self.right_user_data = {
-            "username":self.USERNAME,
-            "password":self.PASSWORD,
-            "gender":self.GENDER,
-            "nationality":self.NATIONALITY,
-            "language":self.LANGUAGE,
+            "username": self.USERNAME,
+            "password": self.PASSWORD,
+            "gender": self.GENDER,
+            "nationality": self.NATIONALITY,
+            "language": self.LANGUAGE,
         }
-        
         # 잘못된 사용자 데이터
         self.wrong_user_data = {
-            "username":self.USERNAME,
-            "password":self.PASSWORD,
-            "gender":self.GENDER,
+            "username": self.USERNAME,
+            "password": self.PASSWORD,
+            "gender": self.GENDER,
         }
 
     # 회원가입 잘 안되는지 테스트
     def test_wrong_sign_up(self):
         response = self.client.post(
-            self.URL,
+            reverse("sign-up"),
             data=self.wrong_user_data,
         )
         self.assertEqual(response.status_code, 400)
 
     # 회원가입 잘 되는지 테스트
-    def test_sign_up(self):
+    def test_right_sign_up(self):
         response = self.client.post(
-            self.URL,
+            reverse("sign-up"),
             data=self.right_user_data,
         )
+        # print(response.data)
         self.assertEqual(response.status_code, 200)
 
     # 회원가입한 계정으로 로그인, 로그아웃 잘 되는지 테스트
     def test_sign_in_n_sign_out(self):
-        # 회원가입 체크
+        # 회원가입
         signup_response = self.client.post(
-            self.URL,
+            reverse("sign-up"),
             data=self.right_user_data,
         )
         self.assertEqual(signup_response.status_code, 200)
 
-        # 로그인 및 세션 체크
-        login_response = self.client.post(
-            reverse('sign-in'),
+        # 로그인
+        signin_response = self.client.post(
+            reverse("sign-in"),
             data=self.right_user_data,
         )
-        self.assertEqual(login_response.status_code, 200)
+        # print(signin_response.data["token"]["refresh"])
+        self.assertEqual(signin_response.status_code, 200)
+        self.assertTrue("access" in signin_response.data["token"])  # 토큰 여부
+        self.assertTrue("refresh" in signin_response.data["token"])
 
-        check_id_in_session = self.client.session.get('_auth_user_id')  # 세션에 사용자가 있는지 확인
-        # print(check_id_in_session)
-        self.assertTrue(check_id_in_session)
-
-        # 로그아웃 및 세션 체크
-        self.client.logout()
-        check_id_in_session = self.client.session.get('_auth_user_id')
-        self.assertFalse(check_id_in_session)
+        # 로그아웃
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {signin_response.data["token"]["access"]}')  # access token으로 authorization 설정
+        signout_response = self.client.post(
+            reverse("sign-out"),
+            data={"refresh": signin_response.data["token"]["refresh"]},
+        )
+        self.assertEqual(signout_response.status_code, 205)
 
     @classmethod
     def tearDownClass(cls):
