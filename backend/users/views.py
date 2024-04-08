@@ -3,8 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import ParseError, NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny 
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.conf import settings
@@ -13,17 +12,11 @@ from users.models import User
 from common.views import validate_password
 
 
-class MyObtainTokenPairView(TokenObtainPairView):
-
-    """ 토큰을 얻는 클래스 """
-    permission_classes = (AllowAny,)
-    serializer_class = serializers.MyTokenObtainPairSerializer
-
 class SignUp(APIView):
 
     """ 회원가입하는 클래스 """
 
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny,]
 
     def post(self, request):
         password = request.data.get("password")  # 사용자로부터 비밀번호를 입력받음
@@ -60,7 +53,7 @@ class SignIn(APIView):
 
     """ 로그인하는 클래스 """
 
-    permission_classes = [AllowAny]
+    permission_classes = [AllowAny,]
     
     def post(self, request):
         username = request.data.get("username")  # 사용자 id
@@ -75,6 +68,7 @@ class SignIn(APIView):
         if user:  # 사용자 확인
             # 토큰 발급
             token = TokenObtainPairSerializer.get_token(user)
+            # print(token)
             access_token = str(token.access_token)
             refresh_token = str(token)
             response = Response(
@@ -101,15 +95,15 @@ class SignOut(APIView):
 
     """ 로그아웃하는 클래스 """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,]
 
     def post(self, request):
         try:
-            refresh_token = request.data["refresh_token"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
+            refresh_token = RefreshToken(request.data["refresh"])
+            # print(refresh_token)
+            refresh_token.blacklist()  # 만료된 토큰을 블랙리스트에 추가
             response = Response(
-                status=status.HTTP_200_OK, 
+                status=status.HTTP_205_RESET_CONTENT, 
                 headers={"successed": "Log-out has been successful."},
             )
             # 토큰(쿠키) 삭제
@@ -126,7 +120,7 @@ class ShowProfile(APIView):
 
     """ 사용자 프로필을 보여주는 클래스 """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,]
 
     def get(self, request, username):  # '@username'로 사용자 프로필에 접속하기에 username을 매개변수로 받음
         try:
@@ -144,7 +138,7 @@ class UpdateProfile(APIView):
     
     """ 비밀번호를 제외한 내 정보를 수정할 수 있는 클래스 """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,]
 
     def get(self, request):
         user = request.user  
@@ -181,7 +175,7 @@ class UpdatePassword(APIView):
 
     """ 비밀번호를 변경하는 클래스 """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,]
 
     def put(self, request):
         user = request.user

@@ -3,7 +3,7 @@ class TestUserVariable:
     """ test db에 사용될 변수 클래스 """
 
     USERNAME = "UsernameTest"
-    PASSWORD = "1234"
+    PASSWORD = "TeSt1234!@"
     NAME = "Mr.Test"
     EMAIL = "test@test.com"
     ADDRESS = "P.O Box Test Area"
