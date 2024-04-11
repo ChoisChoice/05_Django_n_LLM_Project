@@ -50,7 +50,11 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               <Input variant={"filled"} placeholder="Password" />
             </InputGroup>
           </VStack>
-          <Button mt={4} colorScheme={"red"} w="100%">
+          <Button
+            mt={4}
+            style={{ backgroundColor: "#7ed957", color: "black" }}
+            w="100%"
+          >
             Sign in
           </Button>
           <SocialSignin />

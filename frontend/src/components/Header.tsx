@@ -1,10 +1,13 @@
-import ChoisChoiceLogo from "../assets/ChoisChoiceLogo.png";
-import { FaMoon } from "react-icons/fa";
+import ChoisChoiceLightLogo from "../assets/ChoisChoiceLightLogo.png";
+import ChoisChoiceDarkLogo from "../assets/ChoisChoiceDarkLogo.png";
+import { FaMoon, FaSun } from "react-icons/fa";
 import {
   Box,
   Button,
   HStack,
   IconButton,
+  useColorMode,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
@@ -12,16 +15,23 @@ import SigninModal from "./SigninModal";
 import SignUpModal from "./SignUpModal";
 
 export default function Header() {
+  // 로그인 관련 변수
   const {
     isOpen: isSigninOpen,
     onClose: onSigninClose,
     onOpen: onSigninOpen,
   } = useDisclosure();
+  // 회원가입 관련 변수
   const {
     isOpen: isSignUpOpen,
     onClose: onSignUpClose,
     onOpen: onSignUpOpen,
   } = useDisclosure();
+  // 홈페이지 로고 관련 변수
+  const isDarkMode = useColorModeValue(false, true);
+  // 다크모드 아이콘 관련 변수
+  const { toggleColorMode } = useColorMode();
+  const Icon = useColorModeValue(FaMoon, FaSun);
   return (
     <HStack
       justifyContent={"space-between"}
@@ -29,25 +39,26 @@ export default function Header() {
       px={7}
       borderBottomWidth={2}
     >
-      <Box color="red.500">
+      <Box>
         <Link to={"/"}>
           <img
-            src={ChoisChoiceLogo}
-            alt="Logo"
-            style={{ width: "120px", height: "120px" }}
+            src={isDarkMode ? ChoisChoiceDarkLogo : ChoisChoiceLightLogo}
+            alt="Homepage Logo"
+            style={{ width: "90px", height: "90px" }}
           />
         </Link>
       </Box>
       <HStack spacing={2}>
         <IconButton
+          onClick={toggleColorMode}
           variant={"ghost"}
           aria-label="Toggle dark mode"
-          icon={<FaMoon />}
+          icon={<Icon />} // onclick에 따라 다크모드 아이콘이 결정됨
         />
         <Button onClick={onSigninOpen}>Sign in</Button>
         <Button
           onClick={onSignUpOpen}
-          style={{ backgroundColor: "#70DB93", color: "black" }}
+          style={{ backgroundColor: "#7ed957", color: "black" }}
         >
           Sign up
         </Button>
