@@ -1,16 +1,8 @@
 import GithubLogo from "../assets/GithubLogo.png";
-import KaKaoLogo from "../assets/KaKaoLogo.png";
+import KakaoLogo from "../assets/KakaoLogo.png";
 import GoogleLogo from "../assets/GoogleLogo.png";
 import NaverLogo from "../assets/NaverLogo.png";
-import {
-  AbsoluteCenter,
-  Box,
-  Button,
-  Divider,
-  HStack,
-  Link,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Button, Divider, HStack, Link, Text } from "@chakra-ui/react";
 
 export default function SocialLogin() {
   return (
@@ -32,7 +24,7 @@ export default function SocialLogin() {
         </Button>
         <Button variant="unstyled">
           <img
-            src={KaKaoLogo}
+            src={KakaoLogo}
             style={{ width: "50px", height: "50px" }}
             alt="KaKao Logo"
           />
