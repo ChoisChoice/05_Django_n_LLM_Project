@@ -47,6 +47,7 @@ class BoardAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommmetAdmin(admin.ModelAdmin):
     list_display = (
+        "pk",
         "posting",
         "writer",
         "comment",

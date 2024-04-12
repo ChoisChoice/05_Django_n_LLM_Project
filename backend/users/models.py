@@ -61,6 +61,7 @@ class User(AbstractUser):
     gender = models.CharField(
         max_length=10,
         choices=GenderChoices.choices,
+        blank=True,
         verbose_name = "Gender",
     )
 
@@ -68,6 +69,7 @@ class User(AbstractUser):
     nationality = models.CharField(
         max_length=10,
         choices=NationalityChoices.choices,
+        blank=True,
         verbose_name = "Nationality",
     )
 
@@ -75,6 +77,7 @@ class User(AbstractUser):
     language = models.CharField(
         max_length=10,
         choices=LanguageChoices.choices,
+        blank=True,
         verbose_name = "Language",
     )
 

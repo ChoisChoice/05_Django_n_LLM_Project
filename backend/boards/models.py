@@ -51,14 +51,10 @@ class Posting(CommonModel):
         verbose_name="Content",
     )
 
-    """ 
-    [Lesson] blank=False: 폼에서 비워둘 수 없음
-    null=False: db에서 비워둘 수 없음
-    """
-
     # 첨부파일
     attachment = models.FileField(
         verbose_name="Attachment",
+        blank=True,
     )
 
     # 조회수

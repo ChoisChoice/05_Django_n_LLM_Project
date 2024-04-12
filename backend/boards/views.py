@@ -1,11 +1,9 @@
 from django.db import transaction
-from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import NotFound, NotAuthenticated, PermissionDenied
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
 from .models import Posting, Comment
 from .serializers import BoardsSerializer, BoardsDetailSerializer, CommentsSerializer, CommentsThumbUpSerializer
 from common.views import pagination
@@ -37,13 +35,13 @@ class Boards(APIView):
 
     # 게시물 생성하기
     def post(self, request):
-        # 로그인 여부
-        if request.user.is_authenticated:  # 로그인 True일 경우
+        # 로그인 여부 확인
+        if request.user.is_authenticated:
             # 직렬화
             serializer = BoardsDetailSerializer(data=request.data)  
             # 직렬화 데이터 유효성 검증
             if serializer.is_valid():  
-                board = serializer.save(writer=request.user)  # 유효하다면, 데이터 저장
+                board = serializer.save(writer=request.user)
                 serializer = BoardsDetailSerializer(board)
                 return Response(
                     data=serializer.data,
@@ -75,7 +73,7 @@ class BoardsDetail(APIView):
     def get(self, request, board_pk):
         # 데이터 가져오기
         board = self.get_object(board_pk)
-        # 비로그인 상태일 경우 확인
+        # 유저 로그인 여부 확인
         if not request.user.is_authenticated:
             raise NotAuthenticated
         # 비공개 상태 + 게시글의 저자 본인 여부 + 관라자 여부 확인
@@ -100,10 +98,10 @@ class BoardsDetail(APIView):
     def put(self, request, board_pk):
         # 데이터 가져오기
         board=self.get_object(board_pk)
-        # 가져온 데이터에 유저가 로그인하지 않았다면..
+        # 유저 로그인 여부 확인
         if not request.user.is_authenticated:
             raise NotAuthenticated
-        # 게시글의 저자와 가져온 데이터의 유저가 다르다면..
+        # 게시글의 저자와 유저 일치 여부 확인
         if board.writer != request.user:
             raise PermissionDenied
         # 가져온 데이터 직렬화
@@ -132,10 +130,10 @@ class BoardsDetail(APIView):
     def delete(self, request, board_pk):
         # 데이터 가져오기
         board = self.get_object(board_pk)
-        # 가져온 데이터에서 유저가 로그인한 경우가 아니라면..
+        # 유저 로그인 여부 확인
         if not request.user.is_authenticated:  
             raise NotAuthenticated
-        # 게시글의 저자와 가져온 데이터의 유저가 다르다면..
+        # 게시글의 저자와 유저 일치 여부 확인
         if board.writer != request.user:  
             raise PermissionDenied
         # 삭제
@@ -144,7 +142,6 @@ class BoardsDetail(APIView):
             status=status.HTTP_204_NO_CONTENT,
             headers={"successed": "Board is deleted successfully."}
         )
-    
 
 class Comments(APIView):
 
@@ -164,8 +161,7 @@ class Comments(APIView):
         start, end = pagination(request)
         # 데이터 가져오기
         posting = self.get_object(board_pk)
-        # print(posting)
-        # 비공개 상태 + 게시글의 저자 본인 여부 + 관라자 여부 확인
+        # 비공개 상태 + 게시글의 저자 본인 여부 + 관리자 여부 확인
         if (posting.disclosure_status) & (request.user != posting.writer) & (request.user.is_staff == False):
             return Response(
                 status=status.HTTP_401_UNAUTHORIZED,
@@ -173,7 +169,6 @@ class Comments(APIView):
             )
         # 게시글에 존재하는 모든 댓글 가져오기
         all_comment = Comment.objects.filter(posting=posting)
-        # print(all_comment)
         # 가져온 댓글 직렬화
         serializer = CommentsSerializer(
             all_comment[start:end],  # 페이지네이션 적용
@@ -192,13 +187,11 @@ class Comments(APIView):
             raise NotAuthenticated
         # 게시글 가져오기
         posting = self.get_object(board_pk)
-        print(posting)
         # 가져온 데이터 직렬화
         serializer = CommentsSerializer(data=request.data)
         # 데이터 유효성 검증
         if serializer.is_valid():
             comment = serializer.save(posting=posting, writer=request.user)  # 댓글을 저장 + 게시글 연결 + 댓글 작성자 연결
-            # print(comment)
             serializer = CommentsSerializer(comment)
             return Response(
                 data=serializer.data, 
@@ -231,11 +224,17 @@ class CommentsDetail(APIView):
 
     def get(self, request, board_pk, comment_pk):
         # 게시글 가져오기
-        board = self.get_board(board_pk)
+        posting = self.get_board(board_pk)
+        # 비공개 상태 + 게시글의 저자 본인 여부 + 관라자 여부 확인
+        if (posting.disclosure_status) & (request.user != posting.writer) & (request.user.is_staff == False):
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                headers={"failed": "This Posting has been set to private!"}
+            )
         # 댓글 가져오기
         comment = self.get_comment(comment_pk)
         # 댓글이 해당 게시글에 속하는지 확인
-        if comment.posting != board:
+        if comment.posting != posting:
             raise NotFound
         # 가져온 데이터 직렬화
         serializer = CommentsSerializer(comment)
@@ -248,7 +247,7 @@ class CommentsDetail(APIView):
     # 댓글 수정하기
     def put(self, request, board_pk, comment_pk):
         # 데이터 가져오기
-        comment = self.get_object(comment_pk)
+        comment = self.get_comment(comment_pk)
         # 사용자 로그인 여부 확인
         if not request.user.is_authenticated:
             raise NotAuthenticated
@@ -280,7 +279,7 @@ class CommentsDetail(APIView):
     # 댓글 삭제하기
     def delete(self, request, board_pk, comment_pk):
         # 데이터 가져오기
-        comment = self.get_object(comment_pk)
+        comment = self.get_comment(comment_pk)
         # 로그인 여부 확인
         if not request.user.is_authenticated:  
             raise NotAuthenticated
@@ -329,8 +328,19 @@ class ThumbUp(APIView):
     
     # 추천하기
     def post(self, request, board_pk, comment_pk):
-        # 해당 댓글 가져오기
-        comment = self.get_object(comment_pk)
+        # 게시글 가져오기
+        board = self.get_board(board_pk)
+        # 댓글 가져오기
+        comment = self.get_comment(comment_pk)
+        # 댓글이 해당 게시글에 속하는지 확인
+        if comment.posting != board:
+            raise NotFound
+        # 비공개 상태 + 게시글의 저자 본인 여부 + 관리자 여부 확인
+        if (board.disclosure_status) & (request.user != board.writer) & (request.user.is_staff == False):
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                headers={"failed": "This Posting has been set to private!"}
+            )
         # 사용자가 이미 추천한 댓글인지 확인 - 중복 방지
         user = request.user
         if user in comment.thumb_up.all():
@@ -349,3 +359,33 @@ class ThumbUp(APIView):
             status=status.HTTP_200_OK,
             headers={"successed": "Thumb-up has been applied successfully."},
         )
+    
+    # 추천 삭제하기
+    def delete(self, request, board_pk, comment_pk):
+        # 게시글 가져오기
+        board = self.get_board(board_pk)
+        # 댓글 가져오기
+        comment = self.get_comment(comment_pk)
+        # 유저 로그인 여부 확인
+        if not request.user.is_authenticated:  
+            raise NotAuthenticated
+        # 댓글이 해당 게시글에 속하는지 확인
+        if comment.posting != board:
+            raise NotFound
+        # 비공개 상태 + 게시글의 저자 본인 여부 + 관리자 여부 확인
+        if (board.disclosure_status) & (request.user != board.writer) & (request.user.is_staff == False):
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                headers={"failed": "This Posting has been set to private!"}
+            )
+        if request.user in comment.thumb_up.all():
+            comment.thumb_up.remove(request.user)
+            return Response(
+                status=status.HTTP_200_OK,
+                headers={"successed": "Thumb-up has been canceled successfully."},
+            )
+        else:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                headers={"failed": "Error has been occured during deleting Thumb-up."},
+            )

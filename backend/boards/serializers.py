@@ -39,7 +39,6 @@ class BoardsDetailSerializer(ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
-        # print(validated_data)
         return Posting.objects.create(**validated_data)  # writer를 포함한 모든 validated_data를 가지고 방을 생성해준다.
 
 
@@ -56,7 +55,11 @@ class CommentsSerializer(ModelSerializer):
         read_only_fields = ("Posting",)  # 읽기 전용(반드시 tuple로 해야 에러 발생 안함)
 
     def create(self, validated_data):
-        return Comment.objects.create(**validated_data)
+        thumb_up = validated_data.pop("thumb_up", None)  # "thumb_up" = ManyToManyField
+        comment = Comment.objects.create(**validated_data)
+        if thumb_up:
+            comment.thumb_up.set(thumb_up)
+        return comment
     
 
 class CommentsThumbUpSerializer(ModelSerializer):
@@ -71,5 +74,4 @@ class CommentsThumbUpSerializer(ModelSerializer):
         read_only_fields = ("thumb_up", "thumb_up_count",)  # 읽기 전용
 
     def get_thumb_up_count(self, obj):
-        # print(obj)
         return obj.thumb_up.count()
