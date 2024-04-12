@@ -59,14 +59,6 @@ class Boards(APIView):
         else:  # 로그인 False일 경우
             raise NotAuthenticated
 
-    
-    """
-    [Question] 각 Serializer내에 'data='라는 키워드 유뮤에 따라 아래와 같이 에러가 발생함.. 이유가 무엇일까?
-    When a serializer is passed a `data` keyword argument you must call `.is_valid()` before attempting to access the serialized `.data` representation.
-    You should either call `.is_valid()` first, or access `.initial_data` instead.
-    """
-
-
 class BoardsDetail(APIView):
 
     """ 게시판의 특정 게시물을 수정 및 삭제하는 클래스 """
@@ -159,22 +151,65 @@ class Comments(APIView):
     """ 댓글 보여주고 생성하는 클래스 """
 
     permission_classes = [IsAuthenticatedOrReadOnly]
-    
-    # 댓글 가져오기
-    def get(self, request):
+
+    def get_object(self, board_pk):
+        try:
+            return Posting.objects.get(pk=board_pk)
+        except Posting.DoesNotExist:
+            raise NotFound
+
+    # 게시판 가져오기
+    def get(self, request, board_pk):
+        # 페이지네이션 구현
+        start, end = pagination(request)
         # 데이터 가져오기
-        all_comment = Comment.objects.all()
-        # 가져온 데이터 직렬화
+        posting = self.get_object(board_pk)
+        # print(posting)
+        # 비공개 상태 + 게시글의 저자 본인 여부 + 관라자 여부 확인
+        if (posting.disclosure_status) & (request.user != posting.writer) & (request.user.is_staff == False):
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                headers={"failed": "This Posting has been set to private!"}
+            )
+        # 게시글에 존재하는 모든 댓글 가져오기
+        all_comment = Comment.objects.filter(posting=posting)
+        # print(all_comment)
+        # 가져온 댓글 직렬화
         serializer = CommentsSerializer(
-            all_comment,
-            many=True,  # 여러개의 데이터 직렬화
+            all_comment[start:end],  # 페이지네이션 적용
+            many=True,
         )
         return Response(
             data=serializer.data,
             status=status.HTTP_200_OK,
-            headers={"successed": "Comment has been imported successfully."}
-        )
+            headers={"successed": "Posting-Comment has been imported successfully."},
+            )
 
+    # 댓글 작성하기
+    def post(self, request, board_pk):
+        # 사용자 로그인 여부 확인
+        if not request.user.is_authenticated:
+            raise NotAuthenticated
+        # 게시글 가져오기
+        posting = self.get_object(board_pk)
+        print(posting)
+        # 가져온 데이터 직렬화
+        serializer = CommentsSerializer(data=request.data)
+        # 데이터 유효성 검증
+        if serializer.is_valid():
+            comment = serializer.save(posting=posting, writer=request.user)  # 댓글을 저장 + 게시글 연결 + 댓글 작성자 연결
+            # print(comment)
+            serializer = CommentsSerializer(comment)
+            return Response(
+                data=serializer.data, 
+                status=status.HTTP_201_CREATED,
+                headers={"successed": "Comment creation has been successfully."},
+            )
+        return Response(
+            data=serializer.errors, 
+            status=status.HTTP_400_BAD_REQUEST,
+            headers={"failed": "Comment creation has been failed."}
+        )
 
 class CommentsDetail(APIView):
 
@@ -182,16 +217,26 @@ class CommentsDetail(APIView):
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_object(self, comment_pk):
+    def get_board(self, board_pk):
+        try:
+            return Posting.objects.get(pk=board_pk)
+        except Posting.DoesNotExist:
+            raise NotFound
+
+    def get_comment(self, comment_pk):
         try:
             return Comment.objects.get(pk=comment_pk)
         except Comment.DoesNotExist:
             raise NotFound
 
-    # 댓글 가져오기
     def get(self, request, board_pk, comment_pk):
-        # 데이터 가져오기
-        comment = self.get_object(comment_pk)
+        # 게시글 가져오기
+        board = self.get_board(board_pk)
+        # 댓글 가져오기
+        comment = self.get_comment(comment_pk)
+        # 댓글이 해당 게시글에 속하는지 확인
+        if comment.posting != board:
+            raise NotFound
         # 가져온 데이터 직렬화
         serializer = CommentsSerializer(comment)
         return Response(
@@ -249,81 +294,32 @@ class CommentsDetail(APIView):
             headers={"successed": "Comment has been deleted successfully."}
         )
 
-
-class CommentsCreation(APIView):
-
-    """ 게시글에 댓글을 작성하는 클래스 """
-
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def get_object(self, board_pk):
-        try:
-            return Posting.objects.get(pk=board_pk)
-        except Posting.DoesNotExist:
-            raise NotFound
-
-    # 게시판 가져오기
-    def get(self, request, board_pk):
-        # 페이지네이션 구현
-        start, end = pagination(request)
-        # 데이터 가져오기
-        posting = self.get_object(board_pk)
-        # print(posting)
-        # 게시글에 존재하는 모든 댓글 가져오기
-        all_comment = Comment.objects.filter(posting=posting)
-        # print(all_comment)
-        # 가져온 댓글 직렬화
-        serializer = CommentsSerializer(
-            all_comment[start:end],  # 페이지네이션 적용
-            many=True,
-        )
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_200_OK,
-            headers={"successed": "Posting-Comment has been imported successfully."},
-            )
-
-    # 댓글 작성하기
-    def post(self, request, board_pk):
-        # 사용자 로그인 여부 확인
-        if not request.user.is_authenticated:
-            raise NotAuthenticated
-        # 게시글 존재 여부 확인
-        posting = self.get_object(board_pk)
-        # 가져온 데이터 직렬화
-        serializer = CommentsSerializer(data=request.data)
-        # 데이터 유효성 검증
-        if serializer.is_valid():
-            comment = serializer.save(posting=posting, writer=request.user)  # 댓글을 저장 + 게시글 연결 + 댓글 작성자 연결
-            # print(comment)
-            serializer = CommentsSerializer(comment)
-            return Response(
-                data=serializer.data, 
-                status=status.HTTP_201_CREATED,
-                headers={"successed": "Comment creation has been successfully."},
-            )
-        return Response(
-            data=serializer.errors, 
-            status=status.HTTP_400_BAD_REQUEST,
-            headers={"failed": "Comment creation has been failed."}
-        )
-
-
 class ThumbUp(APIView):
 
     """ 댓글 추천 기능 클래스 """
 
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_object(self, comment_pk):
+    def get_board(self, board_pk):
+        try:
+            return Posting.objects.get(pk=board_pk)
+        except Posting.DoesNotExist:
+            raise NotFound
+
+    def get_comment(self, comment_pk):
         try:
             return Comment.objects.get(pk=comment_pk)
         except Comment.DoesNotExist:
             raise NotFound
-        
-    # 댓글 가져오기
+    
     def get(self, request, board_pk, comment_pk):
-        comment = self.get_object(comment_pk)
+        # 게시글 가져오기
+        board = self.get_board(board_pk)
+        # 댓글 가져오기
+        comment = self.get_comment(comment_pk)
+        # 댓글이 해당 게시글에 속하는지 확인
+        if comment.posting != board:
+            raise NotFound
         serializer = CommentsThumbUpSerializer(comment)
         return Response(
             data=serializer.data,

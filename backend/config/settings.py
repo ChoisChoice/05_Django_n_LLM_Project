@@ -172,7 +172,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Simple JWT
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # access token
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),  # access token
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # refresh token
     "ROTATE_REFRESH_TOKENS": True,  # 새로운 access/refresh token 갱신 여부
     "BLACKLIST_AFTER_ROTATION": True,  # 기존 refresh token의 블랙리스트 여부

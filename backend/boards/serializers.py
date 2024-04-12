@@ -22,7 +22,6 @@ class BoardsSerializer(ModelSerializer):
             "comment_count",
             "hits"
         )
-
     
     # 댓글 개수
     def get_comment_count(self, obj):
