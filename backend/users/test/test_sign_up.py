@@ -14,15 +14,11 @@ class TestSignUP(TestUserVariable, APITestCase):
         self.right_user_data = {
             "username": self.USERNAME,
             "password": self.PASSWORD,
-            "gender": self.GENDER,
-            "nationality": self.NATIONALITY,
-            "language": self.LANGUAGE,
         }
         # 잘못된 사용자 데이터
         self.wrong_user_data = {
-            "username": self.USERNAME,
+            "username": "",
             "password": self.PASSWORD,
-            "gender": self.GENDER,
         }
 
     # 회원가입 잘 안되는지 테스트

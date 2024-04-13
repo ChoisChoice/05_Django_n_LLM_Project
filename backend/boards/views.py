@@ -187,6 +187,12 @@ class Comments(APIView):
             raise NotAuthenticated
         # 게시글 가져오기
         posting = self.get_object(board_pk)
+        # 비공개 상태 + 게시글의 저자 본인 여부 + 관라자 여부 확인
+        if (posting.disclosure_status) & (request.user != posting.writer) & (request.user.is_staff == False):
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                headers={"failed": "This Posting has been set to private!"}
+            )
         # 가져온 데이터 직렬화
         serializer = CommentsSerializer(data=request.data)
         # 데이터 유효성 검증
@@ -246,8 +252,13 @@ class CommentsDetail(APIView):
 
     # 댓글 수정하기
     def put(self, request, board_pk, comment_pk):
-        # 데이터 가져오기
+        # 게시글 가져오기
+        board = self.get_board(board_pk)
+        # 댓글 가져오기
         comment = self.get_comment(comment_pk)
+        # 댓글이 해당 게시글에 속하는지 확인
+        if comment.posting != board:
+            raise NotFound
         # 사용자 로그인 여부 확인
         if not request.user.is_authenticated:
             raise NotAuthenticated
@@ -278,8 +289,13 @@ class CommentsDetail(APIView):
 
     # 댓글 삭제하기
     def delete(self, request, board_pk, comment_pk):
-        # 데이터 가져오기
+        # 게시글 가져오기
+        board = self.get_board(board_pk)
+        # 댓글 가져오기
         comment = self.get_comment(comment_pk)
+        # 댓글이 해당 게시글에 속하는지 확인
+        if comment.posting != board:
+            raise NotFound
         # 로그인 여부 확인
         if not request.user.is_authenticated:  
             raise NotAuthenticated
