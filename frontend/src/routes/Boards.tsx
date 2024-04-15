@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { getBoards } from "../api";
-import { Grid } from "@chakra-ui/react";
-import BoardsSkeleton from "../components/BoardsSkeleton";
+import { Flex, Text } from "@chakra-ui/react";
 import Boards from "../components/Boards";
+import BoardsSpinner from "../components/BoardsSpinner";
 
 interface BoardField {
   pk: number;
+  disclosure_status: boolean;
   posting_category: string;
   writer: string;
   title: string;
-  disclosure_status: boolean;
   comment_count: string;
   hit: number;
   created_at: string;
@@ -21,27 +21,8 @@ export default function BoardsRoute() {
     queryFn: getBoards,
   });
   return (
-    <Grid
-      mt={10}
-      px={{
-        base: 10,
-        lg: 40,
-      }}
-      columnGap={4}
-      rowGap={8}
-      templateColumns={{
-        sm: "1fr",
-        md: "1fr 1fr",
-        lg: "repeat(3, 1fr)",
-        xl: "repeat(4, 1fr)",
-        "2xl": "repeat(5, 1fr)",
-      }}
-    >
-      {isLoading ? (
-        <>
-          <BoardsSkeleton />
-        </>
-      ) : null}
+    <Flex justify={"center"} align={"center"} minHeight="100vh">
+      {isLoading ? <BoardsSpinner /> : null}
       {data?.map((board) => (
         <Boards
           pk={board.pk}
@@ -54,6 +35,6 @@ export default function BoardsRoute() {
           created_at={board.created_at}
         />
       ))}
-    </Grid>
+    </Flex>
   );
 }
