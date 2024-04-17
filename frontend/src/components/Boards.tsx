@@ -11,17 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { FaLock, FaLockOpen } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
-interface BoardFieldProps {
-  pk: number;
-  disclosure_status: boolean;
-  posting_category: string;
-  writer: string;
-  title: string;
-  comment_count: string;
-  hit: number;
-  created_at: string;
-}
+import { BoardsField } from "../types";
 
 export default function Boards({
   pk,
@@ -30,10 +20,10 @@ export default function Boards({
   writer,
   title,
   comment_count,
-  hit,
+  hits,
   created_at,
-}: BoardFieldProps) {
-  const formattedCreatedAt = new Date(created_at).toLocaleString();
+}: BoardsField) {
+  const formattedCreatedAt = new Date(created_at).toLocaleDateString();
   return (
     <Link to={`/boards/${pk}`}>
       <TableContainer>
@@ -70,7 +60,7 @@ export default function Boards({
               <Td>
                 {title} [{comment_count}]
               </Td>
-              <Td>{hit}</Td>
+              <Td>{hits}</Td>
               <Td>{formattedCreatedAt}</Td>
             </Tr>
           </Tbody>

@@ -19,10 +19,10 @@ const router = createBrowserRouter([
         path: "boards/",
         element: <BoardsRoute />,
       },
-      // {
-      //   path: "boards/:boardPk/",
-      //   element: <BoardsDetailRoute />,
-      // },
+      {
+        path: "boards/:boardPk/",
+        element: <BoardsDetailRoute />,
+      },
     ],
   },
 ]);
