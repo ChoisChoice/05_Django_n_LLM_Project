@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { getBoards } from "../api";
-import { BoardsDetailField } from "../types";
+import { IBoardsDetail } from "../types";
 
-export default function BoardsDetailRoute() {
+export default function BoardsDetailPage() {
   const { boardPk } = useParams();
-  const { isLoading, data } = useQuery<BoardsDetailField>({
+  const { isLoading, data } = useQuery<IBoardsDetail>({
     queryKey: [`board`, boardPk],
     queryFn: getBoards,
   });

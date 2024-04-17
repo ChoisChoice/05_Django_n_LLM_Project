@@ -1,4 +1,4 @@
-export interface BoardsField {
+export interface IBoards {
   pk: number;
   disclosure_status: boolean;
   posting_category: string;
@@ -9,13 +9,13 @@ export interface BoardsField {
   created_at: string;
 }
 
-export interface BoardsDetailField extends BoardsField {
+export interface IBoardsDetail extends IBoards {
   content: string;
   attachment: File | null;
   updated_at: string;
 }
 
-export interface CommentsField {
+export interface IComments {
   pk: number;
   posting: string;
   writer: string;

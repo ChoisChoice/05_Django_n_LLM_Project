@@ -1,27 +1,27 @@
 import { createBrowserRouter } from "react-router-dom";
 import Root from "./components/Root";
-import Home from "./routes/Home";
-import NotFound from "./routes/NotFound";
-import BoardsDetailRoute from "./routes/BoardsDetail";
-import BoardsRoute from "./routes/Boards";
+import NotFoundPage from "./routes/NotFoundPage";
+import HomePage from "./routes/HomePage";
+import BoardsPage from "./routes/BoardsRoutePage";
+import BoardsDetailPage from "./routes/BoardsDetailPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
-    errorElement: <NotFound />,
+    errorElement: <NotFoundPage />,
     children: [
       {
         path: "",
-        element: <Home />,
+        element: <HomePage />,
       },
       {
         path: "boards/",
-        element: <BoardsRoute />,
+        element: <BoardsPage />,
       },
       {
         path: "boards/:boardPk/",
-        element: <BoardsDetailRoute />,
+        element: <BoardsDetailPage />,
       },
     ],
   },

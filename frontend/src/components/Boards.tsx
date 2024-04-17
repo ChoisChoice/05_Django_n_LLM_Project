@@ -1,71 +1,54 @@
-import {
-  Table,
-  Tr,
-  TableContainer,
-  Td,
-  Text,
-  Thead,
-  Th,
-  Tbody,
-  Box,
-} from "@chakra-ui/react";
+import { Table, Tr, Td, Text, Thead, Th, Tbody, Box } from "@chakra-ui/react";
 import { FaLock, FaLockOpen } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { BoardsField } from "../types";
+import { IBoards } from "../types";
 
-export default function Boards({
-  pk,
-  disclosure_status,
-  posting_category,
-  writer,
-  title,
-  comment_count,
-  hits,
-  created_at,
-}: BoardsField) {
-  const formattedCreatedAt = new Date(created_at).toLocaleDateString();
+interface BoardsProps {
+  boards: IBoards[];
+}
+
+export default function Boards({ boards }: BoardsProps) {
   return (
-    <Link to={`/boards/${pk}`}>
-      <TableContainer>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>No</Th>
-              <Th>Status</Th>
-              <Th>Category</Th>
-              <Th>Writer</Th>
-              <Th>Title</Th>
-              <Th>Hit</Th>
-              <Th>Creation Date</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            <Tr>
-              <Td>{pk}</Td>
+    <Box textAlign="center" marginTop="3rem">
+      <Text fontSize="3xl" fontWeight="bold">
+        Total Board
+      </Text>
+      <Table width="70%" margin="auto" marginTop="2rem">
+        <Thead>
+          <Tr>
+            <Th>No</Th>
+            <Th>Status</Th>
+            <Th>Title [Comment]</Th>
+            <Th>Category</Th>
+            <Th>Writer</Th>
+            <Th>Hit</Th>
+            <Th>Creation Date</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {boards.map((board) => (
+            <Tr key={board.pk}>
+              <Td>{board.pk}</Td>
               <Td>
-                <Box>
-                  {disclosure_status ? (
-                    <Box color="red.500">
-                      <FaLock />
-                    </Box>
-                  ) : (
-                    <Box color="green.500">
-                      <FaLockOpen />
-                    </Box>
-                  )}
-                </Box>
+                {board.disclosure_status ? (
+                  <FaLock color="red" />
+                ) : (
+                  <FaLockOpen color="green" />
+                )}
               </Td>
-              <Td>{posting_category}</Td>
-              <Td>{writer}</Td>
               <Td>
-                {title} [{comment_count}]
+                <Link to={`/boards/${board.pk}`}>
+                  {board.title} [{board.comment_count}]
+                </Link>
               </Td>
-              <Td>{hits}</Td>
-              <Td>{formattedCreatedAt}</Td>
+              <Td>{board.posting_category}</Td>
+              <Td>{board.writer}</Td>
+              <Td>{board.hits}</Td>
+              <Td>{new Date(board.created_at).toLocaleDateString()}</Td>
             </Tr>
-          </Tbody>
-        </Table>
-      </TableContainer>
-    </Link>
+          ))}
+        </Tbody>
+      </Table>
+    </Box>
   );
 }
