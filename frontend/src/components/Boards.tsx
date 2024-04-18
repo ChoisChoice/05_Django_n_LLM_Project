@@ -48,6 +48,7 @@ export default function Boards({ boards }: BoardsProps) {
           </Tr>
         </Thead>
         <Tbody>
+          {/* boards -> boardsToShow */}
           {boardsToShow.map((board) => (
             <Tr key={board.pk}>
               <Td>{board.pk}</Td>
@@ -71,7 +72,7 @@ export default function Boards({ boards }: BoardsProps) {
           ))}
         </Tbody>
       </Table>
-      <Paginator
+      {/* <Paginator
         activePage={currentPage}
         totalPages={Math.ceil(boards.length / itemsPerPage)}
         onPageChange={handlePageChange}
@@ -81,7 +82,7 @@ export default function Boards({ boards }: BoardsProps) {
           <PageGroup isInline align="center" />
           <Next as={FcNext} />
         </Container>
-      </Paginator>
+      </Paginator> */}
     </Box>
   );
 }
