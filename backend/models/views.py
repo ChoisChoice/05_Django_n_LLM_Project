@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from langchain.schema.runnable import RunnablePassthrough, RunnableLambda
-from .services import create_retriever, create_model_n_prompt, format_text
+from .services import create_retriever, create_model, create_question, create_prompt
 
 class SummaryDocumentGPT(APIView):
 
@@ -19,28 +19,24 @@ class SummaryDocumentGPT(APIView):
                 headers={"error": "Url type must be string."}, 
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        try:
-            # text -> cache 저장, split, embedding 후 vectorstore 생성
-            retriever = create_retriever(url)
-        except Exception as e:
-            return Response(
-                headers={"error": str(e)}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        
+        # retriever 생성(url -> 본문 추출, cache 저장, split, embedding)
+        retriever = create_retriever(url)
+
         # question
-        question = request.data.get("question")
-        # print(question)
-        if type(question) != str:
-            return Response({"error": "Question type must be string."}, status=status.HTTP_400_BAD_REQUEST)
+        question = create_question()
+
         # 모델 및 프롬프트 생성
-        llm, prompt = create_model_n_prompt()
+        llm = create_model()
+        prompt = create_prompt()
+        
         # LangChain 및 LLM 실행
         chain = {
-                    "context": retriever | RunnableLambda(format_text),
+                    "context": retriever,
                     "question": RunnablePassthrough()
                 } | prompt | llm
         try:
-            response = chain.invoke(question)
+            summary_result = chain.invoke(question)
         except Exception as e:
             return Response(
                 headers={"error": str(e)}, 
@@ -48,6 +44,7 @@ class SummaryDocumentGPT(APIView):
             )
 
         return Response(
-            headers={"response": response}, 
+            data=summary_result,
+            headers={"successed": "Summary of newspaper articles."}, 
             status=status.HTTP_200_OK,
         )
