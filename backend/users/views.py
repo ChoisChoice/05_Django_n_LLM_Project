@@ -134,9 +134,9 @@ class ShowProfile(APIView):
             headers={"successed": "Profile has been imported successfully."},
         )
 
-class UpdateProfile(APIView):
+class Profile(APIView):
     
-    """ 비밀번호를 제외한 내 정보를 수정할 수 있는 클래스 """
+    """ 비밀번호를 제외한 내 정보를 조회 및 수정할 수 있는 클래스 """
 
     permission_classes = [IsAuthenticated,]
 
