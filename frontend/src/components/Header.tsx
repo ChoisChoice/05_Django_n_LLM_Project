@@ -2,7 +2,6 @@ import ChoisChoiceLightLogo from "../assets/ChoisChoiceLightLogo.png";
 import ChoisChoiceDarkLogo from "../assets/ChoisChoiceDarkLogo.png";
 import { FaMoon, FaSun } from "react-icons/fa";
 import {
-  Avatar,
   Box,
   Button,
   HStack,
@@ -23,6 +22,7 @@ import SigninModal from "./SigninModal";
 import SignUpModal from "./SignUpModal";
 import useUser from "../lib/useUser";
 import { signOut } from "../api";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Header() {
   // 로그인 관련 변수
@@ -45,22 +45,21 @@ export default function Header() {
   const Icon = useColorModeValue(FaMoon, FaSun);
   // 로그아웃 관련 변수
   const toast = useToast();
+  const queryClient = useQueryClient();
   const onSignOut = async () => {
     const toastId = toast({
-      title: "Login out...",
-      description: "Sad to see you go...",
       status: "loading",
+      title: "Sign-out, Loading...",
+      description: "I'm glad to be with you!",
       position: "bottom-right",
     });
-    /* const data = await logOut();
-    console.log(data); */
-    setTimeout(() => {
-      toast.update(toastId, {
-        status: "success",
-        title: "Done!",
-        description: "See you later!",
-      });
-    }, 5000);
+    await signOut();
+    queryClient.refetchQueries({ queryKey: ["profile"] });
+    toast.update(toastId, {
+      status: "success",
+      title: "Sign-out, Done!",
+      description: "See you later!",
+    });
   };
   return (
     <Stack

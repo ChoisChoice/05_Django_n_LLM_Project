@@ -4,10 +4,11 @@
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
-    "@chakra-ui/react": "^2.8.2",
+    "@chakra-ui/react": "^1.8.9",
+    "@chakra-ui/toast": "^7.0.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
-    "@tanstack/react-query": "^5.29.2",
+    "@tanstack/react-query": "^5.32.0",
     "@tanstack/react-query-devtools": "^5.29.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -18,12 +19,14 @@
     "@types/react-dom": "^18.2.24",
     "axios": "^1.6.8",
     "chakra-paginator": "^0.7.3",
-    "framer-motion": "^11.0.25",
+    "framer-motion": "^5.0.0",
+    "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^5.0.1",
+    "react-icons": "^5.1.0",
     "react-js-pagination": "^3.0.2",
-    "react-router-dom": "^6.22.3",
+    "react-loading-icons": "^1.1.0",
+    "react-router-dom": "^6.23.0",
     "react-scripts": "^5.0.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
@@ -53,6 +56,7 @@
     ]
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/react-js-pagination": "^3.0.7"
   }
 }

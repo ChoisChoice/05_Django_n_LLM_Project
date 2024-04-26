@@ -1,16 +1,16 @@
 import { Table, Tr, Td, Text, Thead, Th, Tbody, Box } from "@chakra-ui/react";
 import { FaLock, FaLockOpen } from "react-icons/fa";
-import { FcNext, FcPrevious } from "react-icons/fc";
+// import { FcNext, FcPrevious } from "react-icons/fc";
 import { Link } from "react-router-dom";
 import { IBoards } from "../types";
-import {
-  Container,
-  Next,
-  PageGroup,
-  Paginator,
-  Previous,
-  usePaginator,
-} from "chakra-paginator";
+// import {
+//   Container,
+//   Next,
+//   PageGroup,
+//   Paginator,
+//   Previous,
+//   usePaginator,
+// } from "chakra-paginator";
 import { useState } from "react";
 
 interface BoardsProps {
