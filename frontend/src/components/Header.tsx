@@ -6,7 +6,7 @@ import {
   Button,
   HStack,
   IconButton,
-  LightMode,
+  LightMode as OverrideLightMode,
   Menu,
   MenuButton,
   MenuItem,
@@ -23,6 +23,9 @@ import SignUpModal from "./SignUpModal";
 import useUser from "../lib/useUser";
 import { signOut } from "../api";
 import { useQueryClient } from "@tanstack/react-query";
+
+export const LightMode: React.FC<{ children: React.ReactNode }> =
+  OverrideLightMode;
 
 export default function Header() {
   // 로그인 관련 변수
@@ -48,18 +51,20 @@ export default function Header() {
   const queryClient = useQueryClient();
   const onSignOut = async () => {
     const toastId = toast({
-      status: "loading",
+      status: "success",
       title: "Sign-out, Loading...",
       description: "I'm glad to be with you!",
       position: "bottom-right",
     });
     await signOut();
     queryClient.refetchQueries({ queryKey: ["profile"] });
-    toast.update(toastId, {
-      status: "success",
-      title: "Sign-out, Done!",
-      description: "See you later!",
-    });
+    if (toastId) {
+      toast.update(toastId, {
+        status: "success",
+        title: "Sign-out, Done!",
+        description: "See you later!",
+      });
+    }
   };
   return (
     <Stack
