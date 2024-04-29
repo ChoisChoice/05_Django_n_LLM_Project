@@ -1,3 +1,4 @@
+import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -5,7 +6,7 @@ from rest_framework.exceptions import ParseError, NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.conf import settings
 from . import serializers
 from users.models import User
@@ -51,7 +52,7 @@ class SignUp(APIView):
         
 class SignIn(APIView):
 
-    """ 로그인하는 클래스 """
+    """ simple-jwt로 로그인하는 클래스 """
 
     permission_classes = [AllowAny,]
     
@@ -93,7 +94,7 @@ class SignIn(APIView):
 
 class SignOut(APIView):
 
-    """ 로그아웃하는 클래스 """
+    """ simple-jwt로 로그아웃하는 클래스 """
 
     permission_classes = [IsAuthenticated,]
 
@@ -104,7 +105,7 @@ class SignOut(APIView):
             refresh_token.blacklist()  # 만료된 토큰을 블랙리스트에 추가
             response = Response(
                 status=status.HTTP_205_RESET_CONTENT, 
-                headers={"successed": "Log-out has been successful."},
+                headers={"successed": "Sign-out has been successful."},
             )
             # 토큰(쿠키) 삭제
             response.delete_cookie("access")
@@ -113,7 +114,75 @@ class SignOut(APIView):
         except Exception as e:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST, 
-                headers={"successed": "Log-out has been trouble."},
+                headers={"successed": "Sign-out has been trouble."},
+            )
+
+class GithubSignIn(APIView):
+
+    """ github로 로그인 하는 클래스 """
+
+    def post(self, request):
+        try:
+            code = request.data.get("code")
+            # 토큰 발급
+            access_token = requests.post(
+                url=f"https://github.com/login/oauth/access_token?code={code}&client_id=164eb89a9f21d451ebaa&client_secret={settings.GH_SECRET}",
+                headers={"Accept": "application/json"},
+            )
+            access_token = access_token.json().get("access_token")
+            # 사용자 데이터 가져오기
+            user_data = requests.get(
+                url="https://api.github.com/user",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Accept": "application/json",
+                },
+            )
+            user_data = user_data.json()
+            # 사용자 이메일 가져오기
+            user_emails = requests.get(
+                url="https://api.github.com/user/emails",
+                headers={
+                    "Authorization": f"Bearer {access_token}",
+                    "Accept": "application/json",
+                },
+            )
+            user_emails = user_emails.json()
+            # 로그인 시도
+            try:
+                user = User.objects.get(email=user_emails[0]["email"])
+                login(request, user)
+                return Response(status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                user = User.objects.create(
+                    username=user_data.get("login"),
+                    email=user_emails[0]["email"],
+                    name=user_data.get("name"),
+                )
+                user.set_unusable_password()
+                user.save()
+                login(request, user)
+                return Response(status=status.HTTP_200_OK)
+        except Exception:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class SocialSignOut(APIView):
+
+    """ 소셜 로그인한 계정을 로그아웃하는 클래스 """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            logout(request)
+            return Response(
+                status=status.HTTP_205_RESET_CONTENT,
+                headers={"successed": "Sign-out has been successful!"},
+            )
+        except Exception as e:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST, 
+                headers={"successed": "Sign-out has been trouble."},
             )
 
 class ShowProfile(APIView):

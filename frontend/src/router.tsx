@@ -4,6 +4,7 @@ import NotFoundPage from "./routes/NotFoundPage";
 import HomePage from "./routes/HomePage";
 import BoardsPage from "./routes/BoardsPage";
 import BoardsDetailPage from "./routes/BoardsDetailPage";
+import GithubConfirm from "./routes/GithubConfirm";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,15 @@ const router = createBrowserRouter([
       {
         path: "boards/:boardPk/",
         element: <BoardsDetailPage />,
+      },
+      {
+        path: "social",
+        children: [
+          {
+            path: "github/",
+            element: <GithubConfirm />,
+          },
+        ],
       },
     ],
   },

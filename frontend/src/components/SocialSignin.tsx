@@ -15,7 +15,11 @@ export default function SocialLogin() {
         <Divider flex={1} />
       </HStack>
       <HStack spacing={4} justify="center">
-        <Button variant="unstyled">
+        <Button
+          variant="unstyled"
+          as="a"
+          href="https://github.com/login/oauth/authorize?client_id=164eb89a9f21d451ebaa&scope=read:user,user:email"
+        >
           <img
             src={GithubLogo}
             style={{ width: "50px", height: "50px" }}

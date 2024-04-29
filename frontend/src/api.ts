@@ -18,11 +18,24 @@ export const getBoardsDetail = ({ queryKey }: QueryFunctionContext) => {
 export const getProfile = () =>
   instance.get(`users/profile/`).then((response) => response.data);
 
-export const signOut = () =>
+export const socialSignOut = () =>
   instance
-    .post(`users/sign-out`, null, {
+    .post(`users/social-sign-out/`, null, {
       headers: {
         "X-CSRFToken": Cookie.get("csrftoken") || "",
       },
     })
     .then((response) => response.data);
+
+export const githubSignIn = (code: string) =>
+  instance
+    .post(
+      `/users/github/`,
+      { code },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.status);

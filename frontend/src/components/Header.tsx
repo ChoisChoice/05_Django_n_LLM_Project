@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 import SigninModal from "./SigninModal";
 import SignUpModal from "./SignUpModal";
 import useUser from "../lib/useUser";
-import { signOut } from "../api";
+import { socialSignOut } from "../api";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const LightMode: React.FC<{ children: React.ReactNode }> =
@@ -56,7 +56,7 @@ export default function Header() {
       description: "I'm glad to be with you!",
       position: "bottom-right",
     });
-    await signOut();
+    await socialSignOut();
     queryClient.refetchQueries({ queryKey: ["profile"] });
     if (toastId) {
       toast.update(toastId, {
@@ -115,7 +115,7 @@ export default function Header() {
           ) : (
             <Menu>
               <MenuButton>
-                <Box>{`${user?.name}님, 환영합니다.`}</Box>
+                <Box>{`Welcome, ${user?.name}!`}</Box>
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={onSignOut}>Sign out</MenuItem>
