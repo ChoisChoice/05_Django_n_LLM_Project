@@ -4,7 +4,20 @@ import GoogleLogo from "../assets/GoogleLogo.png";
 import NaverLogo from "../assets/NaverLogo.png";
 import { Box, Button, Divider, HStack, Link, Text } from "@chakra-ui/react";
 
-export default function SocialLogin() {
+export default function SocialSignin() {
+  // github 관련 파라미터
+  const githubParams = {
+    client_id: "164eb89a9f21d451ebaa",
+    scope: "read:user,user:email",
+  };
+  const totalGithubParams = new URLSearchParams(githubParams).toString();
+  // kakao 관련 파라미터
+  const kakaoParams = {
+    response_type: "code",
+    client_id: "63d64636075adcc88581d17290cb5928",
+    redirect_uri: "http://127/0/0/1:3000/social/kakao",
+  };
+  const totalKakaoParams = new URLSearchParams(kakaoParams).toString();
   return (
     <Box mb={2}>
       <HStack my={4} spacing={2} alignItems="center">
@@ -18,7 +31,7 @@ export default function SocialLogin() {
         <Button
           variant="unstyled"
           as="a"
-          href="https://github.com/login/oauth/authorize?client_id=164eb89a9f21d451ebaa&scope=read:user,user:email"
+          href={`https://github.com/login/oauth/authorize?${totalGithubParams}`}
         >
           <img
             src={GithubLogo}
@@ -26,7 +39,11 @@ export default function SocialLogin() {
             alt="Github Logo"
           />
         </Button>
-        <Button variant="unstyled">
+        <Button
+          variant="unstyled"
+          as="a"
+          href={`https://kauth.kakao.com/oauth/authorize?${totalKakaoParams}`}
+        >
           <img
             src={KakaoLogo}
             style={{ width: "50px", height: "50px" }}

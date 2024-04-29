@@ -15,12 +15,12 @@ import {
 import { FaUserNinja, FaLock } from "react-icons/fa";
 import SocialSignin from "./SocialSignin";
 
-interface LoginModalProps {
+interface SigninModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
+export default function SigninModal({ isOpen, onClose }: SigninModalProps) {
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
       <ModalOverlay />

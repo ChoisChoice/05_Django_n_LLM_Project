@@ -123,8 +123,8 @@ class GithubSignIn(APIView):
 
     def post(self, request):
         try:
-            code = request.data.get("code")
             # 토큰 발급
+            code = request.data.get("code")
             access_token = requests.post(
                 url=f"https://github.com/login/oauth/access_token?code={code}&client_id=164eb89a9f21d451ebaa&client_secret={settings.GH_SECRET}",
                 headers={"Accept": "application/json"},
@@ -165,6 +165,56 @@ class GithubSignIn(APIView):
                 return Response(status=status.HTTP_200_OK)
         except Exception:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class KakaoSignIn(APIView):
+
+    """ kakao로 로그인 하는 클래스 """
+
+    def post(self, request):
+        try:
+            # 토큰 발급
+            code = request.data.get("code")
+            print(code)
+            access_token = requests.post(
+                url="https://kauth.kakao.com/oauth/token",
+                headers={"Content-type": "application/x-www-form-urlencoded;charset=utf-8"},
+                data={
+                    "grant_type": "authorization_code",
+                    "client_id": "63d64636075adcc88581d17290cb5928",
+                    "redirect_uri": "http://127/0/0/1:3000/social/kakao",
+                    "code": code,
+                },
+            )
+            print(access_token.json())
+            access_token = access_token.json().get("access_token")
+            # 사용자 데이터 가져오기
+            user_data = requests.get(
+                url="https://kapi.kakao.com/v2/user/me",
+                headers={
+                    "Authorization": f"Bearer ${access_token}",
+                    "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+                },
+            )
+            # print(user_data.json())
+            user_data = user_data.json()
+            kakao_account = user_data.get("kakao_account")
+            profile = kakao_account.get("profile")
+            try:
+                user = User.objects.get(email=kakao_account.get("email"))
+                login(request, user)
+                return Response(status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                user = User.objects.create(
+                    email=kakao_account.get("email"),
+                    username=profile.get("nickname"),
+                    name=profile.get("nickname"),
+                )
+                user.set_unusable_password()
+                user.save()
+                login(request, user)
+                return Response(status=status.HTTP_200_OK)
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class SocialSignOut(APIView):
 

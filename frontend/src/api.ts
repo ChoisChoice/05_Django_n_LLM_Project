@@ -39,3 +39,16 @@ export const githubSignIn = (code: string) =>
       }
     )
     .then((response) => response.status);
+
+export const kakaoSignIn = (code: string) =>
+  instance
+    .post(
+      `/users/kakao/`,
+      { code },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.status);
