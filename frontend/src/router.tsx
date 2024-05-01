@@ -4,8 +4,8 @@ import NotFoundPage from "./routes/NotFoundPage";
 import HomePage from "./routes/HomePage";
 import BoardsPage from "./routes/BoardsPage";
 import BoardsDetailPage from "./routes/BoardsDetailPage";
-import GithubConfirm from "./routes/GithubConfirm";
-import KakaoConfirm from "./routes/KakaoConfirm";
+import GithubConfirmPage from "./routes/GithubConfirmPage";
+import KakaoConfirmPage from "./routes/KakaoConfirmPage";
 
 const router = createBrowserRouter([
   {
@@ -30,11 +30,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: "github/",
-            element: <GithubConfirm />,
+            element: <GithubConfirmPage />,
           },
           {
             path: "kakao/",
-            element: <KakaoConfirm />,
+            element: <KakaoConfirmPage />,
           },
         ],
       },

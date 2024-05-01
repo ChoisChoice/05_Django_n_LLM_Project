@@ -15,12 +15,12 @@ export const getBoardsDetail = ({ queryKey }: QueryFunctionContext) => {
   return instance.get(`boards/${boardPk}/`).then((response) => response.data);
 };
 
-export const getProfile = () =>
-  instance.get(`users/profile/`).then((response) => response.data);
+export const getMyProfile = () =>
+  instance.get(`users/my-profile/`).then((response) => response.data);
 
-export const socialSignOut = () =>
+export const signOut = () =>
   instance
-    .post(`users/social-sign-out/`, null, {
+    .post(`users/sign-out/`, null, {
       headers: {
         "X-CSRFToken": Cookie.get("csrftoken") || "",
       },
@@ -52,3 +52,35 @@ export const kakaoSignIn = (code: string) =>
       }
     )
     .then((response) => response.status);
+
+export const socialSignOut = () =>
+  instance
+    .post(`users/social-sign-out/`, null, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.data);
+
+// mutation object
+export interface IUsernameSignInVariables {
+  username: string;
+  password: string;
+}
+
+// 로그인 mutation 함수: 하나의 argument를 가지지 않고 object(username, password)를 가진다.
+export const usernameSignIn = ({
+  username,
+  password,
+}: IUsernameSignInVariables) =>
+  instance
+    .post(
+      `/users/sign-in/`,
+      { username, password },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);

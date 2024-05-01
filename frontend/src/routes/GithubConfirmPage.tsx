@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { githubSignIn } from "../api";
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function GithubConfirm() {
+export default function GithubConfirmPage() {
   const { search } = useLocation();
   const toast = useToast();
   const queryClient = useQueryClient();

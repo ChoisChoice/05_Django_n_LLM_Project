@@ -174,18 +174,16 @@ class KakaoSignIn(APIView):
         try:
             # 토큰 발급
             code = request.data.get("code")
-            print(code)
             access_token = requests.post(
                 url="https://kauth.kakao.com/oauth/token",
                 headers={"Content-type": "application/x-www-form-urlencoded;charset=utf-8"},
                 data={
                     "grant_type": "authorization_code",
                     "client_id": "63d64636075adcc88581d17290cb5928",
-                    "redirect_uri": "http://127/0/0/1:3000/social/kakao",
+                    "redirect_uri": "http://127.0.0.1:3000/social/kakao",
                     "code": code,
                 },
             )
-            print(access_token.json())
             access_token = access_token.json().get("access_token")
             # 사용자 데이터 가져오기
             user_data = requests.get(
@@ -195,7 +193,6 @@ class KakaoSignIn(APIView):
                     "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
                 },
             )
-            # print(user_data.json())
             user_data = user_data.json()
             kakao_account = user_data.get("kakao_account")
             profile = kakao_account.get("profile")
@@ -239,8 +236,6 @@ class ShowProfile(APIView):
 
     """ 사용자 프로필을 보여주는 클래스 """
 
-    permission_classes = [IsAuthenticated,]
-
     def get(self, request, username):  # '@username'로 사용자 프로필에 접속하기에 username을 매개변수로 받음
         try:
             user = User.objects.get(username=username)
@@ -253,7 +248,7 @@ class ShowProfile(APIView):
             headers={"successed": "Profile has been imported successfully."},
         )
 
-class Profile(APIView):
+class MyProfile(APIView):
     
     """ 비밀번호를 제외한 내 정보를 조회 및 수정할 수 있는 클래스 """
 

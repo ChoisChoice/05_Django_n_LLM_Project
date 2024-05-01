@@ -18,11 +18,13 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import SigninModal from "./SigninModal";
+import SignInModal from "./SignInModal";
 import SignUpModal from "./SignUpModal";
 import useUser from "../lib/useUser";
-import { socialSignOut } from "../api";
-import { useQueryClient } from "@tanstack/react-query";
+import { signOut, socialSignOut } from "../api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRef } from "react";
+import { ToastId } from "@chakra-ui/toast";
 
 export const LightMode: React.FC<{ children: React.ReactNode }> =
   OverrideLightMode;
@@ -49,22 +51,30 @@ export default function Header() {
   // 로그아웃 관련 변수
   const toast = useToast();
   const queryClient = useQueryClient();
-  const onSignOut = async () => {
-    const toastId = toast({
-      status: "success",
-      title: "Sign-out, Loading...",
-      description: "I'm glad to be with you!",
-      position: "bottom-right",
-    });
-    await socialSignOut();
-    queryClient.refetchQueries({ queryKey: ["profile"] });
-    if (toastId) {
-      toast.update(toastId, {
+  const toastId = useRef<ToastId>();
+  const mutation = useMutation({
+    mutationFn: socialSignOut,
+    onMutate: () => {
+      toastId.current = toast({
         status: "success",
-        title: "Sign-out, Done!",
-        description: "See you later!",
+        title: "Sign-out, Loading...",
+        description: "I'm glad to be with you!",
+        position: "bottom-right",
       });
-    }
+    },
+    onSuccess: () => {
+      if (toastId.current) {
+        queryClient.refetchQueries({ queryKey: ["my-profile"] });
+        toast.update(toastId.current, {
+          status: "success",
+          title: "Sign-out, Done!",
+          description: "See you later!",
+        });
+      }
+    },
+  });
+  const onSignOut = async () => {
+    mutation.mutate();
   };
   return (
     <Stack
@@ -124,7 +134,7 @@ export default function Header() {
           )
         ) : null}
       </HStack>
-      <SigninModal isOpen={isSigninOpen} onClose={onSigninClose} />
+      <SignInModal isOpen={isSigninOpen} onClose={onSigninClose} />
       <SignUpModal isOpen={isSignUpOpen} onClose={onSignUpClose} />
     </Stack>
   );

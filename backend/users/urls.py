@@ -12,6 +12,6 @@ urlpatterns = [
     path("kakao/", views.KakaoSignIn.as_view(), name="kakao-sign-in"),
     path("social-sign-out/", views.SocialSignOut.as_view(), name="social-sign-out"),
     path("@<str:username>/", views.ShowProfile.as_view(), name="profile"),
-    path("profile/", views.Profile.as_view(), name="profile"),
+    path("my-profile/", views.MyProfile.as_view(), name="profile"),
     path("update-password/", views.UpdatePassword.as_view(), name="update-password"),
 ]

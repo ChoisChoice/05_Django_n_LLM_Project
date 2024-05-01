@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { kakaoSignIn } from "../api";
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function KakaoConfirm() {
+export default function KakaoConfirmPage() {
   const { search } = useLocation();
   const toast = useToast();
   const queryClient = useQueryClient();
