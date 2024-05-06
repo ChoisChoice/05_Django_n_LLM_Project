@@ -53,16 +53,16 @@ export const kakaoSignIn = (code: string) =>
     )
     .then((response) => response.status);
 
-export const socialSignOut = () =>
-  instance
-    .post(`users/social-sign-out/`, null, {
-      headers: {
-        "X-CSRFToken": Cookie.get("csrftoken") || "",
-      },
-    })
-    .then((response) => response.data);
+// export const socialSignOut = () =>
+//   instance
+//     .post(`users/social-sign-out/`, null, {
+//       headers: {
+//         "X-CSRFToken": Cookie.get("csrftoken") || "",
+//       },
+//     })
+//     .then((response) => response.data);
 
-// mutation object
+// 로그인 mutation object
 export interface IUsernameSignInVariables {
   username: string;
   password: string;
@@ -77,6 +77,28 @@ export const usernameSignIn = ({
     .post(
       `/users/sign-in/`,
       { username, password },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);
+
+// 회원가입 mutation object
+export interface IusernameSignUpVariables {
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+}
+
+// 회원가입 mutation 함수
+export const usernameSignUp = ({ ...username }: IusernameSignUpVariables) =>
+  instance
+    .post(
+      `/users/sign-up/`,
+      { ...username },
       {
         headers: {
           "X-CSRFToken": Cookie.get("csrftoken") || "",

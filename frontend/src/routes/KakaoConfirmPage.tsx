@@ -2,32 +2,35 @@ import { Heading, Spinner, Text, VStack, useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { kakaoSignIn } from "../api";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function KakaoConfirmPage() {
   const { search } = useLocation();
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const confirmSignin = async () => {
+  const mutation = useMutation({
+    mutationFn: kakaoSignIn,
+    onSuccess: () => {
+      toast({
+        status: "success",
+        title: "Welcome back!",
+        description: "You look much better!",
+      });
+      queryClient.refetchQueries({ queryKey: ["my-profile"] });
+      navigate("/");
+    },
+  });
+  const confirmSignIn = async () => {
     const params = new URLSearchParams(search);
     const code = params.get("code");
     if (code) {
-      const status = await kakaoSignIn(code);
-      if (status === 200) {
-        toast({
-          status: "success",
-          title: "Welcome back!",
-          description: "You look much better!",
-          position: "bottom-right",
-        });
-        queryClient.refetchQueries({ queryKey: ["profile"] });
-        navigate("/");
-      }
+      mutation.mutate(code);
     }
   };
   useEffect(() => {
-    confirmSignin();
+    confirmSignIn();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <VStack justifyContent={"center"} mt={40}>

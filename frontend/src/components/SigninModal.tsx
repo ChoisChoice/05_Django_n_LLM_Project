@@ -44,12 +44,16 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       console.log("Mutation Starting");
     },
     onSuccess: () => {
+      console.log("Successfully Sign-In");
       toast({
         title: "Welcome back!",
         status: "success",
+        position: "bottom-right",
       });
       onClose();
       queryClient.refetchQueries({ queryKey: ["my-profile"] });
+    },
+    onError: (error: any) => {
       reset();
     },
   });
@@ -102,7 +106,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
             </InputGroup>
           </VStack>
           <Button
-            isLoading={mutation.isPending}
+            isLoading={mutation.isPending} // isLoading -> isPending
             type="submit"
             mt={4}
             style={{ backgroundColor: "#7ed957", color: "black" }}

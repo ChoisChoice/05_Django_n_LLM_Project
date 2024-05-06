@@ -6,6 +6,7 @@ import {
   Button,
   HStack,
   IconButton,
+  // LightMode,
   LightMode as OverrideLightMode,
   Menu,
   MenuButton,
@@ -18,20 +19,20 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import SignInModal from "./SignInModal";
-import SignUpModal from "./SignUpModal";
-import useUser from "../lib/useUser";
-import { signOut, socialSignOut } from "../api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef } from "react";
 import { ToastId } from "@chakra-ui/toast";
+import SignInModal from "./SignInModal";
+import SignUpModal from "./SignUpModal";
+import useUser from "../lib/useUser";
+import { signOut } from "../api";
 
 export const LightMode: React.FC<{ children: React.ReactNode }> =
   OverrideLightMode;
 
 export default function Header() {
   // 로그인 관련 변수
-  const { userLoading, isSignedIn, user } = useUser();
+  const { userLoading, user, isSignedIn } = useUser();
   const {
     isOpen: isSigninOpen,
     onClose: onSigninClose,
@@ -53,7 +54,7 @@ export default function Header() {
   const queryClient = useQueryClient();
   const toastId = useRef<ToastId>();
   const mutation = useMutation({
-    mutationFn: socialSignOut,
+    mutationFn: signOut,
     onMutate: () => {
       toastId.current = toast({
         status: "success",

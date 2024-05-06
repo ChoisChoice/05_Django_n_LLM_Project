@@ -94,27 +94,34 @@ class SignIn(APIView):
 
 class SignOut(APIView):
 
-    """ simple-jwt로 로그아웃하는 클래스 """
+    """ simple-jwt / social 로그아웃하는 클래스 """
 
     permission_classes = [IsAuthenticated,]
 
     def post(self, request):
         try:
-            refresh_token = RefreshToken(request.data["refresh"])
-            # print(refresh_token)
-            refresh_token.blacklist()  # 만료된 토큰을 블랙리스트에 추가
-            response = Response(
-                status=status.HTTP_205_RESET_CONTENT, 
-                headers={"successed": "Sign-out has been successful."},
-            )
-            # 토큰(쿠키) 삭제
-            response.delete_cookie("access")
-            response.delete_cookie("refresh")
+            # 토큰 로그아웃
+            if "refresh" in request.data:
+                refresh_token = RefreshToken(request.data["refresh"])
+                refresh_token.blacklist()  # 블랙리스트
+                response = Response(
+                    status=status.HTTP_205_RESET_CONTENT, 
+                    headers={"successed": "Sign-out has been successful!"},
+                )
+                response.delete_cookie("access")
+                response.delete_cookie("refresh")
+            # 소셜 로그아웃
+            else:
+                logout(request)
+                response = Response(
+                    status=status.HTTP_205_RESET_CONTENT,
+                    headers={"successed": "Sign-out has been successful!"},
+                )
             return response
         except Exception as e:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST, 
-                headers={"successed": "Sign-out has been trouble."},
+                headers={"failed": "Sign-out has been trouble."},
             )
 
 class GithubSignIn(APIView):
@@ -213,24 +220,24 @@ class KakaoSignIn(APIView):
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-class SocialSignOut(APIView):
+# class SocialSignOut(APIView):
 
-    """ 소셜 로그인한 계정을 로그아웃하는 클래스 """
+#     """ 소셜 로그인한 계정을 로그아웃하는 클래스 """
 
-    permission_classes = [IsAuthenticated]
+#     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        try:
-            logout(request)
-            return Response(
-                status=status.HTTP_205_RESET_CONTENT,
-                headers={"successed": "Sign-out has been successful!"},
-            )
-        except Exception as e:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST, 
-                headers={"successed": "Sign-out has been trouble."},
-            )
+#     def post(self, request):
+#         try:
+#             logout(request)
+#             return Response(
+#                 status=status.HTTP_205_RESET_CONTENT,
+#                 headers={"successed": "Sign-out has been successful!"},
+#             )
+#         except Exception as e:
+#             return Response(
+#                 status=status.HTTP_400_BAD_REQUEST, 
+#                 headers={"successed": "Sign-out has been trouble."},
+#             )
 
 class ShowProfile(APIView):
 
