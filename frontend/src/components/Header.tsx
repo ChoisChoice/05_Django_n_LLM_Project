@@ -6,8 +6,7 @@ import {
   Button,
   HStack,
   IconButton,
-  // LightMode,
-  LightMode as OverrideLightMode,
+  LightMode,
   Menu,
   MenuButton,
   MenuItem,
@@ -26,9 +25,6 @@ import SignInModal from "./SignInModal";
 import SignUpModal from "./SignUpModal";
 import useUser from "../lib/useUser";
 import { signOut } from "../api";
-
-export const LightMode: React.FC<{ children: React.ReactNode }> =
-  OverrideLightMode;
 
 export default function Header() {
   // 로그인 관련 변수
@@ -68,7 +64,7 @@ export default function Header() {
         queryClient.refetchQueries({ queryKey: ["my-profile"] });
         toast.update(toastId.current, {
           status: "success",
-          title: "Sign-out, Done!",
+          title: "Sign-Out, Done!",
           description: "See you later!",
         });
       }

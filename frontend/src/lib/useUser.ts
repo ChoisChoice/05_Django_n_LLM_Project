@@ -9,7 +9,6 @@ export default function useUser() {
     retry: false,
     refetchOnWindowFocus: false,
   });
-
   return {
     userLoading: isLoading,
     user: data,

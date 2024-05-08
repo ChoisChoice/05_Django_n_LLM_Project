@@ -17,7 +17,7 @@ import { FaUserNinja, FaLock } from "react-icons/fa";
 import SocialSignIn from "./SocialSignIn";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { usernameSignIn } from "../api";
+import { SignIn } from "../api";
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -39,7 +39,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: usernameSignIn,
+    mutationFn: SignIn,
     onMutate: () => {
       console.log("Mutation Starting");
     },
