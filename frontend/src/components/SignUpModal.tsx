@@ -10,6 +10,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Text,
   VStack,
   useToast,
 } from "@chakra-ui/react";
@@ -54,9 +55,9 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
       });
       onClose();
       queryClient.refetchQueries({ queryKey: ["my-profile"] });
-      reset();
     },
-    onError: (error: any) => {
+    onError: (error) => {
+      console.log("Mutation Failed");
       reset();
     },
   });
@@ -142,6 +143,11 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
               />
             </InputGroup>
           </VStack>
+          {mutation.isError ? (
+            <Text color="red.500" textAlign={"center"} fontSize="sm">
+              Please input correct information!
+            </Text>
+          ) : null}
           <Button
             isLoading={mutation.isPending}
             type="submit"

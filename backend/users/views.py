@@ -67,29 +67,34 @@ class SignIn(APIView):
             password=password,
         )  # 입력받은 사용자 id / password로 인증 시도
         if user:  # 사용자 확인
-            # 토큰 발급
-            token = TokenObtainPairSerializer.get_token(user)
-            # print(token)
-            access_token = str(token.access_token)
-            refresh_token = str(token)
-            response = Response(
-                {
-                    "token": {
-                        "access": access_token,
-                        "refresh": refresh_token,
-                    },
-                },
+            # # 토큰 발급
+            # token = TokenObtainPairSerializer.get_token(user)
+            # # print(token)
+            # access_token = str(token.access_token)
+            # refresh_token = str(token)
+            # response = Response(
+            #     {
+            #         "token": {
+            #             "access": access_token,
+            #             "refresh": refresh_token,
+            #         },
+            #     },
+            #     status=status.HTTP_200_OK, 
+            #     headers={"successed": "Sign-In has been successful."},
+            # )
+            # # 토큰 쿠키에 저장
+            # response.set_cookie("access", access_token, httponly=True)
+            # response.set_cookie("refresh", refresh_token, httponly=True)
+            # return response
+            login(request, user)
+            return Response(
                 status=status.HTTP_200_OK, 
-                headers={"successed": "Log-in has been successful."},
+                headers={"successed": "Sign-In has been successful."},
             )
-            # 토큰 쿠키에 저장
-            response.set_cookie("access", access_token, httponly=True)
-            response.set_cookie("refresh", refresh_token, httponly=True)
-            return response
         else:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST, 
-                headers={"failed": "Log-in failed."},
+                headers={"failed": "Sign-In failed."},
             )
 
 class SignOut(APIView):

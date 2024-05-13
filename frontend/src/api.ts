@@ -39,6 +39,16 @@ export interface ISignInVariables {
   password: string;
 }
 
+// 로그인 성공에 대한 response
+export interface ISignInSuccess {
+  successed: string;
+}
+
+// 로그인 실패에 대한 response
+export interface ISignInFail {
+  failed: string;
+}
+
 // 로그인 mutation 함수: 하나의 argument를 가지지 않고 object(username, password)를 가진다.
 export const SignIn = ({ username, password }: ISignInVariables) =>
   instance

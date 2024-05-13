@@ -10,6 +10,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Text,
   VStack,
   useToast,
 } from "@chakra-ui/react";
@@ -18,6 +19,7 @@ import SocialSignIn from "./SocialSignIn";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SignIn } from "../api";
+import { useNavigate } from "react-router-dom";
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -31,13 +33,14 @@ interface IForm {
 
 export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
   const {
-    register,
-    handleSubmit,
+    register, // form에 input을 등록하는 함수
+    handleSubmit, // 데이터를 validate하는 함수(event.preventDefault, handleSubmit 기능들을 제공)
     formState: { errors },
     reset,
   } = useForm<IForm>();
   const toast = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: SignIn,
     onMutate: () => {
@@ -53,7 +56,8 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       onClose();
       queryClient.refetchQueries({ queryKey: ["my-profile"] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
+      console.log("Mutation Failed");
       reset();
     },
   });
@@ -67,6 +71,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       <ModalContent>
         <ModalHeader>Sign in</ModalHeader>
         <ModalCloseButton />
+        {/* 아래에서 데이터 validation과 preventDefault 함. 그리고 두가지가 끝나면 onSubmit함수를 호출함 */}
         <ModalBody as="form" onSubmit={handleSubmit(onSubmit)}>
           <VStack>
             <InputGroup size={"md"}>
@@ -105,6 +110,11 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
               />
             </InputGroup>
           </VStack>
+          {mutation.isError ? (
+            <Text color="red.500" textAlign={"center"} fontSize="sm">
+              Username or Password are wrong!
+            </Text>
+          ) : null}
           <Button
             isLoading={mutation.isPending} // isLoading -> isPending
             type="submit"
