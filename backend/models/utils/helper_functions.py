@@ -42,8 +42,8 @@ def save_article(url, article):
     if 'id=' in url:
         file_name = str(url.split("id=")[-1])
     else:
-        # 'id='가 포함되어 있지 않은 경우 정수 4개 이상이 붙어 있는 숫자 추출
-        numbers = re.findall(r'\d{4,}', url)
+        # 'id='가 포함되어 있지 않은 경우 정수 9개 이상이 붙어 있는 숫자 추출
+        numbers = re.findall(r'\d{9,}', url)
         if numbers:
             file_name = ''.join(numbers)
         else:
@@ -51,7 +51,7 @@ def save_article(url, article):
 
     file_path = f"./.cache/files/{file_name}.txt"
     
-    with open(file_path, "w") as f:
+    with open(file_path, "w", encoding="utf-8") as f:
         f.write(article)
     
     return (file_name, file_path)

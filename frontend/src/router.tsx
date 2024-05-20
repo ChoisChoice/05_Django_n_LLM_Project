@@ -6,6 +6,7 @@ import BoardsPage from "./routes/BoardsPage";
 import BoardsDetailPage from "./routes/BoardsDetailPage";
 import GithubConfirmPage from "./routes/GithubConfirmPage";
 import KakaoConfirmPage from "./routes/KakaoConfirmPage";
+import ChatLLMPage from "./routes/ChatLLMPage";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
             element: <KakaoConfirmPage />,
           },
         ],
+      },
+      {
+        path: "chatllm/",
+        element: <ChatLLMPage />,
       },
     ],
   },

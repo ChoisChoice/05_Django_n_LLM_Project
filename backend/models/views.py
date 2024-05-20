@@ -1,14 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from langchain.schema.runnable import RunnablePassthrough, RunnableLambda
 from .services import create_retriever, create_model, create_question, create_prompt
 
-class SummaryDocumentGPT(APIView):
+class SummaryNewsGPT(APIView):
 
-    """ 문서 요약 gpt를 정의하는 클래스(url과 question을 post하면 answer를 리턴)"""
+    """ 기사 요약 gpt를 정의하는 클래스(url과 question을 post하면 answer를 리턴)"""
 
+    # permission_classes = [AllowAny,]
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def post(self, request):

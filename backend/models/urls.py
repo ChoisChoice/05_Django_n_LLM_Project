@@ -3,5 +3,5 @@ from . import views
 
 
 urlpatterns = [
-    path("document-gpt/", views.SummaryDocumentGPT.as_view(), name="document-gpt"), 
+    path("summary-news/", views.SummaryNewsGPT.as_view(), name="document-gpt"), 
 ]

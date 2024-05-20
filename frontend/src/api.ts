@@ -139,3 +139,13 @@ export const kakaoSignIn = (code: string) =>
       }
     )
     .then((response) => response.status);
+
+// chatLLM Object
+export interface IChatLLM {
+  url: string;
+}
+
+export const chatLLM = ({ url }: IChatLLM) =>
+  instance
+    .post(`models/summary-news/`, { url })
+    .then((response) => response.data);
