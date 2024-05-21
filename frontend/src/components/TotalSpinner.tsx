@@ -2,7 +2,7 @@ import { Box, Spinner, Text } from "@chakra-ui/react";
 
 const spinnerMessage = "Just wait for a second!";
 
-const boardsSpinner = () => {
+const totalSpinner = () => {
   return (
     <Box textAlign={"center"}>
       <Spinner
@@ -17,4 +17,4 @@ const boardsSpinner = () => {
   );
 };
 
-export default boardsSpinner;
+export default totalSpinner;

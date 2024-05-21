@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getBoards } from "../api";
 import Boards from "../components/Boards";
-import BoardsSpinner from "../components/BoardsSpinner";
+import TotalSpinner from "../components/TotalSpinner";
 import { IBoards } from "../types";
 
 export default function BoardsPage() {
@@ -10,5 +10,5 @@ export default function BoardsPage() {
     queryFn: getBoards,
   });
 
-  return <>{isLoading ? <BoardsSpinner /> : <Boards boards={data || []} />}</>;
+  return <>{isLoading ? <TotalSpinner /> : <Boards boards={data || []} />}</>;
 }

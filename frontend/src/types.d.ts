@@ -36,3 +36,7 @@ export interface IUser {
   language: string;
   currency: string;
 }
+
+export interface ISummary {
+  url: string;
+}
