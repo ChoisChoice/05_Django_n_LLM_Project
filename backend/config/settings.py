@@ -49,6 +49,7 @@ CUSTOM_APPS = [
     "users.apps.UsersConfig",
     "boards.apps.BoardsConfig",
     "models.apps.ModelsConfig",
+    "chats.apps.ChatsConfig",
     "common.apps.CommonConfig",
 ]  # startapp 실행 전, 미리 입력하면 에러가 발생함
 

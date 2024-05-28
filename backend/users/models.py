@@ -93,12 +93,3 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "User Information"
         verbose_name_plural = "Users"
-
-    """
-    [Question] id, password, email은 해당 필드에 포함시켜야 할까? 
-    => username이 보통 id로 사용되고 AbstractUser에 정의되어 있음, email 또한 AbstractUser에 정의되어 있어 해당 클래스에 자동으로 상속받게 됨 
-    => password는 AbstractBaseUser에 정의되어 있고 AbstractUser에 AbstractBaseUser가 상속되어 있어 해당 클래스에 자동으로 상속받게 됨(AbstractBaseUser-AbstractUser-User)
-    [Question] 인증을 위해 사용될 유저 휴대폰번호, 통신사는 해당 필드에 포함시켜야 할까? 아니면 인증을 위해 다른 곳에 정의를 해야할까?
-    ==> 일단 models.py에 정의
-    [Lesson] address, phone_num와 같이 상속받은 클래스에 정의되어 있지 않은 필드를 포함시켜 User 클래스를 재정의하였음으로 settings.py에 가서 AUTH_USER_MODEL = 'users.User'를 등록해야 함
-    """
