@@ -9,13 +9,13 @@ class Profile(models.Model):
 
     user = models.OneToOneField("users.User", on_delete=models.CASCADE)
     full_name = models.CharField(max_length=1000)
-    bio = models.CharField(max_length=100)
+    # bio = models.CharField(max_length=100)
     image = models.ImageField(upload_to="user_images", default="default.jpg")
     verified = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if self.full_name == "" or self.full_name == None:
-            self.full_name = self.user.username
+            self.full_name = self.user.name
         super(Profile, self).save(*args, **kwargs)
 
 
@@ -36,17 +36,20 @@ class ChatMessage(CommonModel):
 
     user = models.ForeignKey(
         "users.User",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         related_name="user",
     )
     sender = models.ForeignKey(
         "users.User",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         related_name="sender",
     )
     reciever = models.ForeignKey(
         "users.User",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         related_name="reciever",
     )
     message = models.CharField(max_length=1000000)
