@@ -1,17 +1,8 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Input,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect } from "react";
 import Typewriter from "react-ts-typewriter";
 
 ////////////////////////////// 채팅 인터페이스 //////////////////////////////
-interface MessageType {
+interface Message {
   text: string;
   isUser: boolean;
   isTyping?: boolean;
@@ -19,8 +10,8 @@ interface MessageType {
 }
 
 // ChatScreen: messages 배열과 currentTypingId 상태값을 유지
-const ChatScreen: React.FC = () => {
-  const [messages, setMessages] = useState<MessageType[]>([]);
+const ChatScreen = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [currentTypingId, setCurrentTypingId] = useState<number | null>(null);
 
   // handleSendMessage를 통해 메시지가 전달되면 사용자 메시지와 ai응답을 massages에 추가
@@ -60,22 +51,22 @@ const ChatScreen: React.FC = () => {
   }, [messages, currentTypingId]);
 
   return (
-    <Box className="app">
-      <VStack className="chat-box" spacing={4}>
+    <div className="app">
+      <div className="chat-box">
         <MessageList
           messages={messages}
           currentTypingId={currentTypingId}
           onEndTyping={handleEndTyping}
         />
         <MessageForm onSendMessage={handleSendMessage} />
-      </VStack>
-    </Box>
+      </div>
+    </div>
   );
 };
 
 ////////////////////////////// 채팅 리스트 //////////////////////////////
 interface MessageListProps {
-  messages: MessageType[];
+  messages: Message[];
   currentTypingId: number | null;
   onEndTyping: (id: number) => void;
 }
@@ -86,7 +77,7 @@ const MessageList: React.FC<MessageListProps> = ({
   currentTypingId,
   onEndTyping,
 }) => (
-  <VStack className="messages-list" spacing={3}>
+  <div className="messages-list">
     {messages.map((message, index) => (
       <Message
         key={index}
@@ -95,11 +86,11 @@ const MessageList: React.FC<MessageListProps> = ({
         currentTypingId={currentTypingId}
       />
     ))}
-  </VStack>
+  </div>
 );
 
 ////////////////////////////// 단일 메시지 //////////////////////////////
-interface MessageProps extends MessageType {
+interface MessageProps extends Message {
   onEndTyping: (id: number) => void;
   currentTypingId: number | null;
 }
@@ -114,20 +105,20 @@ const Message: React.FC<MessageProps> = ({
 }) => {
   useEffect(() => {
     if (!isUser && !isTyping && id === currentTypingId) {
-      onEndTyping(id!);
+      onEndTyping(id);
     }
   }, [isUser, isTyping, id, onEndTyping, currentTypingId]);
 
   return (
-    <Box className={isUser ? "user-message" : "ai-message"}>
+    <div className={isUser ? "user-message" : "ai-message"}>
       {isTyping && currentTypingId === id ? (
-        <Typewriter text={text} onFinished={() => onEndTyping(id!)} />
+        <Typewriter text={text} onFinished={() => onEndTyping(id)} />
       ) : (
-        <Text>
+        <p>
           <b>{isUser ? "User" : "AI"}</b>: {text}
-        </Text>
+        </p>
       )}
-    </Box>
+    </div>
   );
 };
 
@@ -137,21 +128,26 @@ interface MessageFormProps {
 }
 
 const MessageForm: React.FC<MessageFormProps> = ({ onSendMessage }) => {
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onSendMessage(message);
+    setMessage("");
+  };
+
   return (
-    <Formik
-      initialValues={{ message: "" }}
-      onSubmit={(values, { resetForm }) => {
-        onSendMessage(values.message);
-        resetForm();
-      }}
-    >
-      <Form className="message-form">
-        <Field type="text" name="message" className="message-input" />
-        <button type="submit" className="send-button">
-          Send
-        </button>
-      </Form>
-    </Formik>
+    <form onSubmit={handleSubmit} className="message-form">
+      <input
+        type="text"
+        value={message}
+        onChange={(event) => setMessage(event.target.value)}
+        className="message-input"
+      />
+      <button type="submit" className="send-button">
+        Send
+      </button>
+    </form>
   );
 };
 

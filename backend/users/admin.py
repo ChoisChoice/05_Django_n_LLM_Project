@@ -55,6 +55,7 @@ class CustomUserAdmin(UserAdmin):
     # 화면에 보여줄 데이터
     list_display = (
         "username", 
+        "id",
         "email", 
         "name", 
         "gender", 

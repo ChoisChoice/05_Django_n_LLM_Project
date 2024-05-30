@@ -7,7 +7,7 @@ import ChatScreen from "../components/Chat";
 export default function ChatLLMPage() {
   const { isLoading, data } = useQuery<ISummary[]>({
     queryKey: ["models/summary-news"],
-    queryFn: chatLLM,
+    // queryFn: chatLLM,
   });
   return <>{isLoading ? <TotalSpinner /> : <ChatScreen />} </>;
 }

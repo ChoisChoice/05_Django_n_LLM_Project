@@ -14,4 +14,6 @@ urlpatterns = [
     path("@<str:username>/", views.ShowProfile.as_view(), name="profile"),
     path("my-profile/", views.MyProfile.as_view(), name="profile"),
     path("update-password/", views.UpdatePassword.as_view(), name="update-password"),
+
+    path("search/<username>/", views.SearchUser.as_view()),
 ]

@@ -1,4 +1,8 @@
 import requests
+from django.db.models import OuterRef, Subquery
+from django.db.models import Q
+from django.contrib.auth import authenticate, login, logout
+from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -6,10 +10,9 @@ from rest_framework.exceptions import ParseError, NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate, login, logout
-from django.conf import settings
+from rest_framework import generics
 from . import serializers
-from users.models import User
+from users.models import User, Profile
 from common.views import validate_password
 
 
@@ -331,3 +334,30 @@ class UpdatePassword(APIView):
                 headers={"failed": "Password update failed."},
             )
 
+class SearchUser(generics.ListAPIView):
+
+    """ 채팅 프로필에 사용할 클래스 """
+
+    serializer_class = serializers.ProfileSerializer
+    queryset = Profile.objects.all()
+    permission_classes = [IsAuthenticated]  
+
+    def list(self, request, *args, **kwargs):
+        username = self.kwargs["username"]
+        logged_in_user = self.request.user
+
+        users = Profile.objects.filter(
+            Q(user__username__icontains=username) | 
+            Q(full_name__icontains=username) | 
+            Q(user__email__icontains=username) & 
+            ~Q(user=logged_in_user))
+
+        if not users.exists():
+            return Response(
+                {"detail": "No users found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = self.get_serializer(users, many=True)
+        
+        return Response(serializer.data)
