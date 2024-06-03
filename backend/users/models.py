@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 
-# Create your models here.
 class User(AbstractUser):
 
     """ 유저 데이터에 대한 필드 및 유형을 결정하는 클래스 """
@@ -12,8 +11,8 @@ class User(AbstractUser):
         FEMALE = ("female", "Female")
     
     class NationalityChoices(models.TextChoices):
-        DOMESTIC = ("domestic", "Domestic")
-        FOREIGN = ("foreign", "Foreign")
+        KOREA = ("korea", "Korea")
+        AMERICA = ("america", "America")
 
     class LanguageChoices(models.TextChoices):
         KR = ("kr", "Korean")
@@ -42,7 +41,7 @@ class User(AbstractUser):
     email = models.EmailField(
         blank=True,
         verbose_name = "Email",
-        # unique=True,
+        unique=True,
     )
 
     # 주소
@@ -96,7 +95,7 @@ class User(AbstractUser):
         verbose_name = "User Information"
         verbose_name_plural = "Users"
 
-    # USERNAME_FIELD = "email"
+    # USERNAME_FIELD = "email"  # default: "username"
     # REQUIRED_FIELDS = ["username"]
 
     def profile(self):
@@ -115,7 +114,7 @@ class Profile(models.Model):
 
     def save(self, *args, **kwargs):
         if self.full_name == "" or self.full_name == None:
-            self.full_name = self.user.username
+            self.full_name = self.user.name
         super(Profile, self).save(*args, **kwargs)
 
 

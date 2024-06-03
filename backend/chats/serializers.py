@@ -1,4 +1,4 @@
-from chats.models import Profile, ChatMessage
+from chats.models import ChatMessage
 from rest_framework.serializers import ModelSerializer
 from users.serializers import ProfileSerializer
 
@@ -13,10 +13,9 @@ class ChatMessageSerializer(ModelSerializer):
         model = ChatMessage
         fields = ["id", "user", "sender", "reciever", "reciever_profile", "sender_profile", "message", "is_read", "created_at"]
     
-    # def __init__(self, *args, **kwargs):
-    #     super(ChatMessageSerializer, self).__init__(*args, **kwargs)
-    #     request = self.context.get("request")
-    #     if request and request.method=="POST":
-    #         self.Meta.depth = 0
-    #     else:
-    #         self.Meta.depth = 2
+    def __init__(self, *args, **kwargs):
+        super(ChatMessageSerializer, self).__init__(*args, **kwargs)
+        request = self.context.get("request")
+        if request and request.method=="POST":
+            self.Meta.depth = 1
+

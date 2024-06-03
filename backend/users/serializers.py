@@ -2,7 +2,19 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User, Profile
 
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
+    """ simple-jwt """
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        
+        token['username'] = user.username
+        token['email'] = user.email
+
+        return token
+    
 class PublicUserSerializer(ModelSerializer):
 
     """ 사용자임을 확인할 수 있는 username(id) 데이터를 직렬화하는 클래스 """
@@ -36,12 +48,10 @@ class ProfileSerializer(ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ["id", "user", "full_name", "image"]
+        fields = ["id", "user", "image"]
     
     def __init__(self, *args, **kwargs):
         super(ProfileSerializer, self).__init__(*args, **kwargs)
         request = self.context.get("request")
         if request and request.method=="POST":
-            self.Meta.depth = 0
-        else:
-            self.Meta.depth = 3
+            self.Meta.depth = 1

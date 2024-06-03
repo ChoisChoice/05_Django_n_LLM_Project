@@ -140,12 +140,20 @@ export const kakaoSignIn = (code: string) =>
     )
     .then((response) => response.status);
 
-// chatLLM Object
+// chatEnv Object(채팅환경)
+export interface IChatEnv {
+  test: string;
+}
+
+export const chatEnv = ({ test }: IChatEnv) =>
+  instance.post(``, { test }).then((response) => response.data);
+
+// chatLLM Object(채팅내의 LLM 모델?)
 export interface IChatLLM {
   url: string;
 }
 
-export const chatLLM = ({ url }: IChatLLM) =>
+export const summaryLLM = ({ url }: IChatLLM) =>
   instance
     .post(`models/summary-news/`, { url })
     .then((response) => response.data);
