@@ -1,17 +1,40 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
 import axios from "axios";
 import Cookie from "js-cookie";
+import { ACCESS_TOKEN } from "./constants";
+import {
+  IChatEnv,
+  IChatSummary,
+  ISignInVariables,
+  ISignUpVariables,
+} from "./types";
 
 const instance = axios.create({
   baseURL: "http://127.0.0.1:8000/api/v1/",
   withCredentials: true, // api 요청할 때, cookie를 보냄
 });
 
+// // jwt 토큰
+// instance.interceptors.request.use(
+//   (config) => {
+//     console.log(config);
+//     const token = localStorage.getItem(ACCESS_TOKEN);
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
+//     console.log(token);
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+
 // 게시판
 export const getBoards = () =>
   instance.get("boards/").then((response) => response.data);
 
-// 게시판 상세
+// 상세 게시판
 export const getBoardsDetail = ({ queryKey }: QueryFunctionContext) => {
   const [_, boardPk] = queryKey;
   return instance.get(`boards/${boardPk}/`).then((response) => response.data);
@@ -21,35 +44,7 @@ export const getBoardsDetail = ({ queryKey }: QueryFunctionContext) => {
 export const getMyProfile = () =>
   instance.get(`users/my-profile/`).then((response) => response.data);
 
-// export const getMyProfile = () => {
-//   const accessToken = Cookie.get("access_token");
-//   console.log(accessToken);
-//   instance
-//     .get(`users/my-profile/`, {
-//       headers: {
-//         Authorization: `Bearer ${accessToken}`,
-//       },
-//     })
-//     .then((response) => response.data);
-// };
-
-// 로그인 mutation object
-export interface ISignInVariables {
-  username: string;
-  password: string;
-}
-
-// 로그인 성공에 대한 response
-export interface ISignInSuccess {
-  successed: string;
-}
-
-// 로그인 실패에 대한 response
-export interface ISignInFail {
-  failed: string;
-}
-
-// 로그인 mutation 함수: 하나의 argument를 가지지 않고 object(username, password)를 가진다.
+// 로그인
 export const SignIn = ({ username, password }: ISignInVariables) =>
   instance
     .post(
@@ -62,33 +57,8 @@ export const SignIn = ({ username, password }: ISignInVariables) =>
       }
     )
     .then((response) => response.data);
-// => console log에 response.data를 출력하면 {token:{access:..., refresh:...}}가 출력됨
 
-// export const SignIn = ({ username, password }: ISignInVariables) => {
-//   const accessToken = Cookie.get("access_token");
-//   instance
-//     .post(
-//       `/users/sign-in/`,
-//       { username, password },
-//       {
-//         headers: {
-//           "X-CSRFToken": Cookie.get("csrftoken") || "",
-//           Authorization: `Bearer ${accessToken}`,
-//         },
-//       }
-//     )
-//     .then((response) => response.data);
-// };
-
-// 회원가입 mutation object
-export interface ISignUpVariables {
-  name: string;
-  email: string;
-  username: string;
-  password: string;
-}
-
-// 회원가입 mutation 함수
+// 회원가입
 export const SignUp = ({ ...username }: ISignUpVariables) =>
   instance
     .post(
@@ -140,20 +110,12 @@ export const kakaoSignIn = (code: string) =>
     )
     .then((response) => response.status);
 
-// chatEnv Object(채팅환경)
-export interface IChatEnv {
-  test: string;
-}
-
+// chatEnv(채팅환경)
 export const chatEnv = ({ test }: IChatEnv) =>
   instance.post(``, { test }).then((response) => response.data);
 
-// chatLLM Object(채팅내의 LLM 모델?)
-export interface IChatLLM {
-  url: string;
-}
-
-export const summaryLLM = ({ url }: IChatLLM) =>
+// chatLLM(채팅내의 LLM 모델?)
+export const summaryLLM = ({ url }: IChatSummary) =>
   instance
     .post(`models/summary-news/`, { url })
     .then((response) => response.data);

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getBoards } from "../api";
 import { IBoardsDetail } from "../types";
 
-export default function BoardsDetailPage() {
+export default function BoardsDetailRoute() {
   const { boardPk } = useParams();
   const { isLoading, data } = useQuery<IBoardsDetail>({
     queryKey: [`board`, boardPk],

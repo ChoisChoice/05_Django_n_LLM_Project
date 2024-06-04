@@ -1,47 +1,47 @@
 import { createBrowserRouter } from "react-router-dom";
 import Root from "./components/Root";
-import NotFoundPage from "./routes/NotFoundPage";
-import HomePage from "./routes/HomePage";
-import BoardsPage from "./routes/BoardsPage";
-import BoardsDetailPage from "./routes/BoardsDetailPage";
-import GithubConfirmPage from "./routes/GithubConfirmPage";
-import KakaoConfirmPage from "./routes/KakaoConfirmPage";
-import ChatLLMPage from "./routes/ChatLLMPage";
+import NotFoundRoute from "./routes/NotFoundRoute";
+import HomeRoute from "./routes/HomeRoute";
+import BoardsRoute from "./routes/BoardsRoute";
+import BoardsDetailRoute from "./routes/BoardsDetailRoute";
+import GithubConfirmRoute from "./routes/GithubConfirmRoute";
+import KakaoConfirmRoute from "./routes/KakaoConfirmRoute";
+import ChatLLMRoute from "./routes/ChatLLMRoute";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
-    errorElement: <NotFoundPage />,
+    errorElement: <NotFoundRoute />,
     children: [
       {
         path: "",
-        element: <HomePage />,
+        element: <HomeRoute />,
       },
       {
         path: "boards/",
-        element: <BoardsPage />,
+        element: <BoardsRoute />,
       },
       {
         path: "boards/:boardPk/",
-        element: <BoardsDetailPage />,
+        element: <BoardsDetailRoute />,
       },
       {
         path: "social",
         children: [
           {
             path: "github/",
-            element: <GithubConfirmPage />,
+            element: <GithubConfirmRoute />,
           },
           {
             path: "kakao/",
-            element: <KakaoConfirmPage />,
+            element: <KakaoConfirmRoute />,
           },
         ],
       },
       {
         path: "chatllm/",
-        element: <ChatLLMPage />,
+        element: <ChatLLMRoute />,
       },
     ],
   },

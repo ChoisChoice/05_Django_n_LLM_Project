@@ -1,3 +1,4 @@
+// 게시판
 export interface IBoards {
   pk: number;
   disclosure_status: boolean;
@@ -9,12 +10,14 @@ export interface IBoards {
   created_at: string;
 }
 
+// 상세 게시판
 export interface IBoardsDetail extends IBoards {
   content: string;
   attachment: File | null;
   updated_at: string;
 }
 
+// 댓글
 export interface IComments {
   pk: number;
   posting: string;
@@ -24,6 +27,7 @@ export interface IComments {
   created_at: string;
 }
 
+// 유저
 export interface IUser {
   last_login: string;
   username: string;
@@ -37,6 +41,32 @@ export interface IUser {
   currency: string;
 }
 
-export interface ISummary {
+// 로그인
+export interface ISignInVariables {
+  username: string;
+  password: string;
+}
+export interface ISignInSuccess {
+  successed: string;
+}
+export interface ISignInFail {
+  failed: string;
+}
+
+// 회원가입
+export interface ISignUpVariables {
+  name: string;
+  email: string;
+  username: string;
+  password: string;
+}
+
+// chatEnv(채팅환경)
+export interface IChatEnv {
+  test: string;
+}
+
+// chat Summary LLM(채팅내의 Summary LLM 모델?)
+export interface IChatSummary {
   url: string;
 }

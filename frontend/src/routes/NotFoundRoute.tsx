@@ -1,7 +1,7 @@
 import { Button, Heading, Text, VStack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-export default function NotFoundPage() {
+export default function NotFoundRoute() {
   return (
     <VStack bg="gray.100" justifyContent={"center"} minH="100vh">
       <Heading>Page not found.</Heading>

@@ -1,6 +1,6 @@
 import ChatScreen from "../components/Chat";
 
-export default function ChatLLMPage() {
+export default function ChatLLMRoute() {
   return <ChatScreen />;
 }
 

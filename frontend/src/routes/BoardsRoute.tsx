@@ -4,7 +4,7 @@ import Boards from "../components/Boards";
 import TotalSpinner from "../components/TotalSpinner";
 import { IBoards } from "../types";
 
-export default function BoardsPage() {
+export default function BoardsRoute() {
   const { isLoading, data } = useQuery<IBoards[]>({
     queryKey: ["boards"],
     queryFn: getBoards,

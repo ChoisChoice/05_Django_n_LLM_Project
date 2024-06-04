@@ -1,16 +1,16 @@
 import { Heading, Spinner, Text, VStack, useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { githubSignIn } from "../api";
+import { kakaoSignIn } from "../api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export default function GithubConfirmPage() {
+export default function KakaoConfirmRoute() {
   const { search } = useLocation();
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const mutation = useMutation({
-    mutationFn: githubSignIn,
+    mutationFn: kakaoSignIn,
     onSuccess: () => {
       toast({
         status: "success",
@@ -34,7 +34,7 @@ export default function GithubConfirmPage() {
   }, []);
   return (
     <VStack justifyContent={"center"} mt={40}>
-      <Heading>Sign-in using Github...</Heading>
+      <Heading>Sign-in using Kakao...</Heading>
       <Text>Just wait a few seconds.</Text>
       <Spinner size="lg" />
     </VStack>
