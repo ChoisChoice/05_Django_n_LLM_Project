@@ -1,12 +1,11 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
 import axios from "axios";
 import Cookie from "js-cookie";
-import { ACCESS_TOKEN } from "./constants";
 import {
-  IChatEnv,
-  IChatSummary,
+  // IChatEnv,
   ISignInVariables,
   ISignUpVariables,
+  ISummaryLLM,
 } from "./types";
 
 const instance = axios.create({
@@ -30,19 +29,21 @@ const instance = axios.create({
 //   }
 // );
 
+export default instance;
+
 // 게시판
 export const getBoards = () =>
-  instance.get("boards/").then((response) => response.data);
+  instance.get("/boards/").then((response) => response.data);
 
 // 상세 게시판
 export const getBoardsDetail = ({ queryKey }: QueryFunctionContext) => {
   const [_, boardPk] = queryKey;
-  return instance.get(`boards/${boardPk}/`).then((response) => response.data);
+  return instance.get(`/boards/${boardPk}/`).then((response) => response.data);
 };
 
 // 내 정보
 export const getMyProfile = () =>
-  instance.get(`users/my-profile/`).then((response) => response.data);
+  instance.get(`/users/my-profile/`).then((response) => response.data);
 
 // 로그인
 export const SignIn = ({ username, password }: ISignInVariables) =>
@@ -75,7 +76,7 @@ export const SignUp = ({ ...username }: ISignUpVariables) =>
 // 로그아웃
 export const signOut = () =>
   instance
-    .post(`users/sign-out/`, null, {
+    .post(`/users/sign-out/`, null, {
       headers: {
         "X-CSRFToken": Cookie.get("csrftoken") || "",
       },
@@ -110,12 +111,10 @@ export const kakaoSignIn = (code: string) =>
     )
     .then((response) => response.status);
 
-// chatEnv(채팅환경)
-export const chatEnv = ({ test }: IChatEnv) =>
-  instance.post(``, { test }).then((response) => response.data);
+// // chatEnv(채팅환경)
+// export const chatEnv = ({ test }: IChatEnv) =>
+//   instance.post(``, { test }).then((response) => response.data);
 
-// chatLLM(채팅내의 LLM 모델?)
-export const summaryLLM = ({ url }: IChatSummary) =>
-  instance
-    .post(`models/summary-news/`, { url })
-    .then((response) => response.data);
+// Summary LLM
+export const summaryLLM = () =>
+  instance.post(`/models/summary-news/`).then((response) => response.data);

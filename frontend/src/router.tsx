@@ -6,7 +6,7 @@ import BoardsRoute from "./routes/BoardsRoute";
 import BoardsDetailRoute from "./routes/BoardsDetailRoute";
 import GithubConfirmRoute from "./routes/GithubConfirmRoute";
 import KakaoConfirmRoute from "./routes/KakaoConfirmRoute";
-import ChatLLMRoute from "./routes/ChatLLMRoute";
+import LLMRoute from "./routes/LLMRoute";
 
 const router = createBrowserRouter([
   {
@@ -40,8 +40,8 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "chatllm/",
-        element: <ChatLLMRoute />,
+        path: "llm/",
+        element: <LLMRoute />,
       },
     ],
   },

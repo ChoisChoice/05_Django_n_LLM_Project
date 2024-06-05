@@ -61,12 +61,12 @@ export interface ISignUpVariables {
   password: string;
 }
 
-// chatEnv(채팅환경)
-export interface IChatEnv {
-  test: string;
-}
+// // chatEnv(채팅환경)
+// export interface IChatEnv {
+//   test: string;
+// }
 
-// chat Summary LLM(채팅내의 Summary LLM 모델?)
-export interface IChatSummary {
+// Summary LLM (Summary LLM 모델?)
+export interface ISummaryLLM {
   url: string;
 }

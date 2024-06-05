@@ -4,7 +4,7 @@ const spinnerMessage = "Just wait for a second!";
 
 const totalSpinner = () => {
   return (
-    <Box textAlign={"center"}>
+    <Box textAlign={"center"} marginTop={200}>
       <Spinner
         thickness="4px"
         speed="0.65s"
