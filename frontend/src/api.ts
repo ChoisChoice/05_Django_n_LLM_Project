@@ -46,7 +46,7 @@ export const getMyProfile = () =>
   instance.get(`/users/my-profile/`).then((response) => response.data);
 
 // 로그인
-export const SignIn = ({ username, password }: ISignInVariables) =>
+export const signIn = ({ username, password }: ISignInVariables) =>
   instance
     .post(
       `/users/sign-in/`,
@@ -60,7 +60,7 @@ export const SignIn = ({ username, password }: ISignInVariables) =>
     .then((response) => response.data);
 
 // 회원가입
-export const SignUp = ({ ...username }: ISignUpVariables) =>
+export const signUp = ({ ...username }: ISignUpVariables) =>
   instance
     .post(
       `/users/sign-up/`,
@@ -116,5 +116,15 @@ export const kakaoSignIn = (code: string) =>
 //   instance.post(``, { test }).then((response) => response.data);
 
 // Summary LLM
-export const summaryLLM = () =>
-  instance.post(`/models/summary-news/`).then((response) => response.data);
+export const summaryLLM = ({ url }: ISummaryLLM) =>
+  instance
+    .post(
+      `/models/summary-news/`,
+      { url },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);

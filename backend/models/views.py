@@ -45,7 +45,7 @@ class SummaryNewsGPT(APIView):
             )
 
         return Response(
-            data=summary_result,
+            data=summary_result.content,
             headers={"successed": "Summary of newspaper articles."}, 
             status=status.HTTP_200_OK,
         )
