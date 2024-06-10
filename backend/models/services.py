@@ -5,8 +5,12 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.embeddings import CacheBackedEmbeddings
 from langchain.storage import LocalFileStore
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores.faiss import FAISS
+# from langchain.vectorstores.faiss import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.callbacks.base import BaseCallbackHandler
+from langchain.schema.runnable import RunnablePassthrough
+from langchain_community.document_transformers import DoctranTextTranslator
+from langchain_core.documents import Document
 from models.utils.helper_functions import extract_article, save_article
 
 def create_retriever(url):
@@ -26,7 +30,7 @@ def create_retriever(url):
     # 텍스트 분할기 정의
     splitter = CharacterTextSplitter.from_tiktoken_encoder(
         separator=". ",
-        chunk_size=100,
+        chunk_size=200,
         chunk_overlap=20,
     )
 
@@ -54,7 +58,6 @@ def create_model():
 
     """ 챗모델을 생성하는 함수 """
     
-    # 챗모델 생성
     llm = ChatOpenAI(
         temperature=0.1,
         streaming=True,
@@ -84,10 +87,35 @@ def create_prompt():
 
     """ 프롬프트를 생성하는 함수 """
 
-    # 프롬프트 생성
     prompt = ChatPromptTemplate.from_messages([
             ("system", """Answer the question using ONLY the following context. If you don't know the answer just say you don't know. DON'T make anything up. Context: {context}"""),
             ("human", "{question}"),
     ])
 
     return prompt
+
+def create_chain(retriever, prompt, llm):
+
+    """ 체인을 생성하는 함수 """
+
+    chain = {
+                "context": retriever,
+                "question": RunnablePassthrough()
+            } | prompt | llm
+    
+    return chain
+
+def create_translated_news(summarized_news):
+
+    """ 요약된 기사를 번역하는 함수 """
+
+    # document 생성
+    documents = [Document(page_content=summarized_news)]
+
+    # translator 객체 생성
+    qa_translator = DoctranTextTranslator(openai_api_model="gpt-3.5-turbo", language="korean")
+    
+    # document 번역
+    translated_document = qa_translator.transform_documents(documents)
+
+    return translated_document[0].page_content

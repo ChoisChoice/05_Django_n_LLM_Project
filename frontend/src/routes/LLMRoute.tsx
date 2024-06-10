@@ -9,24 +9,24 @@ import {
   Stack,
   Text,
   VStack,
-  useToast,
 } from "@chakra-ui/react";
 import { FaArrowAltCircleRight } from "react-icons/fa";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { ISummaryLLM } from "../types";
-import { summaryLLM } from "../api";
-import { useForm } from "react-hook-form";
+import { IURL } from "../types";
+import { summarizedNewsLLM, translateddNewsLLM } from "../api";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 export default function LLMRoute() {
-  const { register, handleSubmit, reset } = useForm<ISummaryLLM>();
-  const [url, setUrl] = useState("");
-  const [summary, setSummary] = useState("");
+  const { register, handleSubmit, reset } = useForm<IURL>();
+  const [summarized, setSummarized] = useState("");
+  const [translated, setTranslated] = useState("");
 
-  const summary_mutation = useMutation({
-    mutationFn: summaryLLM,
+  const summarizedMutation = useMutation({
+    mutationFn: summarizedNewsLLM,
     onSuccess: (data) => {
-      setSummary(data);
+      setSummarized(data);
+      translatedMutation.mutate({ summarized_news: data });
       reset();
     },
     onError: (error) => {
@@ -34,8 +34,21 @@ export default function LLMRoute() {
     },
   });
 
-  const onSubmit = ({ url }: ISummaryLLM) => {
-    summary_mutation.mutate({ url });
+  const translatedMutation = useMutation({
+    mutationFn: translateddNewsLLM,
+    onSuccess: (data) => {
+      setTranslated(data);
+      reset();
+    },
+    onError: (error) => {
+      console.error("Error translating the news:", error);
+    },
+  });
+
+  const onSubmit: SubmitHandler<IURL> = ({ url }) => {
+    setSummarized("");
+    setTranslated("");
+    summarizedMutation.mutate({ url });
   };
 
   return (
@@ -54,7 +67,7 @@ export default function LLMRoute() {
         />
         <Button
           type="submit"
-          isLoading={summary_mutation.isPending}
+          isLoading={summarizedMutation.isPending}
           colorScheme="teal"
           variant="outline"
           style={{ backgroundColor: "#7ed957", color: "black" }}
@@ -90,7 +103,7 @@ export default function LLMRoute() {
           <Box flex="1" borderBottom="2px solid gray" width="100%">
             <Container>
               <Heading fontSize={18} textAlign="center" marginTop={2}>
-                Summarize News Article
+                Summarized News Article
               </Heading>
               <Box
                 border="1px solid gray"
@@ -99,10 +112,10 @@ export default function LLMRoute() {
                 height={230}
                 overflowY="auto"
               >
-                {summary ? (
-                  <Text>{summary}</Text>
+                {summarized ? (
+                  <Text>{summarized}</Text>
                 ) : (
-                  <Text>Summarize News Article</Text>
+                  <Text>Summarized News Article</Text>
                 )}
               </Box>
             </Container>
@@ -110,15 +123,20 @@ export default function LLMRoute() {
           <Box flex="1" width="100%">
             <Container>
               <Heading fontSize={18} textAlign="center" marginTop={2}>
-                Translate News Article
+                Translated News Article
               </Heading>
               <Box
                 border="1px solid gray"
                 marginTop={4}
                 marginBottom={4}
                 height={230}
+                overflowY="auto"
               >
-                {/* Translate News */}
+                {translated ? (
+                  <Text>{translated}</Text>
+                ) : (
+                  <Text>Translated News Article</Text>
+                )}
               </Box>
             </Container>
           </Box>

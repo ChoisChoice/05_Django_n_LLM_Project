@@ -5,7 +5,9 @@ import {
   // IChatEnv,
   ISignInVariables,
   ISignUpVariables,
-  ISummaryLLM,
+  ISummarizedNewsLLM,
+  ITranslatedNewsLLM,
+  IURL,
 } from "./types";
 
 const instance = axios.create({
@@ -115,12 +117,40 @@ export const kakaoSignIn = (code: string) =>
 // export const chatEnv = ({ test }: IChatEnv) =>
 //   instance.post(``, { test }).then((response) => response.data);
 
-// Summary LLM
-export const summaryLLM = ({ url }: ISummaryLLM) =>
+// Original News
+export const originalNews = ({ url }: IURL) =>
   instance
     .post(
-      `/models/summary-news/`,
+      `/models/original-news/`,
       { url },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);
+
+// Summarized News LLM
+export const summarizedNewsLLM = ({ url }: ISummarizedNewsLLM) =>
+  instance
+    .post(
+      `/models/summarized-news/`,
+      { url },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response.data);
+
+// Translated News LLM
+export const translateddNewsLLM = ({ summarized_news }: ITranslatedNewsLLM) =>
+  instance
+    .post(
+      `/models/translated-news/`,
+      { summarized_news },
       {
         headers: {
           "X-CSRFToken": Cookie.get("csrftoken") || "",

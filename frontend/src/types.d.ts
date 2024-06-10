@@ -66,7 +66,17 @@ export interface ISignUpVariables {
 //   test: string;
 // }
 
-// Summary LLM (Summary LLM 모델?)
-export interface ISummaryLLM {
+// Original News
+export interface IURL {
   url: string;
+}
+
+// Summarized News LLM
+export interface ISummarizedNewsLLM {
+  url: string;
+}
+
+// translated News LLM
+export interface ITranslatedNewsLLM {
+  summarized_news: string;
 }
