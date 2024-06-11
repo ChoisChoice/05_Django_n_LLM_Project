@@ -56,7 +56,7 @@ class SummarizedNewsGPT(APIView):
         chain = create_chain(retriever, prompt, llm)
 
         try:
-            summary_result = chain.invoke(question)
+            summarized_news= chain.invoke(question)
         except Exception as e:
             return Response(
                 headers={"error": str(e)}, 
@@ -64,7 +64,7 @@ class SummarizedNewsGPT(APIView):
             )
 
         return Response(
-            data=summary_result.content,
+            data=summarized_news.content,
             headers={"successed": "News articles has been summarized."}, 
             status=status.HTTP_200_OK,
         )

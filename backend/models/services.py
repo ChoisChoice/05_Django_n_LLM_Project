@@ -1,16 +1,15 @@
 from langchain_openai import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
+from langchain.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_community.document_loaders.unstructured import UnstructuredFileLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain.embeddings import CacheBackedEmbeddings
 from langchain.storage import LocalFileStore
 from langchain.text_splitter import CharacterTextSplitter
-# from langchain.vectorstores.faiss import FAISS
 from langchain_community.vectorstores import FAISS
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.schema.runnable import RunnablePassthrough
-from langchain_community.document_transformers import DoctranTextTranslator
-from langchain_core.documents import Document
+# from langchain.chains.llm import LLMChain
+from langchain_core.runnables.base import RunnableSequence
 from models.utils.helper_functions import extract_article, save_article
 
 def create_retriever(url):
@@ -109,13 +108,22 @@ def create_translated_news(summarized_news):
 
     """ 요약된 기사를 번역하는 함수 """
 
-    # document 생성
-    documents = [Document(page_content=summarized_news)]
-
-    # translator 객체 생성
-    qa_translator = DoctranTextTranslator(openai_api_model="gpt-3.5-turbo", language="korean")
+    # 탬플릿 생성
+    template='''In an easy way translate the following sentences '{sentences}' into Korean.'''
     
-    # document 번역
-    translated_document = qa_translator.transform_documents(documents)
+    # 프롬프트 생성
+    prompt = PromptTemplate(
+        input_variables=["sentences"],
+        template=template,
+    )
+    
+    # 모델 생성
+    llm = create_model()
+    
+    # 체인 생성
+    chain = prompt | llm 
 
-    return translated_document[0].page_content
+    # 번역 기사 생성
+    translated_news = chain.invoke({"sentences": summarized_news}).content
+
+    return translated_news
