@@ -2,6 +2,8 @@ import { Box } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Footer from "./Footer";
+import Sidebar from "./MenuBar";
 
 export default function Root() {
   return (
@@ -9,6 +11,7 @@ export default function Root() {
       <Header />
       <Outlet />
       <ReactQueryDevtools />
+      <Footer />
     </Box>
   );
 }

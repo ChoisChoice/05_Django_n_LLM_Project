@@ -1,8 +1,8 @@
 import { Heading, Spinner, Text, VStack, useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { githubSignIn } from "../api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { githubSignIn } from "../api/social";
 
 export default function GithubConfirmRoute() {
   const { search } = useLocation();

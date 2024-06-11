@@ -109,7 +109,12 @@ def create_translated_news(summarized_news):
     """ 요약된 기사를 번역하는 함수 """
 
     # 탬플릿 생성
-    template='''In an easy way translate the following sentences '{sentences}' into Korean.'''
+    template="""
+        Translate the following sentences '{sentences}' into Korean, referring to the conditions below.
+            - Translate each sentence according to the number of sentences.
+            - Avoid unnecessary explanations and focus solely on the translation.
+            - Do not annotate with numbers.
+    """
     
     # 프롬프트 생성
     prompt = PromptTemplate(

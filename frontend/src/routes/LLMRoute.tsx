@@ -1,39 +1,63 @@
 import {
   Box,
   Button,
-  Center,
   Container,
   HStack,
   Heading,
   Input,
+  Link,
+  List,
+  ListIcon,
+  ListItem,
   Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { FaArrowAltCircleRight } from "react-icons/fa";
+import { FaArrowAltCircleRight, FaCheck } from "react-icons/fa";
+import { RiAlertLine } from "react-icons/ri";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { IURL } from "../types";
-import { summarizedNewsLLM, translateddNewsLLM } from "../api";
+
 import { useForm, SubmitHandler } from "react-hook-form";
+import {
+  originalNews,
+  summarizedNewsLLM,
+  translateddNewsLLM,
+} from "../api/model";
 
 export default function LLMRoute() {
   const { register, handleSubmit, reset } = useForm<IURL>();
-  const [summarized, setSummarized] = useState("");
-  const [translated, setTranslated] = useState("");
 
+  // 원문 기사 관련 변수
+  const [original, setOriginal] = useState("");
+  const originalMutation = useMutation({
+    mutationFn: originalNews,
+    onSuccess: (data) => {
+      setOriginal(data);
+      reset();
+    },
+    onError: (error) => {
+      console.error("Error Occurrence of loading original news:", error);
+    },
+  });
+
+  // 요약된 기사 관련 변수
+  const [summarized, setSummarized] = useState("");
   const summarizedMutation = useMutation({
     mutationFn: summarizedNewsLLM,
     onSuccess: (data) => {
       setSummarized(data);
-      translatedMutation.mutate({ summarized_news: data });
+      translatedMutation.mutate({ summarized_news: data }); // 요약된 기사를 번역함
       reset();
     },
     onError: (error) => {
-      console.error("Error summarizing the news:", error);
+      console.error("Error Occurrence of loading summarized news:", error);
     },
   });
 
+  // 번역된 기사 관련 변수
+  const [translated, setTranslated] = useState("");
   const translatedMutation = useMutation({
     mutationFn: translateddNewsLLM,
     onSuccess: (data) => {
@@ -41,22 +65,51 @@ export default function LLMRoute() {
       reset();
     },
     onError: (error) => {
-      console.error("Error translating the news:", error);
+      console.error("Error Occurrence of loading translated news:", error);
     },
   });
 
   const onSubmit: SubmitHandler<IURL> = ({ url }) => {
-    setSummarized("");
-    setTranslated("");
+    originalMutation.mutate({ url });
     summarizedMutation.mutate({ url });
   };
 
   return (
     <Stack align="center">
-      <Heading mb={3} marginTop={10}>
+      <Heading fontSize={42} marginTop={20}>
         ABC News Summarization & Translation
       </Heading>
-      <Text fontSize="lg">based on GPT with LangChain</Text>
+      <Text fontSize={28} as="b" marginTop={1}>
+        based on GPT with LangChain
+      </Text>
+      <List marginTop={4} spacing={3}>
+        <ListItem fontSize={18} as="b">
+          <ListIcon as={RiAlertLine} color="red.500" />
+          Instructions
+        </ListItem>
+        <Box pl={6} fontSize={16}>
+          <ListItem>
+            <ListIcon as={FaCheck} color="green.500" />
+            Enter the 'ABC News URL' into the search box and click the 'Run'
+            button.
+          </ListItem>
+          <ListItem>
+            <ListIcon as={FaCheck} color="green.500" />
+            The URL to be entered MUST contain a 10-digit number as shown below.
+          </ListItem>
+          <ListItem>
+            <ListIcon as={FaCheck} color="green.500" />
+            Example: https://abcnews.go.com/...?id=110930284
+          </ListItem>
+          <ListItem>
+            <ListIcon as={FaCheck} color="green.500" />
+            Please refer to the following link for the url. →
+            <Link href="https://abcnews.go.com/" color="blue" margin={2}>
+              https://abcnews.go.com/
+            </Link>
+          </ListItem>
+        </Box>
+      </List>
       <HStack marginTop={5} as="form" onSubmit={handleSubmit(onSubmit)}>
         <Input
           required
@@ -70,14 +123,19 @@ export default function LLMRoute() {
           isLoading={summarizedMutation.isPending}
           colorScheme="teal"
           variant="outline"
-          style={{ backgroundColor: "#7ed957", color: "black" }}
-          leftIcon={<FaArrowAltCircleRight />}
-        ></Button>
+          style={{
+            backgroundColor: "#7ed957",
+            color: "black",
+          }}
+          rightIcon={<FaArrowAltCircleRight />}
+        >
+          Run
+        </Button>
       </HStack>
       <Box
         display="flex"
-        marginTop={2}
-        marginBottom={2}
+        marginTop={8}
+        marginBottom={10}
         border="2px solid gray"
         width={800}
         height={600}
@@ -93,8 +151,13 @@ export default function LLMRoute() {
               marginTop={4}
               marginBottom={4}
               height={530}
+              overflowY="auto"
             >
-              {/* Original News Article */}
+              {original ? (
+                <Text padding={2}>{original}</Text>
+              ) : (
+                <Text padding={2}>.....</Text>
+              )}
             </Box>
           </Container>
         </Box>
@@ -113,9 +176,9 @@ export default function LLMRoute() {
                 overflowY="auto"
               >
                 {summarized ? (
-                  <Text>{summarized}</Text>
+                  <Text padding={2}>{summarized}</Text>
                 ) : (
-                  <Text>Summarized News Article</Text>
+                  <Text padding={2}>.....</Text>
                 )}
               </Box>
             </Container>
@@ -123,7 +186,7 @@ export default function LLMRoute() {
           <Box flex="1" width="100%">
             <Container>
               <Heading fontSize={18} textAlign="center" marginTop={2}>
-                Translated News Article
+                Translated News Article(En → Kr)
               </Heading>
               <Box
                 border="1px solid gray"
@@ -133,9 +196,9 @@ export default function LLMRoute() {
                 overflowY="auto"
               >
                 {translated ? (
-                  <Text>{translated}</Text>
+                  <Text padding={2}>{translated}</Text>
                 ) : (
-                  <Text>Translated News Article</Text>
+                  <Text padding={2}>.....</Text>
                 )}
               </Box>
             </Container>

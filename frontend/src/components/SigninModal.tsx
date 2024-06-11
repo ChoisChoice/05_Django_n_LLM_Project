@@ -18,8 +18,8 @@ import { FaUserNinja, FaLock } from "react-icons/fa";
 import SocialSignIn from "./SocialSignIn";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { signIn } from "../api";
 import { useNavigate } from "react-router-dom";
+import { signIn } from "../api/users";
 
 interface SignInModalProps {
   isOpen: boolean;

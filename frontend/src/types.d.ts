@@ -66,17 +66,12 @@ export interface ISignUpVariables {
 //   test: string;
 // }
 
-// Original News
+// Original News & Summarized News
 export interface IURL {
   url: string;
 }
 
-// Summarized News LLM
-export interface ISummarizedNewsLLM {
-  url: string;
-}
-
-// translated News LLM
+// translated News
 export interface ITranslatedNewsLLM {
   summarized_news: string;
 }

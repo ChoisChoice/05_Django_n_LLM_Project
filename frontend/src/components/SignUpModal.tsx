@@ -18,7 +18,7 @@ import { FaUserNinja, FaLock, FaEnvelope, FaUserSecret } from "react-icons/fa";
 import SocialSignIn from "./SocialSignIn";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { signUp } from "../api";
+import { signUp } from "../api/users";
 
 interface SignUpModalProps {
   isOpen: boolean;

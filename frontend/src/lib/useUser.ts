@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMyProfile } from "../api";
 import { IUser } from "../types";
+import { getMyProfile } from "../api/users";
 
 export default function useUser() {
   const { isLoading, data, isError } = useQuery<IUser>({
