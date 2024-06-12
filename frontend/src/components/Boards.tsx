@@ -1,56 +1,34 @@
+import { useState } from "react";
 import { Table, Tr, Td, Text, Thead, Th, Tbody, Box } from "@chakra-ui/react";
-import { FaLock, FaLockOpen } from "react-icons/fa";
-// import { FcNext, FcPrevious } from "react-icons/fc";
+import { FaArrowLeft, FaArrowRight, FaLock, FaLockOpen } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { IBoards } from "../types";
-// import {
-//   Container,
-//   Next,
-//   PageGroup,
-//   Paginator,
-//   Previous,
-//   usePaginator,
-// } from "chakra-paginator";
-import { useState } from "react";
 
 interface BoardsProps {
   boards: IBoards[];
 }
 
 export default function Boards({ boards }: BoardsProps) {
-  const itemsPerPage = 10; // 페이지당 표시할 항목 수
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
-
-  const boardsToShow = boards.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   return (
-    <Box textAlign="center" marginTop="3rem">
+    <Box textAlign="center" marginTop={20}>
       <Text fontSize="3xl" fontWeight="bold">
         Total Board
       </Text>
-      <Table width="70%" margin="auto" marginTop="2rem">
-        <Thead>
+      <Table width="70%" margin="auto" marginTop={20} marginBottom={20}>
+        <Thead backgroundColor="gray.100">
           <Tr>
-            <Th>No</Th>
-            <Th>Status</Th>
-            <Th>Title [Comment]</Th>
-            <Th>Category</Th>
-            <Th>Writer</Th>
-            <Th>Hit</Th>
-            <Th>Creation Date</Th>
+            <Th fontSize="md">No</Th>
+            <Th fontSize="md">Status</Th>
+            <Th fontSize="md">Title [Comment]</Th>
+            <Th fontSize="md">Category</Th>
+            <Th fontSize="md">Writer</Th>
+            <Th fontSize="md">Hit</Th>
+            <Th fontSize="md">Creation Date</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {/* boards -> boardsToShow */}
-          {boardsToShow.map((board) => (
-            <Tr key={board.pk}>
+          {boards.map((board) => (
+            <Tr>
               <Td>{board.pk}</Td>
               <Td>
                 {board.disclosure_status ? (
@@ -72,17 +50,6 @@ export default function Boards({ boards }: BoardsProps) {
           ))}
         </Tbody>
       </Table>
-      {/* <Paginator
-        activePage={currentPage}
-        totalPages={Math.ceil(boards.length / itemsPerPage)}
-        onPageChange={handlePageChange}
-      >
-        <Container align="center" justify="space-between" w="full" p={4}>
-          <Previous as={FcPrevious} />
-          <PageGroup isInline align="center" />
-          <Next as={FcNext} />
-        </Container>
-      </Paginator> */}
     </Box>
   );
 }

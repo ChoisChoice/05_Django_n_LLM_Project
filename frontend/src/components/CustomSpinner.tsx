@@ -2,9 +2,9 @@ import { Box, Spinner, Text } from "@chakra-ui/react";
 
 const spinnerMessage = "Just wait for a second!";
 
-const totalSpinner = () => {
+const CustomSpinner = () => {
   return (
-    <Box textAlign={"center"} marginTop={200}>
+    <Box textAlign={"center"} marginTop={200} marginBottom={200}>
       <Spinner
         thickness="4px"
         speed="0.65s"
@@ -17,4 +17,4 @@ const totalSpinner = () => {
   );
 };
 
-export default totalSpinner;
+export default CustomSpinner;

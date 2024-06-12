@@ -12,6 +12,7 @@ import {
   MenuItem,
   MenuList,
   Stack,
+  Text,
   useColorMode,
   useColorModeValue,
   useDisclosure,
@@ -25,6 +26,7 @@ import SignInModal from "./SignInModal";
 import SignUpModal from "./SignUpModal";
 import useUser from "../lib/useUser";
 import { signOut } from "../api/users";
+import Navigation from "./NavBar";
 
 export default function Header() {
   // 로그인 관련 변수
@@ -34,21 +36,27 @@ export default function Header() {
     onClose: onSigninClose,
     onOpen: onSigninOpen,
   } = useDisclosure();
+
   // 회원가입 관련 변수
   const {
     isOpen: isSignUpOpen,
     onClose: onSignUpClose,
     onOpen: onSignUpOpen,
   } = useDisclosure();
+
   // 홈페이지 로고 관련 변수
   const isDarkMode = useColorModeValue(false, true);
+
   // 다크모드 아이콘 관련 변수
   const { toggleColorMode } = useColorMode();
   const Icon = useColorModeValue(FaMoon, FaSun);
+
   // 로그아웃 관련 변수
   const toast = useToast();
   const queryClient = useQueryClient();
   const toastId = useRef<ToastId>();
+
+  // 로그아웃 뮤테이션
   const mutation = useMutation({
     mutationFn: signOut,
     onMutate: () => {
@@ -73,6 +81,7 @@ export default function Header() {
   const onSignOut = async () => {
     mutation.mutate();
   };
+
   return (
     <Stack
       justifyContent={"space-between"}
@@ -98,6 +107,7 @@ export default function Header() {
           />
         </Link>
       </Box>
+      <Navigation />
       <HStack spacing={2}>
         <IconButton
           onClick={toggleColorMode}
@@ -122,7 +132,18 @@ export default function Header() {
           ) : (
             <Menu>
               <MenuButton>
-                <Box>{`Welcome, ${user?.name}!`}</Box>
+                <Box
+                  backgroundColor="gray.100"
+                  color="black"
+                  borderRadius="8px"
+                  padding="6px"
+                >
+                  Welcome,{" "}
+                  <Text as="span" fontWeight="bold">
+                    {user?.name}
+                  </Text>
+                  !
+                </Box>
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={onSignOut}>Sign out</MenuItem>

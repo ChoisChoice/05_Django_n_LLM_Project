@@ -150,7 +150,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Auth 설정
 AUTH_USER_MODEL = "users.User"
-PAGE_SIZE = 5
+PAGE_SIZE = 7
 
 # REST Framework 설정
 REST_FRAMEWORK = {
