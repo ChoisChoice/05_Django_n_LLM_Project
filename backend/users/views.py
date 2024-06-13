@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from . import serializers
-from users.models import User, Profile
+from users.models import User
 from common.views import validate_password
 
 
@@ -73,25 +73,6 @@ class SignIn(APIView):
             password=password,
         )  # 입력받은 사용자 id / password로 인증 시도
         if user:  # 사용자 확인
-            # # 토큰 발급
-            # token = TokenObtainPairSerializer.get_token(user)
-            # # print(token)
-            # access_token = str(token.access_token)
-            # refresh_token = str(token)
-            # response = Response(
-            #     {
-            #         "token": {
-            #             "access": access_token,
-            #             "refresh": refresh_token,
-            #         },
-            #     },
-            #     status=status.HTTP_200_OK, 
-            #     headers={"successed": "Sign-In has been successful."},
-            # )
-            # # 토큰 쿠키에 저장
-            # response.set_cookie("access", access_token, httponly=True)
-            # response.set_cookie("refresh", refresh_token, httponly=True)
-            # return response
             login(request, user)
             return Response(
                 status=status.HTTP_200_OK, 
@@ -231,25 +212,6 @@ class KakaoSignIn(APIView):
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-# class SocialSignOut(APIView):
-
-#     """ 소셜 로그인한 계정을 로그아웃하는 클래스 """
-
-#     permission_classes = [IsAuthenticated]
-
-#     def post(self, request):
-#         try:
-#             logout(request)
-#             return Response(
-#                 status=status.HTTP_205_RESET_CONTENT,
-#                 headers={"successed": "Sign-out has been successful!"},
-#             )
-#         except Exception as e:
-#             return Response(
-#                 status=status.HTTP_400_BAD_REQUEST, 
-#                 headers={"successed": "Sign-out has been trouble."},
-#             )
-
 class ShowProfile(APIView):
 
     """ 사용자 프로필을 보여주는 클래스 """
@@ -337,33 +299,3 @@ class UpdatePassword(APIView):
                 headers={"failed": "Password update failed."},
             )
         
-
-# class SearchUser(generics.ListAPIView):
-
-#     """ 채팅 프로필에 사용할 클래스 """
-
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, username, *args, **kwargs):
-#         logged_in_user = request.user
-
-#         users = Profile.objects.filter(
-#             Q(user__username__icontains=username) | 
-#             Q(full_name__icontains=username) | 
-#             Q(user__email__icontains=username) & 
-#             ~Q(user=logged_in_user)
-#         )
-
-#         if not users.exists():
-#             return Response(
-#                 status=status.HTTP_404_NOT_FOUND,
-#                 headers={"failed": "SearchUser is NOT worked!"},
-#             )
-
-#         serializer = serializers.ProfileSerializer(users, many=True)
-        
-#         return Response(
-#             data=serializer.data,
-#             status=status.HTTP_200_OK,
-#             headers={"successed": "SearchUser is worked!"},
-#         )

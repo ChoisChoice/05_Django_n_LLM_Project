@@ -7,6 +7,7 @@ import BoardsDetailRoute from "./routes/BoardsDetailRoute";
 import GithubConfirmRoute from "./routes/GithubConfirmRoute";
 import KakaoConfirmRoute from "./routes/KakaoConfirmRoute";
 import LLMRoute from "./routes/LLMRoute";
+import CreateBoardRoute from "./routes/CreateBoardRoute";
 
 const router = createBrowserRouter([
   {
@@ -20,14 +21,23 @@ const router = createBrowserRouter([
       },
       {
         path: "boards/",
-        element: <BoardsRoute />,
+        children: [
+          {
+            path: "",
+            element: <BoardsRoute />,
+          },
+          {
+            path: "create/",
+            element: <CreateBoardRoute />,
+          },
+        ],
       },
       {
         path: "boards/:boardPk/",
         element: <BoardsDetailRoute />,
       },
       {
-        path: "social",
+        path: "social/",
         children: [
           {
             path: "github/",

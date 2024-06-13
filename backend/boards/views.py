@@ -17,13 +17,14 @@ class Boards(APIView):
 
     # 게시판 가져오기
     def get(self, request):
-        # 페이지네이션 구현
-        start, end = pagination(request)
+        # # 페이지네이션 구현
+        # start, end = pagination(request)
         # 데이터 가져오기
         all_postings = Posting.objects.all()
         # 가져온 데이터 직렬화
         serializer = BoardsSerializer(
-            all_postings[start:end],  # 페이지네이션 적용
+            all_postings,
+            # all_postings[start:end],  # 페이지네이션 적용
             many=True,  # 여러개의 데이터 직렬화
             context={"request": request},
         )
@@ -157,8 +158,8 @@ class Comments(APIView):
 
     # 게시판 가져오기
     def get(self, request, board_pk):
-        # 페이지네이션 구현
-        start, end = pagination(request)
+        # # 페이지네이션 구현
+        # start, end = pagination(request)
         # 데이터 가져오기
         posting = self.get_object(board_pk)
         # 비공개 상태 + 게시글의 저자 본인 여부 + 관리자 여부 확인
@@ -171,7 +172,8 @@ class Comments(APIView):
         all_comment = Comment.objects.filter(posting=posting)
         # 가져온 댓글 직렬화
         serializer = CommentsSerializer(
-            all_comment[start:end],  # 페이지네이션 적용
+            all_comment,
+            # all_comment[start:end],  # 페이지네이션 적용
             many=True,
         )
         return Response(
