@@ -19,7 +19,7 @@ import SocialSignIn from "./SocialSignIn";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { signIn } from "../api/users";
+import { signIn } from "../api/userAPI";
 
 interface SignInModalProps {
   isOpen: boolean;
@@ -41,6 +41,8 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  // 로그인 관련 뮤테이션
   const mutation = useMutation({
     mutationFn: signIn,
     onMutate: () => {
@@ -54,6 +56,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
         position: "bottom-right",
       });
       onClose();
+      navigate("/");
       queryClient.refetchQueries({ queryKey: ["my-profile"] });
     },
     onError: (error) => {
@@ -61,10 +64,12 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       reset();
     },
   });
+
   const onSubmit = ({ username, password }: IForm) => {
     mutation.mutate({ username, password });
     console.log(username, password);
   };
+
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
       <ModalOverlay />
@@ -74,6 +79,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
         {/* 아래에서 데이터 validation과 preventDefault 함. 그리고 두가지가 끝나면 onSubmit함수를 호출함 */}
         <ModalBody as="form" onSubmit={handleSubmit(onSubmit)}>
           <VStack>
+            {/* username */}
             <InputGroup size={"md"}>
               <InputLeftElement
                 children={
@@ -91,6 +97,8 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                 placeholder="Username"
               />
             </InputGroup>
+
+            {/* password */}
             <InputGroup>
               <InputLeftElement
                 children={
@@ -110,11 +118,14 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
               />
             </InputGroup>
           </VStack>
+
+          {/* error */}
           {mutation.isError ? (
             <Text color="red.500" textAlign={"center"} fontSize="sm">
               Username or Password are wrong!
             </Text>
           ) : null}
+
           <Button
             isLoading={mutation.isPending} // isLoading -> isPending
             type="submit"

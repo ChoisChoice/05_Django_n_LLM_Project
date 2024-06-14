@@ -25,7 +25,7 @@ import { ToastId } from "@chakra-ui/toast";
 import SignInModal from "./SignInModal";
 import SignUpModal from "./SignUpModal";
 import useUser from "../lib/useUser";
-import { signOut } from "../api/users";
+import { signOut } from "../api/userAPI";
 import Navigation from "./NavBar";
 
 export default function Header() {

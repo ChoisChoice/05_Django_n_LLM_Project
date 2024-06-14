@@ -24,7 +24,7 @@ import {
   originalNews,
   summarizedNewsLLM,
   translateddNewsLLM,
-} from "../api/model";
+} from "../api/modelAPI";
 
 export default function LLMRoute() {
   const { register, handleSubmit, reset } = useForm<IURL>();

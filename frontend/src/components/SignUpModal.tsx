@@ -4,6 +4,9 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  List,
+  ListIcon,
+  ListItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,11 +17,18 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import { FaUserNinja, FaLock, FaEnvelope, FaUserSecret } from "react-icons/fa";
+import {
+  FaUserNinja,
+  FaLock,
+  FaEnvelope,
+  FaUserSecret,
+  FaCheck,
+} from "react-icons/fa";
 import SocialSignIn from "./SocialSignIn";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { signUp } from "../api/users";
+import { signUp } from "../api/userAPI";
+import { RiAlertLine } from "react-icons/ri";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -41,6 +51,8 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
   } = useForm<IForm>();
   const toast = useToast();
   const queryClient = useQueryClient();
+
+  // 회원가입 관련 뮤테이션
   const mutation = useMutation({
     mutationFn: signUp,
     onMutate: () => {
@@ -50,20 +62,24 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
       console.log("Successfully Sign-Up");
       toast({
         title: "Welcome to the my Site!",
+        description: "PLEASE SIGN-IN AND JOIN WEBSITE!!",
         status: "success",
         position: "bottom-right",
       });
       onClose();
       queryClient.refetchQueries({ queryKey: ["my-profile"] });
+      reset();
     },
     onError: (error) => {
       console.log("Mutation Failed");
       reset();
     },
   });
+
   const onSubmit = ({ ...username }: IForm) => {
     mutation.mutate({ ...username });
   };
+
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
       <ModalOverlay />
@@ -72,6 +88,7 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
         <ModalCloseButton />
         <ModalBody as="form" onSubmit={handleSubmit(onSubmit)}>
           <VStack>
+            {/* name */}
             <InputGroup>
               <InputLeftElement
                 children={
@@ -81,14 +98,16 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
                 }
               />
               <Input
-                isInvalid={Boolean(errors.name?.message)}
                 {...register("name", {
                   required: "Please write a name",
                 })}
+                isInvalid={Boolean(errors.name?.message)}
                 variant={"filled"}
                 placeholder="Name"
               />
             </InputGroup>
+
+            {/* email */}
             <InputGroup>
               <InputLeftElement
                 children={
@@ -98,15 +117,17 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
                 }
               />
               <Input
-                isInvalid={Boolean(errors.email?.message)}
                 {...register("email", {
                   required: "Please write an valid email",
                 })}
+                isInvalid={Boolean(errors.email?.message)}
                 type="email"
                 variant={"filled"}
                 placeholder="Email"
               />
             </InputGroup>
+
+            {/* username */}
             <InputGroup>
               <InputLeftElement
                 children={
@@ -116,14 +137,16 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
                 }
               />
               <Input
-                isInvalid={Boolean(errors.username?.message)}
                 {...register("username", {
                   required: "Please write a username",
                 })}
+                isInvalid={Boolean(errors.username?.message)}
                 variant={"filled"}
                 placeholder="Username"
               />
             </InputGroup>
+
+            {/* password */}
             <InputGroup>
               <InputLeftElement
                 children={
@@ -133,16 +156,42 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
                 }
               />
               <Input
-                isInvalid={Boolean(errors.password?.message)}
                 {...register("password", {
                   required: "Please write a password",
                 })}
+                isInvalid={Boolean(errors.password?.message)}
                 variant={"filled"}
                 type="password"
                 placeholder="Password"
               />
             </InputGroup>
+            <List mt={2} mb={2} spacing={3}>
+              <ListItem fontSize={18} as="b">
+                <ListIcon as={RiAlertLine} color={"red.500"} />
+                Password Rules
+              </ListItem>
+              <Box pl={6} fontSize={16}>
+                <ListItem>
+                  <ListIcon as={FaCheck} color={"green.500"} />
+                  Password must be at least 8 characters
+                </ListItem>
+                <ListItem>
+                  <ListIcon as={FaCheck} color={"green.500"} />
+                  Contains at least 2 upper/lowercase letters
+                </ListItem>
+                <ListItem>
+                  <ListIcon as={FaCheck} color={"green.500"} />
+                  Contains 2 or more numbers
+                </ListItem>
+                <ListItem>
+                  <ListIcon as={FaCheck} color={"green.500"} />
+                  Contains 2 or more special characters
+                </ListItem>
+              </Box>
+            </List>
           </VStack>
+
+          {/* error */}
           {mutation.isError ? (
             <Text color="red.500" textAlign={"center"} fontSize="sm">
               Please input correct information!

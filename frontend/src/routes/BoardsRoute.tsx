@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Boards from "../components/Boards";
 import { IBoards } from "../types";
-import { getBoards } from "../api/board";
+import { getBoards } from "../api/boardAPI";
 import CustomSpinner from "../components/CustomSpinner";
 
 export default function BoardsRoute() {

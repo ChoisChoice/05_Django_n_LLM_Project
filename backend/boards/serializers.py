@@ -8,6 +8,7 @@ class BoardsSerializer(ModelSerializer):
 
     """ 게시판(게시글 리스트)을 보여주기 위한 직렬화 클래스 """
 
+    writer = PublicUserSerializer()  # writer 필드를 직렬화(username, name)
     comment_count = serializers.SerializerMethodField()
 
     class Meta:

@@ -1,13 +1,28 @@
+export interface IWriter {
+  username: string;
+  name: string;
+}
+
 // 게시판
 export interface IBoards {
   pk: number;
   disclosure_status: boolean;
   posting_category: string;
-  writer: string;
+  writer: IWriter;
   title: string;
   comment_count: string;
   hits: number;
   created_at: string;
+}
+
+// 게시판 생성
+export interface ICreateBoards {
+  disclosure_status: boolean;
+  posting_category: string;
+  title: string;
+  writer: IWriter;
+  content: string;
+  attachment: File | null;
 }
 
 // 상세 게시판

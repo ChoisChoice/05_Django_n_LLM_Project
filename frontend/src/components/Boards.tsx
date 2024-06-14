@@ -89,28 +89,57 @@ export default function Boards({ boards }: BoardsProps) {
         <Tbody>
           {currentBoards.map((board) => (
             <Tr>
-              <Td>{board.pk}</Td>
+              {/* pk */}
               <Td>
-                {board.disclosure_status ? (
-                  <FaLock color="red" />
-                ) : (
-                  <FaLockOpen color="green" />
-                )}
+                <Link to={`/boards/${board.pk}`}>{board.pk}</Link>
               </Td>
-              <Td>{board.posting_category}</Td>
+
+              {/* disclosure_status */}
+              <Td>
+                <Link to={`/boards/${board.pk}`}>
+                  {board.disclosure_status ? (
+                    <FaLock color="red" />
+                  ) : (
+                    <FaLockOpen color="green" />
+                  )}
+                </Link>
+              </Td>
+
+              {/* posting_category */}
+              <Td>
+                <Link to={`/boards/${board.pk}`}>{board.posting_category}</Link>
+              </Td>
+
+              {/* comment_count */}
               <Td>
                 <Link to={`/boards/${board.pk}`}>
                   {board.title} [{board.comment_count}]
                 </Link>
               </Td>
-              <Td>{board.writer}</Td>
-              <Td>{board.hits}</Td>
-              <Td>{new Date(board.created_at).toLocaleDateString()}</Td>
+
+              {/* writer */}
+              <Td>
+                <Link to={`/boards/${board.pk}`}>{board.writer.username}</Link>
+              </Td>
+
+              {/* hits */}
+              <Td>
+                <Link to={`/boards/${board.pk}`}>{board.hits}</Link>
+              </Td>
+
+              {/* created_at */}
+              <Td>
+                <Link to={`/boards/${board.pk}`}>
+                  {new Date(board.created_at).toLocaleDateString()}
+                </Link>
+              </Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
+      {/* 페이지네이션 */}
       <Box marginBottom={20}>
+        {/* 왼쪽 버튼 */}
         <Button
           onClick={handlePreviousClick}
           disabled={currentPage === 0} // 현재 페이지가 0이면, 왼쪽 화살표 버튼 비활성화
@@ -118,6 +147,7 @@ export default function Boards({ boards }: BoardsProps) {
         >
           <FaArrowLeft />
         </Button>
+        {/* 페이지(숫자) 버튼 */}
         {[...Array(pageCount)].map((_, index) => (
           <Button
             key={index}
@@ -130,6 +160,7 @@ export default function Boards({ boards }: BoardsProps) {
             {index + 1}
           </Button>
         ))}
+        {/* 오른쪽 버튼 */}
         <Button
           onClick={handleNextClick}
           disabled={currentPage === pageCount - 1}
@@ -141,53 +172,3 @@ export default function Boards({ boards }: BoardsProps) {
     </Box>
   );
 }
-
-// interface BoardsProps {
-//   boards: IBoards[];
-// }
-
-// export default function Boards({ boards }: BoardsProps) {
-//   return (
-//     <Box textAlign="center" marginTop={20}>
-//       <Text fontSize="3xl" fontWeight="bold">
-//         Total Board
-//       </Text>
-//       <Table width="70%" margin="auto" marginTop={20} marginBottom={20}>
-//         <Thead backgroundColor="gray.100">
-//           <Tr>
-//             <Th fontSize="md">No</Th>
-//             <Th fontSize="md">Status</Th>
-//             <Th fontSize="md">Title [Comment]</Th>
-//             <Th fontSize="md">Category</Th>
-//             <Th fontSize="md">Writer</Th>
-//             <Th fontSize="md">Hit</Th>
-//             <Th fontSize="md">Creation Date</Th>
-//           </Tr>
-//         </Thead>
-//         <Tbody>
-//           {boards.map((board) => (
-//             <Tr>
-//               <Td>{board.pk}</Td>
-//               <Td>
-//                 {board.disclosure_status ? (
-//                   <FaLock color="red" />
-//                 ) : (
-//                   <FaLockOpen color="green" />
-//                 )}
-//               </Td>
-//               <Td>
-//                 <Link to={`/boards/${board.pk}`}>
-//                   {board.title} [{board.comment_count}]
-//                 </Link>
-//               </Td>
-//               <Td>{board.posting_category}</Td>
-//               <Td>{board.writer}</Td>
-//               <Td>{board.hits}</Td>
-//               <Td>{new Date(board.created_at).toLocaleDateString()}</Td>
-//             </Tr>
-//           ))}
-//         </Tbody>
-//       </Table>
-//     </Box>
-//   );
-// }
