@@ -8,6 +8,7 @@ import GithubConfirmRoute from "./routes/GithubConfirmRoute";
 import KakaoConfirmRoute from "./routes/KakaoConfirmRoute";
 import LLMRoute from "./routes/LLMRoute";
 import CreateBoardRoute from "./routes/CreateBoardRoute";
+import BoardsUpdateRoute from "./routes/BoardsUpdateRoute";
 
 const router = createBrowserRouter([
   {
@@ -24,17 +25,26 @@ const router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <BoardsRoute />,
+            element: <BoardsRoute />, // 게시판
           },
           {
             path: "create/",
-            element: <CreateBoardRoute />,
+            element: <CreateBoardRoute />, // 게시글 생성
           },
         ],
       },
       {
         path: "boards/:boardPk/",
-        element: <BoardsDetailRoute />,
+        children: [
+          {
+            path: "",
+            element: <BoardsDetailRoute />, // 상세 게시글
+          },
+          {
+            path: "update/",
+            element: <BoardsUpdateRoute />, // 상세 게시글 생성
+          },
+        ],
       },
       {
         path: "social/",

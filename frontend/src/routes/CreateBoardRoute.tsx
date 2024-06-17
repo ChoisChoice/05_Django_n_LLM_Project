@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import useUser from "../lib/useUser";
-import { postBoard } from "../api/boardAPI";
+import { postBoards } from "../api/boardAPI";
 import { ICreateBoards } from "../types";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -34,7 +34,7 @@ export default function CreateBoardRoute() {
 
   // 게시판 생성 관련 뮤테이션
   const mutation = useMutation({
-    mutationFn: postBoard,
+    mutationFn: postBoards,
     onSuccess: (data) => {
       toast({
         title: "Board created successfully!",

@@ -3,12 +3,12 @@ import instance from "./axios";
 import Cookie from "js-cookie";
 import { ICreateBoards } from "../types";
 
-// 게시판
+// 게시판 가져오기
 export const getBoards = () =>
   instance.get(`/boards/`).then((response) => response.data);
 
-// 게시판 생성
-export const postBoard = async (boardData: ICreateBoards) => {
+// 게시판 생성하기
+export const postBoards = async (boardData: ICreateBoards) => {
   const { attachment, ...data } = boardData;
   return instance
     .post(`/boards/`, data, {

@@ -27,7 +27,6 @@ export default function Boards({ boards }: BoardsProps) {
   const startIndex = currentPage * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentBoards = boards.slice(startIndex, endIndex);
-  console.log(currentBoards);
 
   // 전체 페이지 수 계산
   const pageCount = Math.ceil(boards.length / ITEMS_PER_PAGE);
@@ -52,29 +51,11 @@ export default function Boards({ boards }: BoardsProps) {
   };
 
   return (
-    <Box textAlign="center" marginTop={20}>
-      <Text fontSize={42} fontWeight="bold" marginBottom={10}>
+    <Box textAlign="center" mt={20} mb={20}>
+      <Text fontSize={42} fontWeight="bold" mb={20}>
         Total Board
       </Text>
-      <Box
-        marginTop={10}
-        display="flex"
-        justifyContent="flex-end"
-        width="70%"
-        margin="auto"
-      >
-        <Link to={`/boards/create`}>
-          <Button
-            style={{
-              backgroundColor: "#7ed957",
-              color: "black",
-            }}
-          >
-            Create
-          </Button>
-        </Link>
-      </Box>
-      <Table width="70%" margin="auto" marginTop={10} marginBottom={10}>
+      <Table width="70%" margin="auto" mt={10} mb={10}>
         <Thead backgroundColor="gray.100">
           <Tr>
             <Th fontSize="md">No</Th>
@@ -138,7 +119,7 @@ export default function Boards({ boards }: BoardsProps) {
         </Tbody>
       </Table>
       {/* 페이지네이션 */}
-      <Box marginBottom={20}>
+      <Box mb={10}>
         {/* 왼쪽 버튼 */}
         <Button
           onClick={handlePreviousClick}
@@ -168,6 +149,24 @@ export default function Boards({ boards }: BoardsProps) {
         >
           <FaArrowRight />
         </Button>
+      </Box>
+      <Box
+        mb={10}
+        display="flex"
+        justifyContent="flex-end"
+        width="70%"
+        margin="auto"
+      >
+        <Link to={`/boards/create`}>
+          <Button
+            style={{
+              backgroundColor: "#7ed957",
+              color: "black",
+            }}
+          >
+            Create
+          </Button>
+        </Link>
       </Box>
     </Box>
   );

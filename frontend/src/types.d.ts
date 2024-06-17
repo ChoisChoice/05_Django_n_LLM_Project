@@ -4,7 +4,7 @@ export interface IWriter {
 }
 
 // 게시판
-export interface IBoards {
+export interface IBoards extends IWriter {
   pk: number;
   disclosure_status: boolean;
   posting_category: string;
@@ -16,7 +16,7 @@ export interface IBoards {
 }
 
 // 게시판 생성
-export interface ICreateBoards {
+export interface ICreateBoards extends IWriter {
   disclosure_status: boolean;
   posting_category: string;
   title: string;
@@ -33,12 +33,12 @@ export interface IBoardsDetail extends IBoards {
 }
 
 // 댓글
-export interface IComments {
+export interface IComments extends IWriter {
   pk: number;
   posting: string;
-  writer: string;
+  writer: IWriter;
   comment: string;
-  thumb_up: number;
+  thumb_up: [];
   created_at: string;
 }
 
@@ -75,11 +75,6 @@ export interface ISignUpVariables {
   username: string;
   password: string;
 }
-
-// // chatEnv(채팅환경)
-// export interface IChatEnv {
-//   test: string;
-// }
 
 // Original News & Summarized News
 export interface IURL {

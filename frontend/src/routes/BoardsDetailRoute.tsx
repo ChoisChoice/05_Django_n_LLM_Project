@@ -8,19 +8,21 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { FaPencilAlt } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { IBoardsDetail } from "../types";
 import { getBoardsDetail } from "../api/boardAPI";
-import { FaPencilAlt } from "react-icons/fa";
+import Comments from "../components/Comments";
 
 export default function BoardsDetailRoute() {
+  // 상세 게시글
   const { _, boardPk } = useParams();
-  const { isLoading, data } = useQuery<IBoardsDetail>({
+  const { isLoading: isBoardLoading, data: boardData } = useQuery({
     queryFn: getBoardsDetail,
     queryKey: [`board`, boardPk],
   });
-  // console.log(data?.disclosure_status);
+
+  // 상세 게시글 삭제
 
   return (
     <Box
@@ -30,7 +32,7 @@ export default function BoardsDetailRoute() {
       maxW="4xl"
       mx="auto"
       mt={20}
-      mb={10}
+      mb={20}
       as="form"
     >
       <Text textAlign="center" fontSize={42} fontWeight="bold" mb={20}>
@@ -46,7 +48,7 @@ export default function BoardsDetailRoute() {
             </FormLabel>
           </Flex>
           <Text border="1px solid gray" p={2}>
-            {data?.disclosure_status ? "True" : "False"}
+            {boardData?.disclosure_status ? "True" : "False"}
           </Text>
         </FormControl>
 
@@ -59,7 +61,7 @@ export default function BoardsDetailRoute() {
             </FormLabel>
           </Flex>
           <Text border="1px solid gray" p={2}>
-            {data?.posting_category}
+            {boardData?.posting_category}
           </Text>
         </FormControl>
 
@@ -72,7 +74,7 @@ export default function BoardsDetailRoute() {
             </FormLabel>
           </Flex>
           <Text border="1px solid gray" p={2}>
-            {data?.writer?.username}
+            {boardData?.writer?.username}
           </Text>
         </FormControl>
 
@@ -85,7 +87,7 @@ export default function BoardsDetailRoute() {
             </FormLabel>
           </Flex>
           <Text border="1px solid gray" p={2}>
-            {data?.title}
+            {boardData?.title}
           </Text>
         </FormControl>
 
@@ -98,7 +100,7 @@ export default function BoardsDetailRoute() {
             </FormLabel>
           </Flex>
           <Text border="1px solid gray" p={2}>
-            {data?.content}
+            {boardData?.content}
           </Text>
         </FormControl>
 
@@ -111,9 +113,9 @@ export default function BoardsDetailRoute() {
             </FormLabel>
           </Flex>
           <Text border="1px solid gray" p={2}>
-            {data?.attachment
-              ? data.attachment instanceof File
-                ? data.attachment.name
+            {boardData?.attachment
+              ? boardData.attachment instanceof File
+                ? boardData.attachment.name
                 : "No file attached"
               : "No file attached"}
           </Text>
@@ -139,17 +141,18 @@ export default function BoardsDetailRoute() {
           </Button>
         </Link>
         {/* 수정하기 버튼 */}
-        <Button
-          mt={10}
-          ml={2}
-          style={{
-            backgroundColor: "#7ed957",
-            color: "black",
-          }}
-          type="submit"
-        >
-          Modify
-        </Button>
+        <Link to={`/boards/${boardPk}/update`}>
+          <Button
+            mt={10}
+            ml={2}
+            style={{
+              backgroundColor: "#7ed957",
+              color: "black",
+            }}
+          >
+            Modify
+          </Button>
+        </Link>
         {/* 삭제하기 버튼 */}
         <Button
           mt={10}
@@ -158,11 +161,12 @@ export default function BoardsDetailRoute() {
             backgroundColor: "orangered",
             color: "black",
           }}
-          type="submit"
         >
           Delete
         </Button>
       </Box>
+      {/* 특정 게시글의 댓글 */}
+      <Comments />
     </Box>
   );
 }
