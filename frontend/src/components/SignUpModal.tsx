@@ -29,26 +29,15 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { signUp } from "../api/userAPI";
 import { RiAlertLine } from "react-icons/ri";
+import { ISignUpModal, ISignUpVariables } from "../types";
 
-interface SignUpModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-interface IForm {
-  name: string;
-  email: string;
-  username: string;
-  password: string;
-}
-
-export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
+export default function SignUpModal({ isOpen, onClose }: ISignUpModal) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<IForm>();
+  } = useForm<ISignUpVariables>();
   const toast = useToast();
   const queryClient = useQueryClient();
 
@@ -76,7 +65,7 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
     },
   });
 
-  const onSubmit = ({ ...username }: IForm) => {
+  const onSubmit = ({ ...username }: ISignUpVariables) => {
     mutation.mutate({ ...username });
   };
 

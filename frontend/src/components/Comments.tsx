@@ -1,14 +1,16 @@
 import {
   Box,
+  Button,
   Flex,
   HStack,
   Heading,
   Icon,
+  Input,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getComments } from "../api/commentAPI";
 import { IComments } from "../types";
 import { FaComment, FaThumbsUp } from "react-icons/fa";
@@ -35,7 +37,7 @@ export default function Comments() {
     <VStack mt={10} align="stretch" w="100%">
       <Heading mb={5}>
         <Flex align="center" mt={4}>
-          <Icon as={FaComment} boxSize={6} mr={2} color="orange" />
+          <Icon as={FaComment} boxSize={6} mr={2} color="silver" />
           <Text fontSize={24}>Comments</Text>
         </Flex>
       </Heading>
@@ -62,6 +64,26 @@ export default function Comments() {
           </HStack>
         </Box>
       ))}
+      <Box
+        mt={5}
+        display="flex"
+        justifyContent="flex-end"
+        width="100%"
+        margin="auto"
+      >
+        {/* 댓글 생성 버튼 */}
+        <Link to={`/boards`}>
+          <Button
+            mt={10}
+            style={{
+              backgroundColor: "#7ed957",
+              color: "black",
+            }}
+          >
+            Create
+          </Button>
+        </Link>
+      </Box>
     </VStack>
   );
 }

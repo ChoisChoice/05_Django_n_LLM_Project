@@ -20,24 +20,15 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { signIn } from "../api/userAPI";
+import { ISignInModal, ISignInVariables } from "../types";
 
-interface SignInModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-interface IForm {
-  username: string;
-  password: string;
-}
-
-export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
+export default function SignInModal({ isOpen, onClose }: ISignInModal) {
   const {
     register, // form에 input을 등록하는 함수
     handleSubmit, // 데이터를 validate하는 함수(event.preventDefault, handleSubmit 기능들을 제공)
     formState: { errors },
     reset,
-  } = useForm<IForm>();
+  } = useForm<ISignInVariables>();
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -58,6 +49,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       onClose();
       navigate("/");
       queryClient.refetchQueries({ queryKey: ["my-profile"] });
+      reset();
     },
     onError: (error) => {
       console.log("Mutation Failed");
@@ -65,7 +57,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
     },
   });
 
-  const onSubmit = ({ username, password }: IForm) => {
+  const onSubmit = ({ username, password }: ISignInVariables) => {
     mutation.mutate({ username, password });
     console.log(username, password);
   };

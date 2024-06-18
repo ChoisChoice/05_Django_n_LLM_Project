@@ -1,7 +1,7 @@
 import { Box, Heading, Text, Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-export default function NotFound() {
+export default function NotFoundRoute() {
   return (
     <Box textAlign="center" py={10} px={6} mt={20}>
       <Heading

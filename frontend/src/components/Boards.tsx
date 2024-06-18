@@ -9,10 +9,13 @@ import {
   Tbody,
   Box,
   Button,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { FaArrowLeft, FaArrowRight, FaLock, FaLockOpen } from "react-icons/fa";
+import { FaLock, FaLockOpen } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { IBoards } from "../types";
+import BoardsCreateModal from "./BoardsCreateModal";
+import Pagination from "./Pagination";
 
 interface BoardsProps {
   boards: IBoards[];
@@ -49,6 +52,13 @@ export default function Boards({ boards }: BoardsProps) {
       setCurrentPage(currentPage + 1);
     }
   };
+
+  // 게시글 생성
+  const {
+    isOpen: isCreateOpen,
+    onClose: onCreateClose,
+    onOpen: onCreateOpen,
+  } = useDisclosure();
 
   return (
     <Box textAlign="center" mt={20} mb={20}>
@@ -119,37 +129,13 @@ export default function Boards({ boards }: BoardsProps) {
         </Tbody>
       </Table>
       {/* 페이지네이션 */}
-      <Box mb={10}>
-        {/* 왼쪽 버튼 */}
-        <Button
-          onClick={handlePreviousClick}
-          disabled={currentPage === 0} // 현재 페이지가 0이면, 왼쪽 화살표 버튼 비활성화
-          style={{ marginRight: "10px" }}
-        >
-          <FaArrowLeft />
-        </Button>
-        {/* 페이지(숫자) 버튼 */}
-        {[...Array(pageCount)].map((_, index) => (
-          <Button
-            key={index}
-            onClick={() => handlePageClick(index)}
-            style={{
-              margin: "0 5px",
-              fontWeight: currentPage === index ? "bold" : "normal",
-            }}
-          >
-            {index + 1}
-          </Button>
-        ))}
-        {/* 오른쪽 버튼 */}
-        <Button
-          onClick={handleNextClick}
-          disabled={currentPage === pageCount - 1}
-          style={{ marginLeft: "10px" }}
-        >
-          <FaArrowRight />
-        </Button>
-      </Box>
+      <Pagination
+        currentPage={currentPage}
+        pageCount={pageCount}
+        handlePageClick={handlePageClick}
+        handlePreviousClick={handlePreviousClick}
+        handleNextClick={handleNextClick}
+      />
       <Box
         mb={10}
         display="flex"
@@ -157,16 +143,17 @@ export default function Boards({ boards }: BoardsProps) {
         width="70%"
         margin="auto"
       >
-        <Link to={`/boards/create`}>
-          <Button
-            style={{
-              backgroundColor: "#7ed957",
-              color: "black",
-            }}
-          >
-            Create
-          </Button>
-        </Link>
+        {/* 게시글 생성 버튼 */}
+        <Button
+          style={{
+            backgroundColor: "#7ed957",
+            color: "black",
+          }}
+          onClick={onCreateOpen}
+        >
+          Create
+          <BoardsCreateModal isOpen={isCreateOpen} onClose={onCreateClose} />
+        </Button>
       </Box>
     </Box>
   );

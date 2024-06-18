@@ -7,22 +7,37 @@ import {
   Icon,
   Text,
   VStack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { FaPencilAlt } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { getBoardsDetail } from "../api/boardAPI";
 import Comments from "../components/Comments";
+import BoardsUpdateModal from "../components/BoardsUpdateModal";
+import BoardsDeleteModal from "../components/BoardsDeleteModal";
 
 export default function BoardsDetailRoute() {
   // 상세 게시글
   const { _, boardPk } = useParams();
-  const { isLoading: isBoardLoading, data: boardData } = useQuery({
+  const { data: boardData } = useQuery({
     queryFn: getBoardsDetail,
     queryKey: [`board`, boardPk],
   });
 
+  // 상세 게시글 수정
+  const {
+    isOpen: isUpdateOpen,
+    onClose: onUpdateClose,
+    onOpen: onUpdateOpen,
+  } = useDisclosure();
+
   // 상세 게시글 삭제
+  const {
+    isOpen: isDeleteOpen,
+    onClose: onDeleteClose,
+    onOpen: onDeleteOpen,
+  } = useDisclosure();
 
   return (
     <Box
@@ -140,19 +155,25 @@ export default function BoardsDetailRoute() {
             Back
           </Button>
         </Link>
+
         {/* 수정하기 버튼 */}
-        <Link to={`/boards/${boardPk}/update`}>
-          <Button
-            mt={10}
-            ml={2}
-            style={{
-              backgroundColor: "#7ed957",
-              color: "black",
-            }}
-          >
-            Modify
-          </Button>
-        </Link>
+        <Button
+          mt={10}
+          ml={2}
+          style={{
+            backgroundColor: "yellow",
+            color: "black",
+          }}
+          onClick={onUpdateOpen}
+        >
+          Update
+          <BoardsUpdateModal
+            isOpen={isUpdateOpen}
+            onClose={onUpdateClose}
+            boardData={boardData} // 특정 게시물 데이터 해당 모달에 전달
+          />
+        </Button>
+
         {/* 삭제하기 버튼 */}
         <Button
           mt={10}
@@ -161,10 +182,17 @@ export default function BoardsDetailRoute() {
             backgroundColor: "orangered",
             color: "black",
           }}
+          onClick={onDeleteOpen}
         >
           Delete
+          <BoardsDeleteModal
+            isOpen={isDeleteOpen}
+            onClose={onDeleteClose}
+            boardPk={boardPk}
+          />
         </Button>
       </Box>
+
       {/* 특정 게시글의 댓글 */}
       <Comments />
     </Box>
