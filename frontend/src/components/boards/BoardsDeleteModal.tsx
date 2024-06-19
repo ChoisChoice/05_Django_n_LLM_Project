@@ -13,8 +13,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { IBoardsDeleteModal } from "../types";
-import { deleteBoardsDetail } from "../api/boardAPI";
+import { IBoardsDeleteModal } from "../../types";
+import { deleteBoardsDetail } from "../../api/boardAPI";
 
 export default function BoardsDeleteModal({
   isOpen,

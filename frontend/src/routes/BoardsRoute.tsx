@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import Boards from "../components/Boards";
+import Boards from "../components/boards/Boards";
 import { IBoards } from "../types";
 import { getBoards } from "../api/boardAPI";
 import CustomSpinner from "../components/CustomSpinner";

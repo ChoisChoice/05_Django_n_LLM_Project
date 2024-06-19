@@ -3,7 +3,8 @@ import Root from "./components/Root";
 import NotFoundRoute from "./routes/NotFoundRoute";
 import HomeRoute from "./routes/HomeRoute";
 import BoardsRoute from "./routes/BoardsRoute";
-import BoardsDetailRoute from "./routes/BoardsDetailRoute";
+import BoardsDetailNCommentsRoute from "./routes/BoardsDetailNCommentsRoute";
+import CommentsDetailRoute from "./routes/CommentsDetailRoute";
 import GithubConfirmRoute from "./routes/GithubConfirmRoute";
 import KakaoConfirmRoute from "./routes/KakaoConfirmRoute";
 import LLMRoute from "./routes/LLMRoute";
@@ -24,7 +25,11 @@ const router = createBrowserRouter([
       },
       {
         path: "boards/:boardPk/",
-        element: <BoardsDetailRoute />, // 상세 게시글
+        element: <BoardsDetailNCommentsRoute />, // 상세 게시글 & 댓글
+      },
+      {
+        path: "boards/:boardPk/comments/:commentPk/",
+        element: <CommentsDetailRoute />, // 상세 댓글
       },
       {
         path: "social/", // 소셜 로그인

@@ -58,12 +58,34 @@ export interface IComments extends IWriter {
   posting: string;
   writer: IWriter;
   comment: string;
-  thumb_up: [];
+  thumb_up: number[];
   created_at: string;
+}
+
+// 댓글 생성
+interface ICommentsCreateModal {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+// 댓글 수정
+interface ICommentsUpdateModal {
+  isOpen: boolean;
+  onClose: () => void;
+  commentData: IComments | undefined;
+}
+
+// 댓글 삭제
+interface ICommentsDeleteModal {
+  isOpen: boolean;
+  onClose: () => void;
+  boardPk: string | undefined;
+  commentPk: string | undefined;
 }
 
 // 유저
 export interface IUser {
+  pk: number;
   last_login: string;
   username: string;
   email: string;

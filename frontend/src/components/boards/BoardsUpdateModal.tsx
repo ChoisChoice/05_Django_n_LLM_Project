@@ -23,9 +23,9 @@ import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { IBoardsDetail, IBoardsUpdateModal } from "../types";
-import { putBoardsDetail } from "../api/boardAPI";
-import useUser from "../lib/useUser";
+import { IBoardsDetail, IBoardsUpdateModal } from "../../types";
+import { putBoardsDetail } from "../../api/boardAPI";
+import useUser from "../../lib/useUser";
 
 export default function BoardsUpdateModal({
   isOpen,

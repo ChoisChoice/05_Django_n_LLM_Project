@@ -13,11 +13,12 @@ import { FaPencilAlt } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { getBoardsDetail } from "../api/boardAPI";
-import Comments from "../components/Comments";
-import BoardsUpdateModal from "../components/BoardsUpdateModal";
-import BoardsDeleteModal from "../components/BoardsDeleteModal";
+import BoardsUpdateModal from "../components/boards/BoardsUpdateModal";
+import BoardsDeleteModal from "../components/boards/BoardsDeleteModal";
+import Comments from "../components/comments/Comments";
+import CommentsCreateModal from "../components/comments/CommentsCreateModal";
 
-export default function BoardsDetailRoute() {
+export default function BoardsDetailNCommentsRoute() {
   // 상세 게시글
   const { _, boardPk } = useParams();
   const { data: boardData } = useQuery({
@@ -37,6 +38,13 @@ export default function BoardsDetailRoute() {
     isOpen: isDeleteOpen,
     onClose: onDeleteClose,
     onOpen: onDeleteOpen,
+  } = useDisclosure();
+
+  // 댓글 생성
+  const {
+    isOpen: isCommentCreateOpen,
+    onClose: onCommentCreateClose,
+    onOpen: onCommentCreateOpen,
   } = useDisclosure();
 
   return (
@@ -195,6 +203,31 @@ export default function BoardsDetailRoute() {
 
       {/* 특정 게시글의 댓글 */}
       <Comments />
+
+      {/* 댓글 생성 버튼*/}
+      <Box
+        mt={10}
+        display="flex"
+        justifyContent="flex-end"
+        width="100%"
+        margin="auto"
+      >
+        <Button
+          mt={10}
+          ml={2}
+          style={{
+            backgroundColor: "#7ed957",
+            color: "black",
+          }}
+          onClick={onCommentCreateOpen}
+        >
+          Create
+          <CommentsCreateModal
+            isOpen={isCommentCreateOpen}
+            onClose={onCommentCreateClose}
+          />
+        </Button>
+      </Box>
     </Box>
   );
 }

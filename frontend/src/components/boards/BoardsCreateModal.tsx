@@ -22,15 +22,15 @@ import { FaPencilAlt } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { IBoardsCreateModal, IBoardsDetail } from "../types";
-import useUser from "../lib/useUser";
-import { postBoards } from "../api/boardAPI";
+import { IBoardsCreateModal, IBoardsDetail } from "../../types";
+import useUser from "../../lib/useUser";
+import { postBoards } from "../../api/boardAPI";
 
 export default function BoardsCreateModal({
   isOpen,
   onClose,
 }: IBoardsCreateModal) {
-  const { user, isSignedIn } = useUser();
+  const { user } = useUser();
   const {
     register,
     handleSubmit,

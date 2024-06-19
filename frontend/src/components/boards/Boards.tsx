@@ -13,9 +13,9 @@ import {
 } from "@chakra-ui/react";
 import { FaLock, FaLockOpen } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { IBoards } from "../types";
+import { IBoards } from "../../types";
 import BoardsCreateModal from "./BoardsCreateModal";
-import Pagination from "./Pagination";
+import Pagination from "../Pagination";
 
 interface BoardsProps {
   boards: IBoards[];
