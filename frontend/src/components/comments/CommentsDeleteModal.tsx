@@ -1,5 +1,11 @@
 import { Text } from "@chakra-ui/react";
+import { ICommentsDeleteModal } from "../../types";
 
-export default function CommentsDeleteModal() {
-  return <Text> Comments Delete Modal </Text>;
+export default function CommentsDeleteModal({
+  isOpen,
+  onClose,
+  boardPk,
+  commentId,
+}: ICommentsDeleteModal) {
+  return <></>;
 }

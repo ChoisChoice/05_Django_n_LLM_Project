@@ -1,5 +1,10 @@
 import { Text } from "@chakra-ui/react";
+import { ICommentsUpdateModal } from "../../types";
 
-export default function CommentsUpdateModal() {
-  return <Text> Comments Update Modal </Text>;
+export default function CommentsUpdateModal({
+  isOpen,
+  onClose,
+  commentData,
+}: ICommentsUpdateModal) {
+  return <></>;
 }

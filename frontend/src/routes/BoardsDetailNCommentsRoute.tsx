@@ -202,7 +202,7 @@ export default function BoardsDetailNCommentsRoute() {
       </Box>
 
       {/* 특정 게시글의 댓글 */}
-      <Comments />
+      <Comments boardPk={boardPk} />
 
       {/* 댓글 생성 버튼*/}
       <Box

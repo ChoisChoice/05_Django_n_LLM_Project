@@ -54,7 +54,7 @@ interface IBoardsDeleteModal {
 
 // 댓글
 export interface IComments extends IWriter {
-  pk: number;
+  id: number;
   posting: string;
   writer: IWriter;
   comment: string;
@@ -80,7 +80,7 @@ interface ICommentsDeleteModal {
   isOpen: boolean;
   onClose: () => void;
   boardPk: string | undefined;
-  commentPk: string | undefined;
+  commentId: string | undefined;
 }
 
 // 유저

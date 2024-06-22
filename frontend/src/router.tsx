@@ -28,7 +28,7 @@ const router = createBrowserRouter([
         element: <BoardsDetailNCommentsRoute />, // 상세 게시글 & 댓글
       },
       {
-        path: "boards/:boardPk/comments/:commentPk/",
+        path: "boards/:boardPk/comments/:commentId/",
         element: <CommentsDetailRoute />, // 상세 댓글
       },
       {

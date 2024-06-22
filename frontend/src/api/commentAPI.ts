@@ -29,19 +29,32 @@ export const postComments = async ({
     .then((response) => response.data);
 };
 
+// 상세 댓글 가져오기
+export const getCommentsDetail = async ({
+  boardPk,
+  commentId,
+}: {
+  boardPk: string | undefined;
+  commentId: string | undefined;
+}) => {
+  return instance
+    .get(`/boards/${boardPk}/comments/${commentId}/`)
+    .then((response) => response.data);
+};
+
 // 댓글 수정하기
 export const putComments = async ({
   boardPk,
-  commentPk,
+  commentId,
   commentData,
 }: {
   boardPk: string;
-  commentPk: string;
+  commentId: string;
   commentData: IComments;
 }) => {
   const { posting, ...data } = commentData;
   return instance
-    .put(`/boards/${boardPk}/comments/${commentPk}`, data, {
+    .put(`/boards/${boardPk}/comments/${commentId}/`, data, {
       headers: {
         "X-CSRFToken": Cookie.get("csrftoken") || "",
       },
@@ -52,13 +65,13 @@ export const putComments = async ({
 // 댓글 삭제
 export const deleteComments = async ({
   boardPk,
-  commentPk,
+  commentId,
 }: {
   boardPk: string;
-  commentPk: string;
+  commentId: string;
 }) => {
   return instance
-    .delete(`/boards/${boardPk}/comments/${commentPk}`, {
+    .delete(`/boards/${boardPk}/comments/${commentId}/`, {
       headers: {
         "X-CSRFToken": Cookie.get("csrftoken") || "",
       },
