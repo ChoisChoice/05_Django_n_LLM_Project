@@ -31,8 +31,8 @@ export default function Comments({ boardPk }: BoardPkProps) {
       bg="white"
       maxW="4xl"
       mx="auto"
-      mt={20}
-      mb={20}
+      mt={10}
+      mb={10}
       as="form"
     >
       <VStack mt={10} align="stretch" w="100%">
@@ -43,8 +43,8 @@ export default function Comments({ boardPk }: BoardPkProps) {
           </Flex>
         </Heading>
         {commentsData?.map((comment) => (
-          <Link to={`/boards/${boardPk}/comments/${comment.id}`}>
-            <Box mb={2}>
+          <Box mb={2}>
+            <Link to={`/boards/${boardPk}/comments/${comment.id}`}>
               <Text
                 bg="gray.100"
                 p={1}
@@ -55,17 +55,17 @@ export default function Comments({ boardPk }: BoardPkProps) {
                 {comment?.writer?.username}
               </Text>
               <Text margin={3}>{comment?.comment}</Text>
-              <HStack justify="space-between" margin={3}>
-                <Text textAlign="left" textColor="gray.500">
-                  {new Date(comment?.created_at).toLocaleString()}
-                </Text>
-                <Flex>
-                  <Icon as={FaThumbsUp} boxSize={4} mr={2} color="blue.600" />
-                  <Text textAlign="right">{comment?.thumb_up?.length}</Text>
-                </Flex>
-              </HStack>
-            </Box>
-          </Link>
+            </Link>
+            <HStack justify="space-between" margin={3}>
+              <Text textAlign="left" textColor="gray.500">
+                {new Date(comment?.created_at).toLocaleString()}
+              </Text>
+              <Flex>
+                <Icon as={FaThumbsUp} boxSize={4} mr={2} color="blue.600" />
+                <Text textAlign="right">{comment?.thumb_up?.length}</Text>
+              </Flex>
+            </HStack>
+          </Box>
         ))}
       </VStack>
     </Box>

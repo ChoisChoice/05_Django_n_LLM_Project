@@ -140,7 +140,7 @@ export default function Header() {
                 >
                   Welcome,{" "}
                   <Text as="span" fontWeight="bold">
-                    {user?.name}
+                    {user?.username}
                   </Text>
                   !
                 </Box>

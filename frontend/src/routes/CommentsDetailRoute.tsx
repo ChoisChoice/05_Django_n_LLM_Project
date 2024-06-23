@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { FaComment, FaPencilAlt, FaThumbsUp } from "react-icons/fa";
+import { FaComment, FaThumbsUp } from "react-icons/fa";
 import { getCommentsDetail } from "../api/commentAPI";
 import { IComments } from "../types";
 import CommentsUpdateModal from "../components/comments/CommentsUpdateModal";
@@ -43,6 +43,7 @@ export default function CommentsDetailRoute() {
     onOpen: onDeleteOpen,
   } = useDisclosure();
 
+  console.log(commentData?.thumb_up);
   return (
     <Box
       p={6}
@@ -61,7 +62,7 @@ export default function CommentsDetailRoute() {
         {/* writer */}
         <FormControl id="writer">
           <Flex align="center">
-            <Icon as={FaPencilAlt} color="green.500" />
+            <Icon as={FaComment} color="green.500" />
             <FormLabel fontSize={22} ml={2}>
               Writer
             </FormLabel>
@@ -74,7 +75,7 @@ export default function CommentsDetailRoute() {
         {/* comment */}
         <FormControl id="comment" isRequired>
           <Flex align="center">
-            <Icon as={FaPencilAlt} color="green.500" />
+            <Icon as={FaComment} color="green.500" />
             <FormLabel fontSize={22} ml={2}>
               Comment
             </FormLabel>
@@ -87,20 +88,21 @@ export default function CommentsDetailRoute() {
         {/* thumb_up */}
         <FormControl id="thumb_up" isRequired>
           <Flex align="center">
-            <Icon as={FaPencilAlt} color="green.500" />
+            <Icon as={FaComment} color="green.500" />
             <FormLabel fontSize={22} ml={2}>
               Thumb-Up
             </FormLabel>
           </Flex>
-          <Text border="1px solid gray" p={2}>
-            {commentData?.thumb_up}
-          </Text>
+          <Flex align="center" ml={2}>
+            <Icon as={FaThumbsUp} boxSize={4} mr={1} color="blue.600" />
+            <Text p={2}>{commentData?.thumb_up?.length}</Text>
+          </Flex>
         </FormControl>
 
         {/* created_at */}
         <FormControl id="created_at" isRequired>
           <Flex align="center">
-            <Icon as={FaPencilAlt} color="green.500" />
+            <Icon as={FaComment} color="green.500" />
             <FormLabel fontSize={22} ml={2}>
               Created-At
             </FormLabel>
@@ -148,6 +150,8 @@ export default function CommentsDetailRoute() {
           <CommentsUpdateModal
             isOpen={isUpdateOpen}
             onClose={onUpdateClose}
+            boardPk={boardPk}
+            commentId={commentId}
             commentData={commentData} // 특정 댓글 데이터 해당 모달에 전달
           />
         </Button>

@@ -32,7 +32,6 @@ export default function BoardsUpdateModal({
   onClose,
   boardData,
 }: IBoardsUpdateModal) {
-  const { user, isSignedIn } = useUser();
   const {
     register,
     handleSubmit,
@@ -67,7 +66,7 @@ export default function BoardsUpdateModal({
         position: "bottom-right",
       });
       onClose();
-      navigate(`/boards/${boardPk}`);
+      navigate(`/boards/${boardPk}/`);
       reset();
     },
     onError: (error) => {
@@ -152,7 +151,7 @@ export default function BoardsUpdateModal({
                   Writer
                 </FormLabel>
               </Flex>
-              <Text>{user?.name}</Text>
+              <Text>{boardData?.writer?.username}</Text>
             </FormControl>
 
             {/* title */}
@@ -206,6 +205,11 @@ export default function BoardsUpdateModal({
             width="100%"
             margin="auto"
           >
+            {/* 취소하기 버튼 */}
+            <Button mt={10} ml={2} onClick={onClose}>
+              Cancle
+            </Button>
+
             {/* 수정하기 버튼 */}
             <Button
               isLoading={mutation.isPending}

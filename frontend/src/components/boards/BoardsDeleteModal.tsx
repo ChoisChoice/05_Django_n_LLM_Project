@@ -35,7 +35,7 @@ export default function BoardsDeleteModal({
         position: "bottom-right",
       });
       onClose();
-      navigate(`/boards`);
+      navigate(`/boards/`);
     },
     onError: (error) => {
       console.log("Deletion Failed");

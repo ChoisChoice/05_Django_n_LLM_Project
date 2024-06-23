@@ -72,6 +72,8 @@ interface ICommentsCreateModal {
 interface ICommentsUpdateModal {
   isOpen: boolean;
   onClose: () => void;
+  boardPk: string | undefined;
+  commentId: string | undefined;
   commentData: IComments | undefined;
 }
 
