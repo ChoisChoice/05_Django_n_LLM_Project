@@ -78,3 +78,37 @@ export const deleteComments = async ({
     })
     .then((response) => response.data);
 };
+
+// 좋아요 추가
+export const postThumbUp = async ({
+  boardPk,
+  commentId,
+}: {
+  boardPk: string;
+  commentId: string;
+}) => {
+  return instance
+    .post(`/boards/${boardPk}/comments/${commentId}/thumb-up/`, null, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.data);
+};
+
+// 좋아요 삭제
+export const deleteThumbUp = async ({
+  boardPk,
+  commentId,
+}: {
+  boardPk: string;
+  commentId: string;
+}) => {
+  return instance
+    .delete(`/boards/${boardPk}/comments/${commentId}/thumb-up/`, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.data);
+};

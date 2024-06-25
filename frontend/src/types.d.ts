@@ -58,7 +58,7 @@ export interface IComments extends IWriter {
   posting: string;
   writer: IWriter;
   comment: string;
-  thumb_up: number[];
+  thumb_up: string[];
   created_at: string;
 }
 

@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Flex,
   HStack,
   Heading,
@@ -8,21 +9,49 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { FaComment, FaThumbsUp } from "react-icons/fa";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { getComments } from "../../api/commentAPI";
+import { deleteThumbUp, getComments, postThumbUp } from "../../api/commentAPI";
 import { IComments } from "../../types";
+import useUser from "../../lib/useUser";
 
 interface BoardPkProps {
   boardPk: string | undefined;
 }
 
 export default function Comments({ boardPk }: BoardPkProps) {
+  const { user } = useUser();
+
   // 댓글
   const { data: commentsData } = useQuery<IComments[]>({
     queryFn: getComments,
     queryKey: [`comments`, boardPk],
   });
+
+  // 좋아요
+  const queryClient = useQueryClient();
+
+  const handleThumbUp = async (
+    boardPk: string,
+    commentId: string,
+    thumb_up: string[]
+  ) => {
+    try {
+      const userPk = user?.pk?.toString();
+      if (userPk && thumb_up.includes(userPk)) {
+        // 좋아요 취소
+        await deleteThumbUp({ boardPk, commentId });
+      } else {
+        // 좋아요 추가
+        await postThumbUp({ boardPk, commentId });
+      }
+      queryClient.invalidateQueries({
+        queryKey: [`comments`, boardPk],
+      });
+    } catch (error) {
+      console.error("Failed to update thumb up status:", error);
+    }
+  };
 
   return (
     <Box
@@ -61,8 +90,22 @@ export default function Comments({ boardPk }: BoardPkProps) {
                 {new Date(comment?.created_at).toLocaleString()}
               </Text>
               <Flex>
-                <Icon as={FaThumbsUp} boxSize={4} mr={2} color="blue.600" />
-                <Text textAlign="right">{comment?.thumb_up?.length}</Text>
+                <Button
+                  onClick={() =>
+                    boardPk &&
+                    handleThumbUp(
+                      boardPk,
+                      comment.id.toString(),
+                      comment.thumb_up
+                    )
+                  }
+                  size="sm"
+                  variant="ghost"
+                  colorScheme="blue"
+                  leftIcon={<FaThumbsUp />}
+                >
+                  {comment?.thumb_up?.length}
+                </Button>
               </Flex>
             </HStack>
           </Box>

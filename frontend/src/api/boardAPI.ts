@@ -42,24 +42,6 @@ export const putBoardsDetail = async ({
     })
     .then((response) => response.data);
 };
-// export const putBoardsDetail = async ({
-//   queryKey,
-//   boardData,
-// }: {
-//   queryKey: QueryFunctionContext<[string, string | null | undefined]>;
-//   boardData: IBoardsDetail;
-// }) => {
-//   const boardPk = queryKey;
-//   console.log(boardPk);
-//   const { attachment, ...data } = boardData;
-//   return instance
-//     .put(`/boards/${boardPk}/`, data, {
-//       headers: {
-//         "X-CSRFToken": Cookie.get("csrftoken") || "",
-//       },
-//     })
-//     .then((response) => response.data);
-// };
 
 // 상세 게시판 - 삭제
 export const deleteBoardsDetail = async (boardPk: string) => {
@@ -71,15 +53,3 @@ export const deleteBoardsDetail = async (boardPk: string) => {
     })
     .then((response) => response.data);
 };
-// export const deleteBoardsDetail = async ({
-//   queryKey,
-// }: QueryFunctionContext) => {
-//   const [_, boardPk] = queryKey;
-//   return instance
-//     .delete(`/boards/${boardPk}/`, {
-//       headers: {
-//         "X-CSRFToken": Cookie.get("csrftoken") || "",
-//       },
-//     })
-//     .then((response) => response.data);
-// };

@@ -66,7 +66,6 @@ export default function BoardsCreateModal({
 
   const onSubmit = (data: IBoardsDetail) => {
     mutation.mutate(data);
-    console.log(data);
   };
 
   return (
