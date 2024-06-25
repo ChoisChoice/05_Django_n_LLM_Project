@@ -88,6 +88,7 @@ interface ICommentsDeleteModal {
 // 유저
 export interface IUser {
   pk: number;
+  id: string;
   last_login: string;
   username: string;
   email: string;

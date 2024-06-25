@@ -37,8 +37,8 @@ export default function Comments({ boardPk }: BoardPkProps) {
     thumb_up: string[]
   ) => {
     try {
-      const userPk = user?.pk?.toString();
-      if (userPk && thumb_up.includes(userPk)) {
+      const userId = user?.id;
+      if (userId && thumb_up.includes(userId)) {
         // 좋아요 취소
         await deleteThumbUp({ boardPk, commentId });
       } else {
