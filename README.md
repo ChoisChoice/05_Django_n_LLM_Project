@@ -8,8 +8,13 @@
    - 2.2 [주요 기능 및 설명](#22-주요-기능-및-설명)
    - 2.3 [개선해야할 부분](#23-개선해야할-부분)
 3. [회고](#3-회고)
-4. [설치 및 실행 방법](#3-설치-및-실행-방법)
-5. [참고](#4-참고)
+   - 3.1 [Backend](#31-Backend)
+   - 3.2 [LangChain(LLM)](<#32-LangChain(LLM)>)
+   - 3.3 [Frontend](#33-Frontend)
+4. [설치 및 실행 방법](#4-설치-및-실행-방법)
+   - 4.1 [backend 디렉토리](#41-backend-디렉토리)
+   - 4.2 [frontend 디렉토리](#42-frontend-디렉토리)
+5. [참고](#5-참고)
 
 ## 1. 프로젝트 명
 
@@ -58,6 +63,7 @@
   - queryset 활용: queryset 관련 문법을 정확히 숙지할 필요를 느꼈습니다. 그리고 지연 평가(Lazy Evaluation), 체이닝(Chaining)등 여러 기법들을 익힌다면 db에 데이터 접근을 효율적이고 안전하게 처리할 수 있다고 생각했습니다.
 - 2.3.2 LangChain(LLM)
   - 성능 측정: 뉴스기사(feature)와 요약된 기사(target)를 준비해서 feature를 RAG 기법을 통해 나온 결과(result)와 target과의 BLEU(Bilingual Evaluation Understudy) 혹은 ROUGE(Recall-Oriented Understudy for Gisting Evaluation) Score 측정을 통해 성능을 향상 및 최적화한다면 좋겠다는 생각을 했습니다.
+  - Request blocked: ABC 뉴스 홈페이지의 url을 통해 기사 번역과 요약이 되는거라 계속 사용하면 나중에 해당 사이트 자체에서 접근을 제한해버립니다. 이는 범용성이 떨어지는 부분으로써 url 말고 텍스트로 하면 문제가 해결될 것으로 생각합니다. 또한 저작권 문제가 발생할 수 있어 조심해야 합니다.
 - 2.3.3 Frontend
   - 코드 분리 필요: 코드 자체에 css 요소들을 넣다보니 가독성이 안 좋은 부분이 있어 css 파일을 따로 분리하면 좋겠다고 느꼈습니다. 또한 component에 코드가 중복된 부분이 있어 보입니다. 재사용 목적에 맞게 이를 분리 및 수정할 필요성이 보입니다.
   - simple-jwt 사용: backend에 구현했지만 frontend에 구현하지 못한 부분이 아쉽습니다. 추후 토큰 인증을 사용하여 사용자의 접근을 제어한다면 보안적으로 강화시킬 수 있을 것 같습니다.
@@ -65,15 +71,80 @@
 
 ## 3. 회고
 
-- 3.1 Backend: 배운 내용을 참고하여 게시판을 만들때, 기사 url을 POST 요청해 해당 view로 보내면 LangChain 통해 요약 및 번역이 진행되어 결과를 반환하도록 스스로 설계하고 구현했을 때 재미를 느꼈습니다. 그리고 Mixins, Generic Views, APIView의 각 특성을 이해하고 프로젝트의 요구사항에 맞춰 적절히 활용해 더 효율적인 RESTful API를 구축해보고 싶습니다.
-- 3.2 LangChain(LLM): 프로젝트 목적에 맞게 번역 및 요약이 잘 되는것 같아 만족스러웠습니다. 하지만 위에서 언급한 성능측정을 통한 최적화가 진행되었다면 좋겠다는 아쉬움이 있습니다. 그리고 이번 계기를 통해 전체적이고 기초적인 LangChain의 개념에 대해 접했다면 LangChain에서 제공하는 모듈(Model I/O, Retrieval, Memory, Chains, Agents, Callbacks)과 RAG, ReAct와 같은 기법들을 좀 더 심도있게 학습해서 효율적인 LLM 애플리케이션을 만들고 싶습니다.
-- 3.3 Frontend: React에 대해 정확히 알지는 못하지만 배운 내용을 바탕으로 직관적으로 코드를 작성한 느낌이 있었습니다. 따라서 React 및 TypeScript 문법 및 Hooks와 같은 기능들을 정확히 숙지해야할 필요성을 느꼈습니다.
+---
+
+### 3.1 Backend: 배운 내용을 참고하여 게시판을 만들때, 기사 url을 POST 요청해 해당 view로 보내면 LangChain 통해 요약 및 번역이 진행되어 결과를 반환하도록 스스로 설계하고 구현했을 때 재미를 느꼈습니다. 그리고 Mixins, Generic Views, APIView의 각 특성을 이해하고 프로젝트의 요구사항에 맞춰 적절히 활용해 더 효율적인 RESTful API를 구축해보고 싶습니다.
+
+### 3.2 LangChain(LLM): 프로젝트 목적에 맞게 번역 및 요약이 잘 되는것 같아 만족스러웠습니다. 하지만 위에서 언급한 성능측정을 통한 최적화가 진행되었다면 좋겠다는 아쉬움이 있습니다. 그리고 이번 계기를 통해 전체적이고 기초적인 LangChain의 개념에 대해 접했다면 LangChain에서 제공하는 모듈(Model I/O, Retrieval, Memory, Chains, Agents, Callbacks)과 RAG, ReAct와 같은 기법들을 좀 더 심도있게 학습해서 효율적인 LLM 애플리케이션을 만들고 싶습니다.
+
+### 3.3 Frontend: React에 대해 정확히 알지는 못하지만 배운 내용을 바탕으로 직관적으로 코드를 작성한 느낌이 있었습니다. 따라서 React 및 TypeScript 문법 및 Hooks와 같은 기능들을 정확히 숙지해야할 필요성을 느꼈습니다.
 
 ## 4. 설치 및 실행 방법
 
 ---
 
----
+### 4.1 backend 디렉토리
+
+- 가상환경을 설치합니다.  
+  `python -m venv ./env`
+
+- requirements.txt 설치합니다.  
+  `python -m pip install -r .\requirements.txt`
+
+- 만약 다음과 같이 에러가 발생할 경우, 수동으로 설치합니다.
+
+  - ERROR: ResolutionImpossible: for help visit https://pip.pypa.io/en/latest/topics/dependency-resolution/#dealing-with-dependency-conflicts
+  - ```
+    python -m pip install -r .\requirements.txt --use-deprecated=legacy-resolver
+    python -m pip install django
+    python -m pip install djangorestframework
+    python -m pip install djangorestframework-simplejwt
+    ```
+
+- backend 디렉토리에 .env 파일 생성후, 파일안에 아래 값을 입력하고 저장합니다.
+
+```
+# Django
+SECRET_KEY="Use SECRET_KEY in config/settings.py."
+
+# AWS S3
+AWS_ACCESS_KEY_ID="After creating an IAM user, a key can be issued."
+AWS_SECRET_ACCESS_KEY="After creating an IAM user, a key can be issued."
+
+# Github Social Sign-In
+GH_SECRET="Get it from the following url(https://github.com/settings/developers)"
+
+# OpenAI & LangChain
+OPENAI_API_KEY="Get it from the following url(https://platform.openai.com/api-keys)"
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_ENDPOINT="https://api.smith.langchain.com"
+LANGCHAIN_API_KEY="Get it from the following url(https://smith.langchain.com/settings)"
+```
+
+- 마이그레이션 파일 생성 및 데이터베이스에 마이그레이션 반영합니다.
+
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
+- superuser를 생성합니다.(생성 안하고 회원가입 혹은 소셜로그인 시, 에러가 발생함)  
+  `python manage.py createsuperuser`
+
+- 만약 다음과 같이 에러가 발생할 경우, 해결방법은 아래와 같습니다.
+  - django.db.utils.OperationalError: no such table: users_user
+  - `python manage.py migrate --run-syncdb`
+
+### 4.2 frontend 디렉토리
+
+- package.json을 설치 및 서버 실행합니다.
+
+```
+npm install --force
+npm run start
+```
+
+- 마지막으로 사용시, 주소값을 localhost:3000가 아닌, 127.0.0.1:3000으로 하고 사용합니다.
 
 ## 5. 참고
 
