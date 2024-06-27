@@ -108,9 +108,9 @@
   - ERROR: ResolutionImpossible: for help visit https://pip.pypa.io/en/latest/topics/dependency-resolution/#dealing-with-dependency-conflicts
   - ```
     python -m pip install -r .\requirements.txt --use-deprecated=legacy-resolver
-    python -m pip install django
-    python -m pip install djangorestframework
-    python -m pip install djangorestframework-simplejwt
+    ```
+    ```
+    python -m pip install django djangorestframework djangorestframework-simplejwt
     ```
 
 - backend 디렉토리에 .env 파일 생성후, 파일안에 아래 값을 입력하고 저장합니다.
@@ -137,6 +137,8 @@ LANGCHAIN_API_KEY="Get it from the following url(https://smith.langchain.com/set
 
 ```
 python manage.py makemigrations
+```
+```
 python manage.py migrate
 ```
 
@@ -158,6 +160,8 @@ python manage.py migrate
 
 ```
 npm install --force
+```
+```
 npm run start
 ```
 
