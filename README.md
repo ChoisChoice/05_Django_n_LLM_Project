@@ -46,11 +46,11 @@
     - 뉴스 기사 요약: 뉴스 기사 URL에서 기사를 추출, 캐시 저장, 텍스트 분할 및 임베딩한 후 retriever를 생성하고, 이를 바탕으로 RAG (Retrieval-Augmented Generation) 기법을 통해 기사를 요약하여 반환하는 기능
     - 뉴스 기사 번역: 요약된 기사를 한국어로 번역하기 위해 템플릿과 모델을 사용하여 체인을 생성하고, 이를 실행하여 번역된 기사를 반환하는 기능
   - services.py에 정의한 함수들은 views.py에 각 클래스로 정의되어 클라이언트의 요청받아 적절한 HTTP 응답을 반환합니다. 그리고 urls.py에서 URL 패턴에 매핑하여 클라이언트 요청을 해당 뷰로 라우팅합니다.
-  - 기사 요약 및 번역 결과에 대한 샘플 이미지는 다음과 같습니다.
+  - 기사 요약 및 번역 결과에 대한 샘플 이미지는 다음과 같습니다.(클릭하면 더 자세히 보실 수 있습니다.)
   <p align="center">
-    <img src="./sample/llm_sample1.PNG" alt="기사 요약 및 번역 결과 이미지1" width="300" height="350"/>
-    <img src="./sample/llm_sample2.PNG" alt="기사 요약 및 번역 결과 이미지2" width="300" height="350"/>
-    <img src="./sample/llm_sample3.PNG" alt="기사 요약 및 번역 결과 이미지3" width="300" height="350"/>
+    <img src="./sample/llm_sample1.PNG" alt="기사 요약 및 번역 결과 이미지1" width="250" height="300"/>
+    <img src="./sample/llm_sample2.PNG" alt="기사 요약 및 번역 결과 이미지2" width="250" height="300"/>
+    <img src="./sample/llm_sample3.PNG" alt="기사 요약 및 번역 결과 이미지3" width="250" height="300"/>
   </p>
 
 - 2.2.3 Frontend
