@@ -44,7 +44,7 @@
 - 2.2.2 LangChain(LLM)
 
   - backend/models 디렉토리의 services.py 에 **LangChain**의 핵심 로직 및 기능을 정의하였고 대표적인 기능을 다음과 같습니다.
-    - 뉴스 기사 요약: 뉴스 기사 URL에서 기사를 추출, 캐시 저장, 텍스트 분할 및 임베딩한 후 retriever를 생성하고, 이를 바탕으로 RAG(Retrieval-Augmented Generation) 기법을 통해 기사를 요약하여 반환하는 기능
+    - 뉴스 기사 요약: 뉴스 기사 URL에서 기사를 추출, 캐시 저장, 텍스트 분할 및 임베딩한 후 Retriever를 생성하고, 이를 바탕으로 RAG(Retrieval-Augmented Generation) 기법을 통해 기사를 요약하여 반환하는 기능
     - 뉴스 기사 번역: 요약된 기사를 한국어로 번역하기 위해 템플릿과 모델을 사용하여 체인을 생성하고, 이를 실행하여 번역된 기사를 반환하는 기능
   - services.py에 정의한 함수들은 views.py에 각 클래스로 정의되어 클라이언트의 요청받아 적절한 HTTP 응답을 반환합니다. 그리고 urls.py에서 URL 패턴에 매핑하여 클라이언트 요청을 해당 뷰로 라우팅합니다.
   - 위의 과정을 거쳐 화면에 보이는 기사 요약 및 번역 대한 샘플 이미지는 다음과 같습니다.(클릭하면 더 자세히 보실 수 있습니다.)
@@ -59,8 +59,8 @@
     - api dir: axios를 사용하여 HTTP 요청을 보내기 위한 인스턴스를 생성하고 서버와의 통신을 위한 API 호출 함수들을 정의했습니다. 크게 boardAPI, commentAPI, modelAPI, socialAPI, userAPI로 나뉩니다.
     - components dir: 로그인, 로그아웃, 게시판, 댓글 그리고 기본 UI 관련 코드들을 정의한 폴더입니다. 게시판 및 댓글과 관련된 코드는 별도로 boards와 comments 디렉토리에 정리하였습니다.
     - routes dir: routes.tsx에서 경로에 대한 요소들을 정리한 디렉토리입니다. 게시판, 댓글 등이 있으며 신문기사 요약 및 번역에 대한 경로는 LLMRoutes.tsx입니다.
-    - lib/useUser.ts: useQuery hook을 사용하여 서버로부터 사용자 프로필 정보를 비동기적으로 가져옵니다.
-    - routes.tsx: createBrowserRouter를 사용하여 라우터를 생성하고, 각 경로에 대한 요소(element)를 지정하고 렌더링합니다.
+    - lib/useUser.ts: useQuery Hook을 사용하여 서버로부터 사용자 프로필 정보를 비동기적으로 가져옵니다.
+    - routes.tsx: createBrowserRouter를 사용하여 라우터를 생성하고, 각 경로에 대한 요소(Element)를 지정하고 렌더링합니다.
     - types.d.ts: 애플리케이션에서 사용하는 데이터 타입을 정의한 파일입니다.
 
 ### 2.3 개선해야할 부분
@@ -70,7 +70,7 @@
   - Queryset 활용: Queryset 관련 문법을 정확히 숙지할 필요를 느꼈습니다. 그리고 지연 평가(Lazy Evaluation), 체이닝(Chaining)등 여러 기법들을 익힌다면 DB에 데이터 접근을 효율적이고 안전하게 처리할 수 있다고 생각했습니다.
 - 2.3.2 LangChain(LLM)
   - 성능 측정: 뉴스기사(Feature)와 요약된 기사(Target)를 준비해서 Feature를 RAG 기법을 통해 나온 결과와 Target과의 BLEU(Bilingual Evaluation Understudy) 혹은 ROUGE(Recall-Oriented Understudy for Gisting Evaluation) Score 측정을 통해 성능을 향상 및 최적화한다면 좋겠다는 생각을 했습니다.
-  - Request Blocked: ABC 뉴스 홈페이지의 url을 통해 기사 번역과 요약이 되는거라 계속 사용하면 나중에 해당 사이트 자체에서 접근을 제한해버립니다. 이는 범용성이 떨어지는 부분으로써 url 말고 텍스트를 input으로 대체하는 등 다른 방법을 강구해야할 것으로 보입니다. 또한 저작권 문제가 발생할 수 있어 주의해야할 것 같습니다.
+  - Request Blocked: ABC 뉴스 홈페이지의 URL을 통해 기사 번역과 요약이 되는거라 계속 사용하면 나중에 해당 사이트 자체에서 접근을 제한해버립니다. 이는 범용성이 떨어지는 부분으로써 URL 말고 텍스트를 Input으로 대체하는 등 다른 방법을 강구해야할 것으로 보입니다. 또한 저작권 문제가 발생할 수 있어 주의해야할 것 같습니다.
 - 2.3.3 Frontend
   - 코드 분리 필요: 코드 자체에 css 요소들을 넣다보니 가독성이 안 좋은 부분이 있어 css 파일을 따로 분리하면 좋겠다고 느꼈습니다. 또한 component에 코드가 중복된 부분이 있어 재사용 목적에 맞게 이를 분리 및 수정할 필요성이 보입니다.
   - Simple-JWT 사용: Backend에 구현했지만 Frontend에 구현하지 못한 부분이 아쉽습니다. 추후 토큰 인증을 사용하여 사용자의 접근을 제어한다면 보안적으로 강화시킬 수 있을 것 같습니다.
@@ -82,7 +82,9 @@
 
 ### 3.1 Backend
 
-- 배운 내용을 참고하여 게시판을 만들때, 기사 url을 POST 요청해 해당 view로 보내면 LangChain 통해 요약 및 번역이 진행되어 결과를 반환하도록 스스로 설계하고 구현했을 때 재미를 느꼈습니다. 개발하면서 느낀점은 DB와 상호작용을 위해 SQL에 대한 이해가 중요하다는 것입니다. Django는 직접 SQL을 사용하기 보다는 DB와 상호작용을 위해 모델과 쿼리셋을 사용하는데 이 때 SQL 쿼리에 대한 이해가 필요하다고 생각합니다. 그리고 SQL 쿼리에 대해 이해한다면 복잡한 쿼리나 성능 최적화를 위해 직접 쿼리를 작성할 때도 도움이 될 것 같습니다. 또한 Mixins, Generic Views, APIView의 각 특성을 이해하고 프로젝트의 요구사항에 맞춰 적절히 활용해 더 효율적인 RESTful API를 구축해보고 싶습니다. 
+- 배운 내용을 참고하여 게시판을 만들때, 기사 URL을 POST 요청해 해당 view로 보내면 LangChain 통해 요약 및 번역이 진행되어 결과를 반환하도록 스스로 설계하고 구현했을 때 재미를 느꼈습니다.
+- 개발하면서 느낀점은 DB와 상호작용을 위해 SQL에 대한 이해가 중요하다는 것입니다. Django는 직접 SQL을 사용하기 보다는 DB와 상호작용을 위해 모델과 쿼리셋을 사용하는데 이 때 SQL 쿼리에 대한 이해가 필요하다고 생각합니다. 그리고 SQL 쿼리에 대해 이해한다면 복잡한 쿼리나 성능 최적화를 위해 직접 쿼리를 작성할 때도 도움이 될 것 같습니다.
+- 또한 Mixins, Generic Views, APIView의 각 특성을 이해하고 프로젝트의 요구사항에 맞춰 적절히 활용해 더 효율적인 RESTful API를 구축해보고 싶습니다. 
 
 ### 3.2 LangChain(LLM)
 
