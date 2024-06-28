@@ -67,7 +67,7 @@
 
 - 2.3.1 Backend
   - Transaction 사용: DB 관련 작업이 하나의 논리적 단위로 실행됨으로써 데이터의 원자성을 보장하도록 코드를 수정해야할 것 같습니다.
-  - Queryset 활용: queryset 관련 문법을 정확히 숙지할 필요를 느꼈습니다. 그리고 지연 평가(Lazy Evaluation), 체이닝(Chaining)등 여러 기법들을 익힌다면 DB에 데이터 접근을 효율적이고 안전하게 처리할 수 있다고 생각했습니다.
+  - Queryset 활용: Queryset 관련 문법을 정확히 숙지할 필요를 느꼈습니다. 그리고 지연 평가(Lazy Evaluation), 체이닝(Chaining)등 여러 기법들을 익힌다면 DB에 데이터 접근을 효율적이고 안전하게 처리할 수 있다고 생각했습니다.
 - 2.3.2 LangChain(LLM)
   - 성능 측정: 뉴스기사(Feature)와 요약된 기사(Target)를 준비해서 Feature를 RAG 기법을 통해 나온 결과와 Target과의 BLEU(Bilingual Evaluation Understudy) 혹은 ROUGE(Recall-Oriented Understudy for Gisting Evaluation) Score 측정을 통해 성능을 향상 및 최적화한다면 좋겠다는 생각을 했습니다.
   - Request Blocked: ABC 뉴스 홈페이지의 url을 통해 기사 번역과 요약이 되는거라 계속 사용하면 나중에 해당 사이트 자체에서 접근을 제한해버립니다. 이는 범용성이 떨어지는 부분으로써 url 말고 텍스트를 input으로 대체하는 등 다른 방법을 강구해야할 것으로 보입니다. 또한 저작권 문제가 발생할 수 있어 주의해야할 것 같습니다.
@@ -86,15 +86,20 @@
 
 ### 3.2 LangChain(LLM)
 
-- 프로젝트 목적에 맞게 번역 및 요약이 잘 되는것 같아 만족스러웠습니다. 하지만 위에서 언급한 성능측정을 통한 최적화가 진행되었다면 좋겠다는 아쉬움이 있습니다. 그리고 이번 계기를 통해 전체적이고 기초적인 LangChain의 개념에 대해 접했다면 LangChain에서 제공하는 모듈(Model I/O, Retrieval, Memory, Chains, Agents, Callbacks)과 RAG, ReAct와 같은 기법들을 좀 더 심도있게 학습해서 효율적인 LLM 애플리케이션을 만들고 싶습니다. 또한 Prompt Engineering 관련 논문을 통해 다양한 기법과 전략을 학습하여 LLM 애플리케이션에 적용해보고 싶습니다.
+- 프로젝트 목적에 맞게 번역 및 요약이 잘 되는것 같아 만족스러웠습니다. 하지만 위에서 언급한 성능측정을 통한 최적화가 진행되었다면 좋겠다는 아쉬움이 있습니다.
+- 이번 계기를 통해 전체적이고 기초적인 LangChain의 개념에 대해 접했다면 LangChain에서 제공하는 모듈(Model I/O, Retrieval, Memory, Chains, Agents, Callbacks)과 RAG, ReAct와 같은 기법들을 좀 더 심도있게 학습해서 효율적인 LLM 애플리케이션을 만들고 싶습니다.
+- Prompt Engineering 관련 논문을 통해 다양한 기법과 전략을 학습하여 LLM 애플리케이션에 적용해보고 싶습니다.
 
 ### 3.3 Frontend
 
-- 게시판, 댓글, 기사 번역 및 요약 페이지를 구성하면서 어려움도 느꼈지만 직접 구현하는 재미를 느꼈습니다. 하지만 React에 대해 정확히 알지는 못하지만 배운 내용을 바탕으로 직관적으로 코드를 작성한 느낌이 있었습니다. 따라서 React 및 TypeScript 문법 및 Hooks와 같은 기능들을 정확히 숙지해야할 필요성을 느꼈습니다. 그리고 혼자만의 생각과 느낌으로 개발했지만 앞으로 사전 조사 및 수집한 UX를 바탕으로 UI를 설계했더라면 좀 더 완성도 있게 나오지 않았을까라는 아쉬움이 있습니다.
+- 게시판, 댓글, 기사 번역 및 요약 페이지를 구성하면서 어려움도 느꼈지만 직접 구현하는 재미를 느꼈습니다. 하지만 React에 대해 정확히 알지는 못하지만 배운 내용을 바탕으로 직관적으로 코드를 작성한 느낌이 있었습니다. 따라서 React 및 TypeScript 문법 및 Hooks와 같은 기능들을 정확히 숙지해야할 필요성을 느꼈습니다.
+- 혼자만의 생각과 느낌으로 개발했지만 앞으로 사전 조사 및 수집한 UX를 바탕으로 UI를 설계했더라면 좀 더 완성도 있게 나오지 않았을까라는 아쉬움이 있습니다.
 
 ### 3.4 Cloud Architecture
 
-- 게시판 첨부파일(객체)의 경우, AWS S3와 연동을 했지만 확장시키지 못한 아쉬움이 있습니다. 추후 AWS에 대해 학습하여 보다 완성된 Architecture를 구성해보고 싶습니다. 예를 들어, 첨부파일과 같은 객체는 S3에 저장하고 해당 파일의 메타데이터와 관계형 데이터는 Amazon RDS for PostgreSQL에 저장하여 DB를 구축할 수 있을 것 같습니다. 그리고 Frontend와 Backend에 각각 EC2와 같은 서버를 두고 사이에 API Gateway를 둔다면 효율적인 API 개발 및 유연한 보안 제어가 가능할 것 같습니다. 그 외에도 사용자 인증 및 권한 관리를 제공하기 위해 Amazon Cognito를 사용하고 시스템 모니터링 및 로그 관리를 위해 CloudWatch를 사용하는 등 여러 클라우드 서비스를 결합하여 배포해보고 싶습니다.
+- 게시판 첨부파일(객체)의 경우, AWS S3와 연동을 했지만 확장시키지 못한 아쉬움이 있습니다. 추후 AWS에 대해 학습하여 보다 완성된 Architecture를 구성해보고 싶습니다. 예를 들어, 첨부파일과 같은 객체는 S3에 저장하고 해당 파일의 메타데이터와 관계형 데이터는 Amazon RDS for PostgreSQL에 저장하여 DB를 구축할 수 있을 것 같습니다.
+- 그리고 Frontend와 Backend에 각각 EC2와 같은 서버를 두고 사이에 API Gateway를 둔다면 효율적인 API 개발 및 유연한 보안 제어가 가능할 것 같습니다.
+- 그 외에도 사용자 인증 및 권한 관리를 제공하기 위해 Amazon Cognito를 사용하고 시스템 모니터링 및 로그 관리를 위해 CloudWatch를 사용하는 등 여러 클라우드 서비스를 결합하여 배포해보고 싶습니다.
 
 ## 4. 설치 및 실행 방법
 
@@ -116,9 +121,7 @@
 
 - 만약 다음과 같이 에러가 발생할 경우, 수동으로 설치합니다.
 
-  - ```
-    ERROR: ResolutionImpossible: for help visit https://pip.pypa.io/en/latest/topics/dependency-resolution/#dealing-with-dependency-conflicts
-    ```
+  - <text> ERROR: ResolutionImpossible: for help visit https://pip.pypa.io/en/latest/topics/dependency-resolution/#dealing-with-dependency-conflicts </text>
   - ```
     python -m pip install -r .\requirements.txt --use-deprecated=legacy-resolver
     ```
@@ -162,9 +165,7 @@ python manage.py migrate
   ```
 
 - 만약 다음과 같이 에러가 발생할 경우, 해결방법은 아래와 같습니다.
-  - ```
-    django.db.utils.OperationalError: no such table: users_user
-    ```
+  - <text> django.db.utils.OperationalError: no such table: users_user </text>
   - ```
     python manage.py migrate --run-syncdb
     ```
